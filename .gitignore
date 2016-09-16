@@ -13,3 +13,7 @@
 /tmp
 .env
 schemas/*
+
+Procfile.development
+start
+libbitcoinconsensus.dylib
