@@ -1,7 +1,7 @@
 describe AssignmentsController, type: :controller do
   describe "#create" do
     let(:coordinator) { Coordinator.create }
-    let(:assignment_params) { assignment_json }
+    let(:assignment_params) { assignment_hash }
 
     before { coordinator_log_in coordinator }
 

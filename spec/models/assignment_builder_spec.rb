@@ -3,7 +3,7 @@ describe AssignmentBuilder, type: :model do
 
   describe "#perform" do
     let(:builder) do
-      AssignmentBuilder.new coordinator, assignment_json({
+      AssignmentBuilder.new coordinator, assignment_hash({
         adapterParams: params,
         adapterType: type,
         endAt: end_at,
