@@ -1,0 +1,14 @@
+basic:
+  id: 1
+  name: basic
+  json_schema: "{}"
+
+seo:
+  id: 2
+  name: seo
+  json_schema: <%= File.read('spec/fixtures/schemas/seo.json').to_json %>
+
+payment:
+  id: 3
+  name: payment
+  json_schema: <%= File.read('spec/fixtures/schemas/payment.json').to_json %>

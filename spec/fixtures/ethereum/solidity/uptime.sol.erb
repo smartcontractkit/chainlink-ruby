@@ -1,0 +1,46 @@
+contract Oracle{
+  function Oracle();
+  function update(bytes32 newCurrent);
+  function current()constant returns(bytes32 current);
+}
+
+contract Uptime {
+  address creator;
+  Oracle oracle;
+  uint public total;
+  uint public up;
+  event Updated(uint up, uint total);
+
+  function Uptime() {
+    creator = msg.sender;
+    oracle = Oracle(<%= oracle_address %>);
+  }
+
+  function current() constant returns (uint current) {
+    return ((up * 100) / total);
+  }
+
+  function update() constant returns (uint current) {
+    if (msg.sender != creator) return;
+
+    total += 1;
+
+    if (equalsUp(oracle.current())) {
+      up += 1;
+    }
+
+    Updated(up, total);
+    return ((up * 100) / total);
+  }
+
+  function equalsUp(bytes32 a) internal returns (bool) {
+    bytes memory b = "UP";
+
+    for (uint i = 0; i < b.length; i ++) {
+      if (a[i] != b[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+}

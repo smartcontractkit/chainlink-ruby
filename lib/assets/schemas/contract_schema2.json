@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Order",
+  "description": "instructions for contract tracking, start",
+  "type": "object",
+  "properties": {
+    "assignment": { "$ref": "#/definitions/contract" },
+    "assignmentHash": {
+      "description": "hash used for signature of a contract SHA2-256",
+      "type": "string"
+    },
+    "signatures": {
+      "description": "signatures of participants",
+      "minItems": 1,
+      "type": "array",
+      "items": { "$ref": "#/definitions/signature" }
+    },
+    "supportingInformation": {
+      "description": "extra information provided beyond the protocol",
+      "type": "object"
+    },
+    "version": {
+      "description": "version of the oracle protocol being used",
+      "type": "string"
+    }
+  },
+  "required": [
+    "assignment",
+    "assignmentHash",
+    "signatures",
+    "version"
+  ],
+  "definitions": {
+    "assignment": {
+      "description": "specification of the work to be done",
+      "properties": {
+        "description": {
+          "description": "description defined by contract creators",
+          "type": "string"
+        },
+        "fees": { "$ref": "#/definitions/fees" },
+        "inputParams": {
+          "description": "list of specific parameters needed to provide the data, much match the input type's schema",
+          "type": "object"
+        },
+        "inputType": {
+          "description": "type of custom parameters provided",
+          "type": "string"
+        },
+        "endAt": {
+          "description": "end time for term tracking",
+          "type": "string"
+        },
+        "name": {
+          "description": "title defined by contract creator",
+          "type": "string"
+        },
+        "outcomes": {
+          "description": "list of possible outcomes",
+          "type": "array",
+          "items": { "$ref": "#/definitions/outcome" }
+        },
+        "outputParams": {
+          "description": "specific parameters needed to meet output, must match the output type's schema",
+          "type": "object"
+        },
+        "outputType": {
+          "description": "type of parameters provided for the output",
+          "type": "string"
+        },
+        "participants": {
+          "description": "participants who sign off on a contract",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "object" }
+        },
+        "schedule": {
+          "description": "frequency of checking updates",
+          "type": "string"
+        },
+        "startAt": {
+          "description": "start time for term tracking",
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "endAt",
+        "inputType",
+        "name",
+        "outcomes",
+        "outputType"
+      ]
+    },
+    "fees": {
+      "description": "fee rates for possible costs of the oracle",
+      "properties": {
+        "currency": {
+          "description": "currency payment is expected in, using lowest divisible amount",
+          "type": "string"
+        },
+        "perDay": {
+          "description": "fees for time keeping the contract up",
+          "type": "string"
+        },
+        "perRequest": {
+          "description": "fees expected per request from a contract",
+          "type": "string"
+        }
+      },
+      "required": [
+        "currency"
+      ]
+    },
+    "outcome": {
+      "description": "possible outcome and its subsequent actions",
+      "properties": {
+        "actions": {
+          "description": "instructions for possible outcomes to be carried out",
+          "items": { "type": "object" },
+          "minItems": 1,
+          "type": "array"
+        },
+        "description": {
+          "description": "possibly clarify the value",
+          "type": "string"
+        },
+        "value": {
+          "description": "the result to look for",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "signature": {
+      "description": "signature",
+      "properties": {
+        "identifier": {
+          "description": "to attach to another identity",
+          "type": "string"
+        },
+        "r": {
+          "description": "r value of an Ethereum style signature",
+          "type": "string"
+        },
+        "s": {
+          "description": "s value of an Ethereum style signature",
+          "type": "string"
+        },
+        "v": {
+          "description": "V value of an Ethereum style signature",
+          "type": "string"
+        }
+      },
+      "required": [
+        "r",
+        "s",
+        "v"
+      ]
+    }
+  }
+}

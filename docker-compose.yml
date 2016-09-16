@@ -1,0 +1,13 @@
+version: '2'
+services:
+  web:
+    build: .
+    env_file: .env
+    environment:
+      - "DOCKER_DATABASE_URL=postgresql://postgres@db:5432/nayru_development?encoding=utf8&pool=5&timeout=5000"
+    depends_on:
+      - db
+    ports:
+      - "6688:6688"
+  db:
+    image: postgres

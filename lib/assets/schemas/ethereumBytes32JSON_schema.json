@@ -1,0 +1,59 @@
+{
+  "input": {
+    "onChain": {
+      "json": [
+        {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "newCurrent",
+              "type": "bytes32"
+            }
+          ],
+          "name": "update",
+          "outputs": [],
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [],
+          "name": "current",
+          "outputs": [
+            {
+              "name": "current",
+              "type": "bytes32"
+            }
+          ],
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "type": "constructor"
+        }
+      ],
+      "solidity": "contract Oracle{ function Oracle(); function update(bytes32 newCurrent); function current()constant returns(bytes32 current); }"
+    },
+    "offChain": {},
+    "preset": {
+      "definitions": {
+      },
+      "properties": {
+        "endpoint": {
+          "description": "the URL from which to retrieve the JSON",
+          "type": "string"
+        },
+        "fields": {
+          "description": "the fields in the JSON path to parse the dynamic value from",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["endpoint", "fields"],
+      "type": "object"
+    }
+  },
+  "output": {
+    "offChain": {},
+    "onChain": {}
+  }
+}

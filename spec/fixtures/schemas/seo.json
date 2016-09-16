@@ -1,0 +1,82 @@
+{
+  "input": {
+    "onChain": {},
+    "offChain": {},
+    "preset": {
+      "definitions": {
+        "action": {
+          "description": "an action that will affect an outcome",
+          "properties": {
+            "type": {
+              "description": "categorize the type of output",
+              "type": "string"
+            },
+            "parameters": {
+              "description": "attributes needed by each type of action",
+              "type": "string"
+            }
+          }
+        },
+        "outcome": {
+          "description": "possible outcome",
+          "properties": {
+            "actions": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/action" }
+            },
+            "description": {
+              "description": "a human readable description of the outcome",
+              "type": "string"
+            },
+            "value": {
+              "description": "the value, or range of values, that are needed to trigger this outcome",
+              "type": "string"
+            }
+          }
+        },
+        "query": {
+          "description": "the SEO query to be made",
+          "properties": {
+            "locale": {
+              "enum": ["us", "ar", "au", "be", "br", "ca", "ch", "de", "dk",
+                "es", "fi", "fr", "hk", "ie", "il", "in", "it", "jp", "mx",
+                "nl", "no", "pl", "ru", "se", "sg", "tr", "uk"
+              ]
+            },
+            "phrase": { "type": "string" }
+          },
+          "required": ["locale", "phrase"]
+        }
+      },
+      "properties": {
+        "min": {
+          "exclusiveMinimum": false,
+          "minimum": 1,
+          "multipleOf": 1,
+          "type": "number"
+        },
+        "max": {
+          "exclusiveMinimum": false,
+          "minimum": 1,
+          "multipleOf": 1,
+          "type": "number"
+        },
+        "outcomes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/outcome" }
+        },
+        "query": { "$ref": "#/definitions/query" },
+        "result": {
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,}$",
+          "type": "string"
+        }
+      },
+      "required": ["max", "min", "query", "result"],
+      "type": "object"
+    }
+  },
+  "output": {
+    "offChain": {},
+    "onChain": {}
+  }
+}

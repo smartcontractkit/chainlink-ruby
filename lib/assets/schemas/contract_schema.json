@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Instruction",
+  "description": "instructions for contract tracking, start",
+  "type": "object",
+  "properties": {
+    "contract": { "$ref": "#/definitions/contract" },
+    //
+    // FIXME: https://www.pivotaltracker.com/story/show/106851766
+    //
+    // "outcomes": {
+      // "description": "possible outcomes and actions to be taken",
+      // "type": "object",
+      // "patternProperties": {
+        // "^\d+$": {}
+      // }
+    // },
+    "password": {
+      "description": "password to decrypt information from the decentralized data storage",
+      "type": "string"
+    },
+    "privacy": {
+      "description": "privacy level indicator",
+      "type": "string"
+    },
+    "source": {
+      "description": "publisher",
+      "type": "string"
+    },
+    "start-time": {
+      "description": "start time for term tracking",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract",
+    "privacy",
+    "source",
+    "start-time"
+  ],
+
+  "definitions": {
+    "contract": {
+      "description": "contract details",
+      "properties": {
+        "version": {
+          "description": "contract version number",
+          "type": "string"
+        },
+        "name": {
+          "description": "title defined by contract creator",
+          "type": "string"
+        },
+        "description": {
+          "description": "description defined by contract creator",
+          "type": "string"
+        },
+        "terms": {
+          "description": "list of agreements made in the contract",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "object" }
+        },
+        "signers": {
+          "description": "participants who sign off on a contract",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "object" }
+        },
+        "attachments": {
+          "description": "supporting documents",
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "escrows": {
+          "description": "escrow deposit information",
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "id": {
+          "description": "the unique contract ID",
+          "type": "string"
+        }
+      },
+      "required": ["description", "name", "signers", "terms", "id"]
+    },
+    "outcome": {
+      "description": "possible actions to be taken based on term completion",
+      "properties": {
+        "success": {
+          "description": "transactions to sign off on after successful completion",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "failure": {
+          "description": "transactions to sign off on after non-successful completion",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["description", "name", "signers", "terms", "version"]
+    }
+  }
+}

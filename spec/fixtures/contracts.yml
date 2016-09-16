@@ -1,0 +1,3 @@
+basic:
+  json_body: <%= contract_json.to_json %>
+  status: <%= Contract::IN_PROGRESS %>

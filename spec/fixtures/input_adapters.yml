@@ -1,0 +1,11 @@
+basic:
+  url: http://localhost:123456
+  assignment_type_id: 1
+
+seo:
+  url: http://localhost:5305
+  assignment_type_id: 2
+
+payment:
+  url: http://localhost:8040
+  assignment_type_id: 3

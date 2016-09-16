@@ -1,0 +1,69 @@
+{
+  "input": {
+    "onChain": {},
+    "offChain": {},
+    "preset": {
+      "definitions": {
+        "action": {
+          "description": "an action that will affect an outcome",
+          "properties": {
+            "type": {
+              "description": "categorize the type of output",
+              "type": "string"
+            },
+            "parameters": {
+              "description": "attributes needed by each type of action",
+              "type": "string"
+            }
+          }
+        },
+        "outcome": {
+          "description": "possible outcome",
+          "properties": {
+            "actions": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/action" }
+            },
+            "description": {
+              "description": "a human readable description of the outcome",
+              "type": "string"
+            },
+            "value": {
+              "description": "the value, or range of values, that are needed to trigger this outcome",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "properties": {
+        "comparison": {
+          "description": "the operator used to compare the dynamic value to the preset value",
+          "enum": ["===", "<", ">", "contains"]
+        },
+        "endpoint": {
+          "description": "the URL from which to retrieve the JSON",
+          "type": "string"
+        },
+        "fields": {
+          "description": "the fields in the JSON path to parse the dynamic value from",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "finalValue": {
+          "description": "the value to be compared to the dynamically value",
+          "type": "string"
+        },
+        "outcomes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/outcome" }
+        }
+      },
+      "required": ["comparison", "endpoint", "fields", "finalValue"],
+      "type": "object"
+    }
+  },
+  "output": {
+    "offChain": {},
+    "onChain": {}
+  }
+}

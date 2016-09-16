@@ -1,0 +1,63 @@
+{
+  "input": {
+    "onChain": {},
+    "offChain": {},
+    "preset": {
+      "definitions": {
+        "action": {
+          "description": "an action that will affect an outcome",
+          "properties": {
+            "type": {
+              "description": "categorize the type of output",
+              "type": "string"
+            },
+            "parameters": {
+              "description": "attributes needed by each type of action",
+              "type": "string"
+            }
+          }
+        },
+        "outcome": {
+          "description": "possible outcome",
+          "properties": {
+            "actions": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/action" }
+            },
+            "description": {
+              "description": "a human readable description of the outcome",
+              "type": "string"
+            },
+            "value": {
+              "description": "the value, or range of values, that are needed to trigger this outcome",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "properties": {
+        "amount": {
+          "description": "the minimum number of cents that can be paid in spot priced Bitcoin",
+          "exclusiveMinimum": false,
+          "minimum": 1,
+          "multipleOf": 1,
+          "type": "number"
+        },
+        "outcomes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/outcome" }
+        },
+        "recipient": {
+          "description": "the Bitcoin address that will be paid",
+          "type": "string"
+        }
+      },
+      "required": ["amount", "recipient"],
+      "type": "object"
+    }
+  },
+  "output": {
+    "offChain": {},
+    "onChain": {}
+  }
+}

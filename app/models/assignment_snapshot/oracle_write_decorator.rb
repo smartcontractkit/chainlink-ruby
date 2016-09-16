@@ -1,0 +1,3 @@
+class AssignmentSnapshot::OracleWrite
+
+end

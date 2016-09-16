@@ -1,0 +1,123 @@
+describe AssignmentsController, type: :controller do
+  describe "#create" do
+    let(:coordinator) { Coordinator.create }
+    let(:assignment_params) { assignment_json }
+
+    before { coordinator_log_in coordinator }
+
+    context "when the assignment params are valid" do
+      it "returns a successful status" do
+        post :create, assignment: assignment_params
+
+        expect(response).to be_success
+      end
+
+      it "creates a new assignment for the coordinator" do
+        expect {
+          post :create, assignment: assignment_params
+        }.to change {
+          coordinator.assignments.count
+        }.by(+1)
+      end
+    end
+
+    context "when the assignment params are NOT valid" do
+      let(:assignment) { instance_double Assignment, persisted?: false, errors: double(full_messages: ['blah']) }
+
+      before do
+        expect(AssignmentBuilder).to receive(:perform)
+          .with(coordinator, assignment_params)
+          .and_return(assignment)
+      end
+
+      it "returns an unsuccessful status" do
+        post :create, assignment: assignment_params
+
+        expect(response).to be_bad_request
+      end
+
+      it "does not create a new assignment" do
+        expect {
+          post :create, assignment: assignment_params
+        }.not_to change {
+          Assignment.count
+        }
+      end
+
+      it "returns the errors associated" do
+        post :create, assignment: assignment_params
+
+        expect(response_json['errors']).to be_present
+      end
+    end
+  end
+
+  describe "#update" do
+    let(:term) { assignment.term }
+    let(:assignment) { factory_create :assignment }
+    let(:new_status) { Term::COMPLETED }
+    let(:assignment_params) do
+      {
+        id: assignment.xid,
+        status: new_status,
+        xid: assignment.xid,
+      }
+    end
+
+    context "when the assignment is in progress and authenticated" do
+      before { input_adapter_log_in assignment.adapter }
+
+      it "updates the assignment" do
+        expect {
+          patch :update, assignment_params
+        }.to change {
+          term.reload.status
+        }.from(Term::IN_PROGRESS).to(new_status)
+
+        expect(response).to be_success
+      end
+
+      it "creates a status update for the assignment" do
+        expect {
+          patch :update, assignment_params
+        }.to change {
+          assignment.snapshots.count
+        }.by(+1)
+
+        expect(assignment.snapshots.last.status).to eq(new_status)
+      end
+    end
+
+    context "when the assignment is NOT in progress" do
+      before { input_adapter_log_in assignment.adapter }
+      before { term.update_attributes status: Term::FAILED }
+
+      it "responds with an error" do
+        expect {
+          patch :update, assignment_params
+        }.not_to change {
+          term.reload.status
+        }
+
+        expect(response).to be_bad_request
+        expect(response_json.errors).to include('Status is no longer in progress')
+      end
+    end
+
+    context "when the requester is not authorized" do
+      before { input_adapter_log_in }
+
+      it "responds with an error" do
+        expect {
+          patch :update, assignment_params
+        }.not_to change {
+          term.reload.status
+        }
+
+        expect(response).to be_not_found
+        expect(response_json.errors).to include('Assignment not found')
+      end
+    end
+  end
+
+end
