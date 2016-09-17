@@ -35,6 +35,16 @@ describe Assignment, type: :model do
         expect(term.errors.full_messages).to include("Start at must be before end at")
       end
     end
+
+    context "when the assignment is no longer in progress" do
+      let(:assignment) { factory_create :failed_assignment }
+
+      it "does not allow the status to be updated" do
+        expect(assignment.update_attributes status: Assignment::COMPLETED).to be_falsey
+
+        expect(assignment.errors.full_messages).to include("Status is no longer in progress")
+      end
+    end
   end
 
   describe "on create" do

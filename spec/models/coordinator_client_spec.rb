@@ -105,49 +105,97 @@ describe CoordinatorClient, type: :model do
   end
 
   describe "#snapshot" do
-    let(:snapshot) { factory_create :assignment_snapshot }
-    let(:assignment) { snapshot.assignment }
-    let(:term) { assignment.term }
-    let(:contract) { term.contract }
+    let(:snapshot) { factory_create :assignment_snapshot, assignment: assignment }
+    let(:assignment) { factory_create :assignment }
 
-    before do
-      expect(CoordinatorClient).to receive(:post)
-        .with("/snapshots", {
-          basic_auth: instance_of(Hash),
-          body: {
-            contract: contract.xid,
-            assignment_xid: assignment.xid,
-            description: snapshot.description,
-            description_url: snapshot.description_url,
-            details: snapshot.details,
-            node_id: ENV['NODE_NAME'],
-            status: snapshot.status,
-            summary: snapshot.summary,
-            term: term.name,
-            value: snapshot.value,
-            xid: snapshot.xid,
-          },
-          headers: {}
-        }).and_return(response)
-    end
+    context "when the assignment has a term" do
+      let(:term) { factory_create :term }
+      let(:contract) { term.contract }
 
-    context "when the response comes back acknowledged" do
-      let(:response) { http_response }
+      before do
+        assignment.update_attributes term: term
 
-      it "does not raise an error" do
-        expect {
-          client.snapshot snapshot.id
-        }.not_to raise_error
+        expect(CoordinatorClient).to receive(:post)
+          .with("/snapshots", {
+            basic_auth: instance_of(Hash),
+            body: {
+              contract: contract.xid,
+              assignment_xid: assignment.xid,
+              description: snapshot.description,
+              description_url: snapshot.description_url,
+              details: snapshot.details,
+              node_id: ENV['NODE_NAME'],
+              status: snapshot.status,
+              summary: snapshot.summary,
+              term: term.name,
+              value: snapshot.value,
+              xid: snapshot.xid,
+            },
+            headers: {}
+          }).and_return(response)
+      end
+
+      context "when the response comes back acknowledged" do
+        let(:response) { http_response }
+
+        it "does not raise an error" do
+          expect {
+            client.snapshot snapshot.id
+          }.not_to raise_error
+        end
+      end
+
+      context "when the response comes back unacknowledged" do
+        let(:response) { http_response success?: false }
+
+        it "raise an error" do
+          expect {
+            client.snapshot snapshot.id
+          }.to raise_error "Not acknowledged, try again. Errors: {}"
+        end
       end
     end
 
-    context "when the response comes back unacknowledged" do
-      let(:response) { http_response success?: false }
+    context "when the assignment has a term" do
+      let(:term) { nil }
 
-      it "raise an error" do
-        expect {
-          client.snapshot snapshot.id
-        }.to raise_error "Not acknowledged, try again. Errors: {}"
+      before do
+        expect(CoordinatorClient).to receive(:post)
+          .with("/snapshots", {
+            basic_auth: instance_of(Hash),
+            body: {
+              assignment_xid: assignment.xid,
+              description: snapshot.description,
+              description_url: snapshot.description_url,
+              details: snapshot.details,
+              node_id: ENV['NODE_NAME'],
+              status: snapshot.status,
+              summary: snapshot.summary,
+              value: snapshot.value,
+              xid: snapshot.xid,
+            },
+            headers: {}
+          }).and_return(response)
+      end
+
+      context "when the response comes back acknowledged" do
+        let(:response) { http_response }
+
+        it "does not raise an error" do
+          expect {
+            client.snapshot snapshot.id
+          }.not_to raise_error
+        end
+      end
+
+      context "when the response comes back unacknowledged" do
+        let(:response) { http_response success?: false }
+
+        it "raise an error" do
+          expect {
+            client.snapshot snapshot.id
+          }.to raise_error "Not acknowledged, try again. Errors: {}"
+        end
       end
     end
   end

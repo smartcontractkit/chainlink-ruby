@@ -47,10 +47,10 @@ class CoordinatorClient
 
   def params_for(term, options = {})
     {
-      contract: term.contract_xid,
+      contract: term.try(:contract_xid),
       node_id: ENV['NODE_NAME'],
-      term: term.name,
-    }.merge(options)
+      term: term.try(:name),
+    }.compact.merge(options)
   end
 
   def check_acknowledged(response)

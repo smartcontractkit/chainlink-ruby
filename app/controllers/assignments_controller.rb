@@ -18,7 +18,7 @@ class AssignmentsController < InputAdapterController
     if assignment.update_status params[:status]
       success_response assignment
     else
-      error_response assignment.term.errors.full_messages
+      error_response assignment.errors.full_messages
     end
   end
 
