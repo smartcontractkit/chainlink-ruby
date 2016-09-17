@@ -21,7 +21,7 @@ def assignment_hash(options = {})
 
   {
     assignment: assignment,
-    assignmentHash: Digest::SHA256.hexdigest(assignment.to_json),
+    assignmentHash: options.fetch(:assignmentHash, Digest::SHA256.hexdigest(assignment.to_json)),
     signatures: signatures,
     version: '0.1.0',
   }.compact.with_indifferent_access

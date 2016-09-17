@@ -5,12 +5,12 @@ class AssignmentsController < InputAdapterController
   before_filter :check_adapter_permissions, only: [:update]
 
   def create
-    assignment = coordinator.create_assignment params[:assignment]
+    req = AssignmentRequest.new assignment_request_params
 
-    if assignment.persisted?
-      success_response assignment
+    if req.save
+      success_response req
     else
-      error_response assignment.errors.full_messages
+      error_response req.errors.full_messages
     end
   end
 
@@ -33,6 +33,14 @@ class AssignmentsController < InputAdapterController
 
   def check_adapter_permissions
     response_404 'Assignment not found' if assignment.nil?
+  end
+
+  def assignment_request_params
+    {
+      body_json: params.require(:assignment).to_json,
+      body_hash: params[:assignment][:assignmentHash],
+      coordinator: coordinator,
+    }
   end
 
 end
