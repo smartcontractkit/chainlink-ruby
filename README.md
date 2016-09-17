@@ -27,3 +27,9 @@ npm install -g ethereumjs-testrpc
 testrpc --account="0x721b3cb22661758e0a4b9d587cbe5ce672257cde7567bc7cd6640279e686391a,10000000000000000000000000" # or whatever private key you prefer
 rake
 ```
+
+## TODO
+- improve output support
+- integrate HD key support for coordinators
+- support on demand requests from Ethereum contracts by default
+- extract EVM for first version of computation within adapters
