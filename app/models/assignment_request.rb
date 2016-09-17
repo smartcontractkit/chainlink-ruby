@@ -10,14 +10,46 @@ class AssignmentRequest < ActiveRecord::Base
   validates :signature, presence: true
   validate :matches_assignment_schema
 
+  before_validation :set_up_assignment, on: :create
   before_validation :sign_hash, on: :create
 
+  validates_associated :assignment
+
+  attr_writer :coordinator
+
   def body
-    @body ||= JSON.parse(body_json)
+    if @body.present?
+      @body
+    elsif body_json.present?
+      @body = JSON.parse(body_json).with_indifferent_access
+    end
+  end
+
+  def coordinator
+    @coordinator ||= assignment.try(:coordinator)
   end
 
 
   private
+
+  def set_up_assignment
+    return unless body.present?
+
+    self.assignment ||= build_assignment({
+      adapter: create_adapter,
+      coordinator: coordinator,
+      end_at: parse_time(schedule[:endAt]),
+      parameters: assignment_body,
+      start_at: parse_time(schedule[:startAt] || Time.now),
+    })
+  end
+
+  def sign_hash
+    return unless body.present?
+
+    hash = hex_to_bin(body_hash)
+    self.signature = bin_to_hex(ethereum_account.sign_hash hash)
+  end
 
   def ethereum_account
     EthereumAccount.default
@@ -35,11 +67,35 @@ class AssignmentRequest < ActiveRecord::Base
     @schema = SchemaValidator.new(json)
   end
 
-  def sign_hash
-    return if body_hash.blank?
-
-    hash = hex_to_bin(body_hash)
-    self.signature = bin_to_hex(ethereum_account.sign_hash hash)
+  def assignment_body
+    assignment_params[:adapterParams]
   end
+
+  def assignment_params
+    body[:assignment]
+  end
+
+  def schedule
+    assignment_params[:schedule] if assignment_params.present?
+  end
+
+  def parse_time(time)
+    Time.at time.to_i
+  end
+
+  def create_adapter
+    return unless assignment_params && type = assignment_params[:adapterType]
+
+    if adapter = InputAdapter.for_type(type)
+      adapter
+    elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
+      CustomExpectation.create(body: expectation_body)
+    elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
+      EthereumOracle.create(body: expectation_body)
+    else
+      raise "no adapter type found for #{type}"
+    end
+  end
+
 
 end

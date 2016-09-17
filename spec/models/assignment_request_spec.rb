@@ -15,7 +15,8 @@ describe AssignmentRequest, type: :model do
   end
 
   describe "on creation" do
-    let(:request) { factory_build :assignment_request }
+    let(:coordinator) { factory_create :coordinator }
+    let(:request) { factory_build :assignment_request, coordinator: coordinator }
 
     it "signs the body hash" do
       expect {
@@ -23,6 +24,24 @@ describe AssignmentRequest, type: :model do
       }.to change {
         request.signature
       }.from(nil)
+    end
+
+    it "creates an associated assignment" do
+      expect {
+        request.save
+      }.to change {
+        request.assignment
+      }.from(nil)
+
+      expect(request.assignment.parameters).to eq(request.body[:assignmentParams])
+    end
+
+    it "associates the coordinator with the assignment" do
+      expect {
+        request.save
+      }.to change {
+        coordinator.reload.assignments.count
+      }.by(+1)
     end
   end
 
