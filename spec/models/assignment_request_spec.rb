@@ -14,4 +14,16 @@ describe AssignmentRequest, type: :model do
     it { is_expected.not_to have_valid(:signature).when(nil, '') }
   end
 
+  describe "on creation" do
+    let(:request) { factory_build :assignment_request }
+
+    it "signs the body hash" do
+      expect {
+        request.save
+      }.to change {
+        request.signature
+      }.from(nil)
+    end
+  end
+
 end
