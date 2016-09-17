@@ -105,16 +105,11 @@ describe Assignment, type: :model do
   end
 
   describe "#update_status" do
-    let(:assignment) { factory_create :assignment }
-    let(:status) { Term::COMPLETED }
+    let(:assignment) { factory_create :assignment, term: term }
+    let(:status) { Assignment::COMPLETED }
 
-    before do
-      expect(assignment.term).to receive(:update_status)
-        .and_return(updated)
-    end
-
-    context "when the status successfully updates" do
-      let(:updated) { true }
+    context "when the assignment does NOT have a term" do
+      let(:term) { nil }
 
       it "creates an assignment snapshot" do
         expect {
@@ -133,23 +128,52 @@ describe Assignment, type: :model do
       end
     end
 
-    context "when the status successfully does NOT update" do
-      let(:updated) { false }
+    context "when the assignment does have a term" do
+      let(:term) { factory_create :term }
 
-      it "does NOT create a snapshot" do
-        expect {
-          assignment.update_status status
-        }.not_to change {
-          assignment.snapshots.count
-        }
+      before do
+        expect(assignment.term).to receive(:update_status)
+          .and_return(updated)
       end
 
-      it "updates the assignment's status" do
-        expect {
-          assignment.update_status status
-        }.not_to change {
-          assignment.status
-        }.from(Assignment::IN_PROGRESS)
+      context "when the status successfully updates" do
+        let(:updated) { true }
+
+        it "creates an assignment snapshot" do
+          expect {
+            assignment.update_status status
+          }.to change {
+            assignment.snapshots.count
+          }.by(+1)
+        end
+
+        it "updates the assignment's status" do
+          expect {
+            assignment.update_status status
+          }.to change {
+            assignment.status
+          }.from(Assignment::IN_PROGRESS).to(Assignment::COMPLETED)
+        end
+      end
+
+      context "when the status successfully does NOT update" do
+        let(:updated) { false }
+
+        it "does NOT create a snapshot" do
+          expect {
+            assignment.update_status status
+          }.not_to change {
+            assignment.snapshots.count
+          }
+        end
+
+        it "updates the assignment's status" do
+          expect {
+            assignment.update_status status
+          }.not_to change {
+            assignment.status
+          }.from(Assignment::IN_PROGRESS)
+        end
       end
     end
   end

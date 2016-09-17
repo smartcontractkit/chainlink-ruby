@@ -48,7 +48,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def update_status(status)
-    if term.update_status(status) && update_attributes(status: status)
+    if updates_term(status) && update_attributes(status: status)
       snapshots.create({
         fulfilled: true,
         status: status,
@@ -58,7 +58,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def name
-    "Assignment \"#{term.name}\""
+    "Assignment \"#{term.try(:name) || request.try(:name) || xid}\""
   end
 
   def related_term
@@ -109,6 +109,14 @@ class Assignment < ActiveRecord::Base
   def start_at_before_end_at
     if start_at.to_i >= end_at.to_i
       errors.add(:start_at, "must be before end at")
+    end
+  end
+
+  def updates_term(status)
+    if term.present?
+      term.update_status(status)
+    else
+      true
     end
   end
 
