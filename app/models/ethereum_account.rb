@@ -28,6 +28,10 @@ class EthereumAccount < ActiveRecord::Base
     ethereum_transactions.create raw_hex: bin_to_hex(tx.encoded)
   end
 
+  def sign_hash(hash)
+    key_pair.ethereum_key.sign_hash hash
+  end
+
 
   private
 

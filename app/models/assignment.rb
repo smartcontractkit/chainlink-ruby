@@ -7,6 +7,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :adapter, polymorphic: true
   belongs_to :coordinator
   has_one :term, as: :expectation, inverse_of: :expectation
+  has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
   has_one :schedule, class_name: 'AssignmentSchedule', inverse_of: :assignment
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 

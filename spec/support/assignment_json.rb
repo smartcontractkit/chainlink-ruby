@@ -1,6 +1,6 @@
-def assignment_json(options = {})
+def assignment_hash(options = {})
   adapter_params = options.fetch(:adapterParams, nil)
-  adapter_type = options.fetch(:adapterType, assignment_types(:basic).name)
+  adapter_type = options.fetch(:adapterType, AssignmentType.first.name)
   description = options.fetch(:description, Faker::Lorem.paragraph)
   fees = options.fetch(:fees, nil)
   schedule = options.fetch(:schedule, {
@@ -21,8 +21,12 @@ def assignment_json(options = {})
 
   {
     assignment: assignment,
-    assignmentHash: Digest::SHA256.digest(assignment.to_json),
+    assignmentHash: options.fetch(:assignmentHash, Digest::SHA256.hexdigest(assignment.to_json)),
     signatures: signatures,
     version: '0.1.0',
   }.compact.with_indifferent_access
+end
+
+def assignment_json(options = {})
+  assignment_hash(options).to_json
 end

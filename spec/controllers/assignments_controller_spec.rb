@@ -1,7 +1,7 @@
 describe AssignmentsController, type: :controller do
   describe "#create" do
     let(:coordinator) { Coordinator.create }
-    let(:assignment_params) { assignment_json }
+    let(:assignment_params) { assignment_hash }
 
     before { coordinator_log_in coordinator }
 
@@ -10,25 +10,20 @@ describe AssignmentsController, type: :controller do
         post :create, assignment: assignment_params
 
         expect(response).to be_success
+        expect(response_json['xid']).to be_present
       end
 
       it "creates a new assignment for the coordinator" do
         expect {
           post :create, assignment: assignment_params
         }.to change {
-          coordinator.assignments.count
+          coordinator.reload.assignments.count
         }.by(+1)
       end
     end
 
     context "when the assignment params are NOT valid" do
-      let(:assignment) { instance_double Assignment, persisted?: false, errors: double(full_messages: ['blah']) }
-
-      before do
-        expect(AssignmentBuilder).to receive(:perform)
-          .with(coordinator, assignment_params)
-          .and_return(assignment)
-      end
+      let(:assignment_params) { assignment_hash assignmentHash: nil }
 
       it "returns an unsuccessful status" do
         post :create, assignment: assignment_params
