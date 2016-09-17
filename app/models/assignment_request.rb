@@ -29,6 +29,10 @@ class AssignmentRequest < ActiveRecord::Base
     @coordinator ||= assignment.try(:coordinator)
   end
 
+  def name
+    body[:name]
+  end
+
 
   private
 

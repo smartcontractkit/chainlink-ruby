@@ -9,6 +9,10 @@
       "description": "hash used for signature of a contract SHA2-256",
       "type": "string"
     },
+    "name": {
+      "description": "human readable name",
+      "type": "string"
+    },
     "signatures": {
       "description": "signatures of participants",
       "type": "array",
