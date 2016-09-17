@@ -1,6 +1,5 @@
 class EthereumOracle < ActiveRecord::Base
   SCHEMA_NAME = 'ethereumBytes32JSON'
-  FIELD_DELIMITER = "¿!@$@¡?"
 
   belongs_to :ethereum_contract
   has_one :assignment, as: :adapter
@@ -18,13 +17,13 @@ class EthereumOracle < ActiveRecord::Base
   scope :current, -> { joins(:term).where("terms.end_at >= ?", Time.now) }
 
   def fields=(fields)
-    self.field_list = fields.join(FIELD_DELIMITER)
+    self.field_list = fields.to_json
     self.fields
   end
 
   def fields
     return [] if field_list.blank?
-    field_list.split(FIELD_DELIMITER)
+    JSON.parse(field_list)
   end
 
   def current_value

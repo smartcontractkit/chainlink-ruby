@@ -1,6 +1,5 @@
 class CustomExpectation < ActiveRecord::Base
   SCHEMA_NAME = 'bitcoinComparisonJSON'
-  FIELD_DELIMITER = "¿!@$@¡?"
   URL_REGEXP = File.read 'lib/assets/custom_uri_regexp.txt'
 
   has_one :assignment, as: :adapter
@@ -24,13 +23,13 @@ class CustomExpectation < ActiveRecord::Base
   end
 
   def fields=(fields)
-    self.field_list = fields.join(FIELD_DELIMITER)
+    self.field_list = fields.to_json
     self.fields
   end
 
   def fields
     return [] if field_list.blank?
-    field_list.split(FIELD_DELIMITER)
+    JSON.parse(field_list)
   end
 
   def mark_completed!

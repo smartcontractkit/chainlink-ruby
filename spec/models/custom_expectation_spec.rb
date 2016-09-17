@@ -35,7 +35,7 @@ describe CustomExpectation, type: :model do
         expectation.update_attributes(fields: ['a', 'b'])
       }.to change {
         expectation.reload.field_list
-      }.to("a#{CustomExpectation::FIELD_DELIMITER}b").and change {
+      }.to(['a', 'b'].to_json).and change {
         expectation.fields
       }.to(['a', 'b'])
     end
