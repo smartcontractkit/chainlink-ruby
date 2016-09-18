@@ -1,6 +1,6 @@
-# Nayru
+# Smart Oracle Core
 
-A ruby implementation of a node running the [Smart Oracles Protocol](https://github.com/pivotal/vim-config/commits/master) for interfacing with smart contracts. Nayru supports creating adapters to interface with a variety of blockchains and traditional services.
+A ruby implementation of a core node running the [Smart Oracles Protocol](https://github.com/pivotal/vim-config/commits/master). The core provides a simple API for creating adapters to deal with various blockchains and off-chain services.
 
 ## Setup
 
@@ -10,15 +10,21 @@ The configuration settings for Nayru are stored in the `.env` file. See `.env.ex
 
 ### Database
 
-Nayru by default saves most of its information in Postgres. You need an instance of Postgres running, v9.3 or above. This can run on the same machine as the node, but should be kept separate from any containers used to run an instance of Nayru.
+Most of information, by default, is stored in Postgres. You'll need an instance of Postgres v9.3 or above. This can run on the same machine as the node, but if run in a container, it should be kept outside the container.
 
 ## Development
 
 ### Install
 
 ```
+gem install bundler
 bundle
 rake db:create db:migrate
+```
+
+### Start
+```
+foreman start
 ```
 
 ### Testing
@@ -29,7 +35,7 @@ rake
 ```
 
 ## TODO
-- improve output support
+- improve support for future types of output
 - integrate HD key support for coordinators
 - support on demand requests from Ethereum contracts by default
 - extract EVM for first version of computation within adapters
