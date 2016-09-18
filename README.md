@@ -16,7 +16,11 @@ Most of information, by default, is stored in Postgres. You'll need an instance 
 
 ### Building an Adapter
 
-Building a custom adapter to for the core is simple. There are a minimum of three restful API calls to create, but more can be added for greater control and clarity. All API calls must be authenticated.
+Building a custom adapter to for the core is simple.
+
+There are a minimum of three restful API calls to create, but more can be added for greater control and clarity. All API calls must be authenticated, and a 200 response code is treated as a successful response.
+
+For interoperation between adapters, and predicability about input and output, defining a schema for your adapter is highly encouraged. Schemas offer the benefit of predicatability between consumer and oracle providers, and additionally make it possible to chain adapters.
 
 #### API Calls
 
@@ -71,6 +75,15 @@ Used to update unfulfilled snapshots(see "Create Snapshot (Pull)").
 
 `PATCH` from the adapter to the core at the `/snapshots/{xid}` route. The request body must include `details`, `summary`, and `value`.
 
+#### Schemas
+
+Schemas are useful for oracles to advertise what services they offer, without specifying every detail. For instance, if an oracle offers stock prices, it can write a schema stating it only needs a stock ticker passed to it, and does not need to specify each data point it could possibly offer.
+
+Additionally, the output of an oracle must be predictable, so the consumer can know how the will receive data even if they don't know what the data will be.
+
+In order for the core to reliably pass data between blockchains, serivces, and adapters, the format data needs to be predictable. The Smart Oracles protocol currently does that trhough a series of [JSON Schemas](http://json-schema.org/). See the [Smart Oracles Specification](https://github.com/smartoracles/spec) for more details.
+
+If an input schema is specified for an adapter, the core will validate all assignment data against the schema before passing it to an adapter. Similarly, the output specified in a snapshot's `details` field will be validated against the output schema of the adapter.
 
 ### Install Core
 
