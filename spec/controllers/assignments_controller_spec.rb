@@ -48,7 +48,6 @@ describe AssignmentsController, type: :controller do
   end
 
   describe "#update" do
-    let(:term) { assignment.term }
     let(:assignment) { factory_create :assignment }
     let(:new_status) { Term::COMPLETED }
     let(:assignment_params) do
@@ -66,8 +65,8 @@ describe AssignmentsController, type: :controller do
         expect {
           patch :update, assignment_params
         }.to change {
-          term.reload.status
-        }.from(Term::IN_PROGRESS).to(new_status)
+          assignment.reload.status
+        }.from(Assignment::IN_PROGRESS).to(new_status)
 
         expect(response).to be_success
       end
@@ -84,14 +83,16 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment is NOT in progress" do
-      before { input_adapter_log_in assignment.adapter }
-      before { term.update_attributes status: Term::FAILED }
+      before do
+        input_adapter_log_in assignment.adapter
+        assignment.update_attributes status: Assignment::FAILED
+      end
 
       it "responds with an error" do
         expect {
           patch :update, assignment_params
         }.not_to change {
-          term.reload.status
+          assignment.reload.status
         }
 
         expect(response).to be_bad_request
@@ -106,7 +107,7 @@ describe AssignmentsController, type: :controller do
         expect {
           patch :update, assignment_params
         }.not_to change {
-          term.reload.status
+          assignment.reload.status
         }
 
         expect(response).to be_not_found

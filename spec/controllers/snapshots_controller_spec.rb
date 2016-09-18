@@ -40,7 +40,7 @@ describe SnapshotsController, type: :controller do
 
         expect(snapshot.details).to eq(details_hash)
         expect(snapshot.status).to eq(snapshot_params[:status])
-        expect(snapshot.summary).to eq("Assignment \"#{assignment.term.name}\" is termendous.")
+        expect(snapshot.summary).to eq("#{assignment.name} is termendous.")
         expect(snapshot.value).to eq(snapshot_params[:value].to_s)
         expect(snapshot.xid).to eq(xid)
       end
@@ -98,7 +98,7 @@ describe SnapshotsController, type: :controller do
 
         expect(snapshot.details).to eq(details_hash)
         expect(snapshot.status).to eq(snapshot_params[:status])
-        expect(snapshot.summary).to eq("Assignment \"#{assignment.term.name}\" is termendous.")
+        expect(snapshot.summary).to eq("#{assignment.name} is termendous.")
         expect(snapshot.value).to eq(snapshot_params[:value].to_s)
         expect(snapshot.xid).to eq(xid)
       end

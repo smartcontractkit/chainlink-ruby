@@ -16,6 +16,7 @@ class Assignment < ActiveRecord::Base
   validates :start_at, presence: true
   validates :status, inclusion: { in: [COMPLETED, FAILED, IN_PROGRESS] }
   validate :start_at_before_end_at
+  validate :finished_status_remains
   validate :valid_schema_parameters
 
   before_validation :set_up, on: :create
@@ -48,7 +49,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def update_status(status)
-    if term.update_status(status) && update_attributes(status: status)
+    if eligible_to_update?(status) && update_attributes(status: status)
       snapshots.create({
         fulfilled: true,
         status: status,
@@ -58,7 +59,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def name
-    "Assignment \"#{term.name}\""
+    "Assignment \"#{term.try(:name) || request.try(:name) || xid}\""
   end
 
   def related_term
@@ -109,6 +110,22 @@ class Assignment < ActiveRecord::Base
   def start_at_before_end_at
     if start_at.to_i >= end_at.to_i
       errors.add(:start_at, "must be before end at")
+    end
+  end
+
+  def eligible_to_update?(status)
+    if term.present?
+      term.update_status(status)
+    else
+      true
+    end
+  end
+
+  def finished_status_remains
+    return if new_record?
+
+    if changed.include?('status') && changed_attributes[:status] != IN_PROGRESS
+      errors.add(:status, 'is no longer in progress')
     end
   end
 
