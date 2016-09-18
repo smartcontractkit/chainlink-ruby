@@ -2,19 +2,15 @@
 
 A ruby implementation of a core node running the [Smart Oracles Protocol](https://github.com/pivotal/vim-config/commits/master). The core provides a simple API for creating adapters to deal with various blockchains and off-chain services. Logic including key management, scheduling, and connectivity is consolidated in the core, so the adapter logic can be kept be focused on elsewhere. If you require finer grained control than what is provided, this logic can be controlled at the adapter level.
 
-## Setup
+## Usage
 
-### Configuration
+The ruby implementation of core ships with two adapters:
+- a JSON retriever for Ethereum
+- a JSON retriever and value comparison for Bitcoin escrow release
 
-The configuration settings for Nayru are stored in the `.env` file. See `.env.example` for the list of required fields.
+The easiest way to get started is to spin up an instance in docker. Once you have an instance of the oracle running, you can `POST` new assignments to `/assignments`. Assignments of each type must conform to their [corresponding schemas](https://github.com/smartoracles/core-ruby/tree/develop/lib/assets/schemas).
 
-### Database
-
-Most of information, by default, is stored in Postgres. You'll need an instance of Postgres v9.3 or above. This can run on the same machine as the node, but if run in a container, it should be kept outside the container.
-
-## Development
-
-### Building an Adapter
+## Adapters
 
 Building a custom adapter to for the core is simple.
 
@@ -22,11 +18,11 @@ There are a minimum of three restful API calls to create, but more can be added 
 
 For interoperation between adapters, and predicability about input and output, defining a schema for your adapter is highly encouraged. Schemas offer the benefit of predicatability between consumer and oracle providers, and additionally make it possible to chain adapters.
 
-#### API Calls
+### API Calls
 
-##### Required API Calls
+#### Required API Calls
 
-###### Create Assignment
+##### Create Assignment
 
 Used to create a new piece of work for an adapter.
 
@@ -35,7 +31,7 @@ Used to create a new piece of work for an adapter.
 Response fields:
   - `xid`: String. The ID provided in the request to create the assignment.
 
-###### Create Snapshot (Pull)
+##### Create Snapshot (Pull)
 
 Used to retrieve the current status of a piece of work.
 
@@ -51,7 +47,7 @@ Response fields:
   - `value`: String. The current value that the assignment has reached. If more information is needed, it should be provided in the `details` field.
   - `xid`: String. A new ID to identify the snapshot by.
 
-###### Delete Assignment
+##### Delete Assignment
 
 Used to indicate the end of an assignment.
 
@@ -61,21 +57,21 @@ Response fields:
   - `status`: String(optional). The final status of the assignment.
   - `xid`: String. A new ID to identify the snapshot by.
 
-##### Optional API calls
+#### Optional API calls
 
-###### Create Snapshot (Push)
+##### Create Snapshot (Push)
 
 Used for updates that are pushed, or scheduled outside of the core.
 
 `POST` from the adapter to the core at the `/snapshots` route. The request body must include `xid`, `details`, `summary`, and `value`.
 
-###### Update Snapshot (Push)
+##### Update Snapshot (Push)
 
 Used to update unfulfilled snapshots(see "Create Snapshot (Pull)").
 
 `PATCH` from the adapter to the core at the `/snapshots/{xid}` route. The request body must include `details`, `summary`, and `value`.
 
-#### Schemas
+### Schemas
 
 Schemas are useful for oracles to advertise what services they offer, without specifying every detail. For instance, if an oracle offers stock prices, it can write a schema stating it only needs a stock ticker passed to it, and does not need to specify each data point it could possibly offer.
 
@@ -84,6 +80,14 @@ Additionally, the output of an oracle must be predictable, so the consumer can k
 In order for the core to reliably pass data between blockchains, serivces, and adapters, the format data needs to be predictable. The Smart Oracles protocol currently does that trhough a series of [JSON Schemas](http://json-schema.org/). See the [Smart Oracles Specification](https://github.com/smartoracles/spec) for more details.
 
 If an input schema is specified for an adapter, the core will validate all assignment data against the schema before passing it to an adapter. Similarly, the output specified in a snapshot's `details` field will be validated against the output schema of the adapter.
+
+
+## Development
+
+### Requirements
+
+- ruby(v2.0.0+)
+- postgres(v9.3+)
 
 ### Install Core
 
