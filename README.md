@@ -1,6 +1,6 @@
 # Smart Oracle Core
 
-A ruby implementation of a core node running the [Smart Oracles Protocol](https://github.com/pivotal/vim-config/commits/master). The core provides a simple API for creating adapters to deal with various blockchains and off-chain services. Logic including key management, scheduling, and connectivity is consolidated in the core, so the adapter logic can be kept be focused on elsewhere. If you require finer grained control than what is provided, this logic can be controlled at the adapter level.
+A ruby implementation of a core node running the [Smart Oracles Protocol](https://github.com/smartoracles/spec). The core provides a simple API for creating adapters to deal with various blockchains and off-chain services. Logic including key management, scheduling, and connectivity is consolidated in the core, so the adapter logic can be kept be focused on elsewhere. If you require finer grained control than what is provided, this logic can be controlled at the adapter level.
 
 ## Usage
 
