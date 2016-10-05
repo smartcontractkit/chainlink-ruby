@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160916221026) do
+ActiveRecord::Schema.define(version: 20161005223730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20160916221026) do
     t.integer  "confirmations", default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "raw_hex"
   end
 
   create_table "input_adapters", force: :cascade do |t|

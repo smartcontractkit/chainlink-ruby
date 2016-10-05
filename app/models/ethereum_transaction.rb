@@ -10,8 +10,6 @@ class EthereumTransaction < ActiveRecord::Base
 
   before_validation :publish_to_blockchain, on: :create
 
-  attr_accessor :raw_hex
-
 
   private
 
