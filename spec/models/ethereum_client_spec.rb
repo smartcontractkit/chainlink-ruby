@@ -146,7 +146,7 @@ describe EthereumClient, type: :model do
             id: random_id,
             jsonrpc: '2.0',
             method: 'eth_sendRawTransaction',
-            params: [tx_hex]
+            params: ["0x#{tx_hex}"]
           }.to_json,
           headers: instance_of(Hash)
         }).and_return(http_response body: stubbed_response.to_json)
