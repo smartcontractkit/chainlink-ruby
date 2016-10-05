@@ -14,14 +14,16 @@ class EthereumOracleUpdater
   end
 
   def perform
-    begin
-      txid = account.send_transaction({
-        data: "#{write_address}#{ethereum.format_bytes32_hex current_value}".htb,
-        gas_limit: 250_000,
-        to: contract.address,
-      }).txid
-    ensure
-      return oracle.writes.create(txid: txid, value: current_value)
+    tx = account.send_transaction({
+      data: "#{write_address}#{ethereum.format_bytes32_hex current_value}".htb,
+      gas_limit: 100_000,
+      to: contract.address,
+    })
+
+    if tx.persisted?
+      oracle.writes.create txid: tx.txid, value: current_value
+    else
+      raise "Invalid Ethereum TX! \n\ntxid:#{tx.txid} \n\nhex:#{tx.raw_hex}"
     end
   end
 
