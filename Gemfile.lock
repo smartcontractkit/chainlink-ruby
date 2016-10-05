@@ -66,8 +66,6 @@ GEM
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
-    dotenv-rails (0.11.1)
-      dotenv (= 0.11.1)
     erubis (2.7.0)
     eth (0.3.1)
       ethereum-base (~> 0.1.4)
@@ -215,7 +213,7 @@ DEPENDENCIES
   blockcypher-ruby
   clockwork
   delayed_job_active_record
-  dotenv-rails
+  dotenv
   eth
   factory_girl_rails
   faker
@@ -242,4 +240,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.13.1
+   1.13.2
