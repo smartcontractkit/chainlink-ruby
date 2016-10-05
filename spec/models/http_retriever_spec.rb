@@ -3,6 +3,8 @@ describe HttpRetriever, type: :model do
   describe ".get" do
     let(:url) { "https://www.example.com/api.json" }
 
+    before { expect(HttpRetriever).to receive(:get).and_call_original }
+
     context "when the response is successfully retrieved" do
       let(:response_body) { double }
 
