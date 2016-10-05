@@ -16,7 +16,6 @@ gem 'json-schema', require: true
 gem 'pg'
 gem 'puma'
 gem 'rails', '~>4.2.6'
-gem 'sass-rails'
 gem 'sysrandom', require: "sysrandom/securerandom"
 gem 'uglifier'
 
