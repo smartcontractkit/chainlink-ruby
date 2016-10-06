@@ -32,7 +32,7 @@ describe EthereumOracleUpdater, type: :model do
     end
 
     context "when the transaction fails to broadcast" do
-      let(:tx) { factory_build :ethereum_transaction, txid: nil }
+      after_count = oracle.reload.writes.count
 
       it "does NOT create a new oracle write" do
         before_count = oracle.writes.count

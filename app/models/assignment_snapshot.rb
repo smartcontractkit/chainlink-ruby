@@ -42,7 +42,7 @@ class AssignmentSnapshot < ActiveRecord::Base
   end
 
   def parse_adapter_response(response)
-    return unless response.fulfilled
+    return unless response && response.fulfilled
 
     self.fulfilled = true
     self.status = response.status

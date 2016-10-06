@@ -178,6 +178,25 @@ describe AssignmentSnapshot, type: :model do
       end
     end
 
+    context "when a status is not returned by the adapter" do
+      let(:oracle) { factory_create :ethereum_oracle }
+      let(:assignment) { factory_create :assignment, adapter: oracle }
+      let(:snapshot) { assignment.snapshots.build }
+
+      before do
+        expect(oracle).to receive(:get_status)
+          .and_return(nil)
+      end
+
+      it "does not create a snapshot" do
+        expect {
+          snapshot.save
+        }.not_to change {
+          oracle.reload.writes.count
+        }
+      end
+    end
+
     context "when the adapter is an Ethereum oracle" do
       let(:oracle) { factory_create :ethereum_oracle }
       let(:assignment) { factory_create :assignment, adapter: oracle }
