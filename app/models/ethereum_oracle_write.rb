@@ -4,6 +4,7 @@ class EthereumOracleWrite < ActiveRecord::Base
   has_one :assignment, through: :oracle
 
   validates :oracle, presence: true
+  validates :txid, presence: true
 
   def term
     oracle.related_term
