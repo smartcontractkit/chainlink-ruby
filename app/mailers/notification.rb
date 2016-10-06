@@ -1,18 +1,28 @@
 class Notification < ActionMailer::Base
 
-  default from: ENV['EMAIL_USERNAME']
+  RECIPIENTS = ENV['NOTIFICATION_EMAIL'].to_s.split(',').map(&:strip)
+
+  default from: ENV['EMAIL_USERNAME'], to: RECIPIENTS
 
   def ethereum_balance(account, balance)
     @account = account
     @balance = balance
-    mail(to: notification_addresses, subject: "(#{Rails.env}) Low Ethereum balance alert!")
+
+    mail subject: "(#{Rails.env}) Low Ethereum balance alert!"
+  end
+
+  def snapshot_failure(assignment, errors)
+    @assignment = assignment
+    @errors = errors
+
+    mail subject: "#{node_name}: snapshot failure"
   end
 
 
   private
 
-  def notification_addresses
-    ENV['NOTIFICATION_EMAIL'].split(',').map(&:strip)
+  def node_name
+    ENV['NODE_NAME']
   end
 
 end

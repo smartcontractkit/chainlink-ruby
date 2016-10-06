@@ -31,18 +31,27 @@ describe EthereumOracleUpdater, type: :model do
       }.by(+1)
     end
 
+    it "returns the new oracle write" do
+      result = oracle_updater.perform
+      expect(result).to be_an EthereumOracleWrite
+      expect(result).to be_persisted
+    end
+
     context "when the transaction fails to broadcast" do
-      after_count = oracle.reload.writes.count
+      let(:tx) { factory_build :ethereum_transaction, txid: nil }
 
       it "does NOT create a new oracle write" do
-        before_count = oracle.writes.count
-
         expect {
           oracle_updater.perform
-        }.to raise_error "Invalid Ethereum TX! \n\ntxid: \n\nhex:"
+        }.not_to change {
+          oracle.writes.count
+        }
+      end
 
-        after_count = oracle.reload.writes.count
-        expect(before_count).to eq(after_count)
+      it "returns the new oracle write" do
+        result = oracle_updater.perform
+        expect(result).to be_an EthereumOracleWrite
+        expect(result).not_to be_persisted
       end
     end
   end

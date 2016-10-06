@@ -20,11 +20,7 @@ class EthereumOracleUpdater
       to: contract.address,
     })
 
-    if tx.persisted?
-      oracle.writes.create txid: tx.txid, value: current_value
-    else
-      raise "Invalid Ethereum TX! \n\ntxid:#{tx.txid} \n\nhex:#{tx.raw_hex}"
-    end
+    oracle.writes.create txid: tx.txid, value: current_value
   end
 
 

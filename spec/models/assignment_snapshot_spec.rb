@@ -91,7 +91,7 @@ describe AssignmentSnapshot, type: :model do
     end
 
     context "when the adapter responds without information" do
-      it "marks itself as fulfilled" do
+      it "marks itself as unfulfilled" do
         expect {
           snapshot.save
         }.not_to change {
@@ -109,6 +109,45 @@ describe AssignmentSnapshot, type: :model do
 
       it "does NOT notify the coordinator" do
         expect(CoordinatorClient).not_to receive(:snapshot)
+
+        snapshot.save
+      end
+    end
+
+    context "when nothing is returned by the adapter" do
+      let(:adapter_response) { nil }
+
+      it "does NOT create a snapshot" do
+        expect {
+          snapshot.save
+        }.not_to change {
+          snapshot.persisted?
+        }.from(false)
+      end
+
+      it "sends out a notifaction" do
+        expect(Notification).to receive_message_chain(:delay, :snapshot_failure)
+          .with(assignment, nil)
+
+        snapshot.save
+      end
+    end
+
+    context "when nothing is returned by the adapter" do
+      let(:errors) { ["foo", "bar"] }
+      let(:adapter_response) { { errors: errors } }
+
+      it "does NOT create a snapshot" do
+        expect {
+          snapshot.save
+        }.not_to change {
+          snapshot.persisted?
+        }.from(false)
+      end
+
+      it "sends out a notifaction" do
+        expect(Notification).to receive_message_chain(:delay, :snapshot_failure)
+          .with(assignment, errors)
 
         snapshot.save
       end
@@ -175,25 +214,6 @@ describe AssignmentSnapshot, type: :model do
 
           snapshot.update_attributes details: {foo: SecureRandom.base64}, fulfilled: false
         end
-      end
-    end
-
-    context "when a status is not returned by the adapter" do
-      let(:oracle) { factory_create :ethereum_oracle }
-      let(:assignment) { factory_create :assignment, adapter: oracle }
-      let(:snapshot) { assignment.snapshots.build }
-
-      before do
-        expect(oracle).to receive(:get_status)
-          .and_return(nil)
-      end
-
-      it "does not create a snapshot" do
-        expect {
-          snapshot.save
-        }.not_to change {
-          oracle.reload.writes.count
-        }
       end
     end
 

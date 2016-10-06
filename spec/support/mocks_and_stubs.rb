@@ -1,5 +1,7 @@
 RSpec.configure do |config|
   config.before do
+    stubbed_response = {from: "spec/support/mocks_and_stubs.rb"}.to_json
+
     allow_any_instance_of(BlockCypherClient).to receive(:get_transaction_hex)
       .and_return("01000000000000000000")
 
@@ -23,12 +25,12 @@ RSpec.configure do |config|
       .and_return(rand 100_000)
 
     allow(HttpRetriever).to receive(:get)
-      .and_return({from: "spec/support/mocks_and_stubs.rb"}.to_json)
+      .and_return(stubbed_response)
 
     allow(InputAdapterClient).to receive(:post)
-      .and_return(http_response body: {}.to_json)
+      .and_return(http_response body: stubbed_response)
     allow(InputAdapterClient).to receive(:get)
-      .and_return(http_response body: {}.to_json)
+      .and_return(http_response body: stubbed_response)
   end
 
   config.around bitcoin_network: :bitcoin do |example|
