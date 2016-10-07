@@ -38,7 +38,14 @@ class AssignmentSnapshot < ActiveRecord::Base
   def set_up
     self.xid ||= SecureRandom.uuid
     return if fulfilled? || assignment.nil?
-    parse_adapter_response adapter.get_status(self)
+    response = adapter.get_status(self)
+
+    if response.present? && response.errors.blank?
+      parse_adapter_response response
+    else
+      errors.add(:base, "Invalid adapter response.")
+      Notification.delay.snapshot_failure assignment, response.try(:errors)
+    end
   end
 
   def parse_adapter_response(response)

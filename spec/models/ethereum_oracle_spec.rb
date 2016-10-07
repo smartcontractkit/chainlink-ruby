@@ -27,9 +27,9 @@ describe EthereumOracle, type: :model do
     let(:rando) { SecureRandom.hex }
 
     it "reaches out to the web and parses the json" do
-      expect(HTTParty).to receive(:get)
+      expect(HttpRetriever).to receive(:get)
         .with(oracle.endpoint)
-        .and_return(double body: response_body)
+        .and_return(response_body)
 
       expect(JsonTraverser).to receive(:parse)
         .with(response_body, oracle.fields)

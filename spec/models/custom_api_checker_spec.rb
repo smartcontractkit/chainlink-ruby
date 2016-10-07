@@ -1,21 +1,17 @@
 describe CustomApiChecker, type: :model do
-  before do
-    allow(HTTParty).to receive(:get)
-  end
-
   describe "#perform" do
     let(:checker) { CustomApiChecker.new(expectation) }
     let(:term) { factory_build :term }
     let(:expectation) { factory_create :custom_expectation, comparison: '===', term: term }
-    let(:response) { double(body: {a: SecureRandom.hex}.to_json) }
+    let(:response) { {a: SecureRandom.hex}.to_json }
 
     before do
-      expect(HTTParty).to receive(:get)
+      expect(HttpRetriever).to receive(:get)
         .with(expectation.endpoint)
         .and_return(response)
 
       expect(JsonTraverser).to receive(:parse)
-        .with(response.body, expectation.fields)
+        .with(response, expectation.fields)
         .and_return(response_value)
     end
 
@@ -70,7 +66,7 @@ describe CustomApiChecker, type: :model do
     let(:expectation) { factory_create :custom_expectation }
     let(:checker) { CustomApiChecker.new(expectation) }
     let(:response_value) { "one hundred thousand" }
-    let(:response) { double(body: {a: SecureRandom.hex}.to_json) }
+    let(:response) { {a: SecureRandom.hex}.to_json }
     let(:base_value) { Random.rand(1_000.0) }
     let(:final_value) { base_value.to_s }
 
@@ -80,12 +76,12 @@ describe CustomApiChecker, type: :model do
         final_value: final_value
       })
 
-      expect(HTTParty).to receive(:get)
+      expect(HttpRetriever).to receive(:get)
         .with(expectation.endpoint)
         .and_return(response)
 
       expect(JsonTraverser).to receive(:parse)
-        .with(response.body, expectation.fields)
+        .with(response, expectation.fields)
         .and_return(response_value)
     end
 

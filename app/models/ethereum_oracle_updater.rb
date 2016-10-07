@@ -14,15 +14,13 @@ class EthereumOracleUpdater
   end
 
   def perform
-    begin
-      txid = account.send_transaction({
-        data: "#{write_address}#{ethereum.format_bytes32_hex current_value}".htb,
-        gas_limit: 250_000,
-        to: contract.address,
-      }).txid
-    ensure
-      return oracle.writes.create(txid: txid, value: current_value)
-    end
+    tx = account.send_transaction({
+      data: "#{write_address}#{ethereum.format_bytes32_hex current_value}".htb,
+      gas_limit: 100_000,
+      to: contract.address,
+    })
+
+    oracle.writes.create txid: tx.txid, value: current_value
   end
 
 

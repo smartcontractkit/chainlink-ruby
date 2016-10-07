@@ -1,0 +1,11 @@
+<p>
+  Assignment #<%= @assignment.xid %> failed to capture a <%= @assignment.adapter_type %> snapshot.
+</p>
+<p><b>Errors:</b></p>
+<ul>
+  <% @errors.each do |error| %>
+    <li>
+      <%= error %>
+    </li>
+  <% end %>
+</ul>

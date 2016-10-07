@@ -18,6 +18,10 @@ class AssignmentSnapshot
       record.parsed_value
     end
 
+    def errors
+      record.errors.full_messages
+    end
+
 
     private
 

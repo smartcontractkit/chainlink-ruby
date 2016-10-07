@@ -29,6 +29,14 @@ class AssignmentSnapshot
       raise "#value not implemented in #{self.class.name}"
     end
 
+    def errors
+      record.errors
+    end
+
+    def present?
+      record.present?
+    end
+
 
     private
 

@@ -16,12 +16,11 @@ gem 'json-schema', require: true
 gem 'pg'
 gem 'puma'
 gem 'rails', '~>4.2.6'
-gem 'sass-rails'
 gem 'sysrandom', require: "sysrandom/securerandom"
 gem 'uglifier'
 
 group :development, :test do
-  gem 'dotenv-rails', require: 'dotenv-rails'
+  gem 'dotenv', require: 'dotenv'
   gem 'factory_girl_rails'
   gem 'faker'
   gem 'foreman'
