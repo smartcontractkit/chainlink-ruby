@@ -38,4 +38,24 @@ describe EthereumOracle, type: :model do
       expect(oracle.current_value).to eq(rando)
     end
   end
+
+  describe "#fields" do
+    let(:oracle) { EthereumOracle.new fields: fields }
+
+    context "when it is set to be a single string" do
+      let(:fields) { 'singleValue' }
+
+      it "sets the list to be an array" do
+        expect(oracle.fields).to eq([fields])
+      end
+    end
+
+    context "when it is set to be an array" do
+      let(:fields) { ['multiple', 'values'] }
+
+      it "uses the initial array" do
+        expect(oracle.fields).to eq(fields)
+      end
+    end
+  end
 end
