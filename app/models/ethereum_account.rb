@@ -42,7 +42,7 @@ class EthereumAccount < ActiveRecord::Base
   def build_signed_transaction(params)
     Eth::Tx.new({
       data: '',
-      gas_price: ethereum.gas_price,
+      gas_price: ethereum.gas_price.to_i + 5000000000,
       nonce: best_nonce,
       value: 0,
     }.merge(params)).tap do |tx|

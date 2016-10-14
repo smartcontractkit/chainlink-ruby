@@ -16,7 +16,7 @@ class EthereumOracleUpdater
   def perform
     tx = account.send_transaction({
       data: "#{write_address}#{ethereum.format_bytes32_hex current_value}".htb,
-      gas_limit: 100_000,
+      gas_limit: 50_000,
       to: contract.address,
     })
 
