@@ -23,7 +23,7 @@ class CustomExpectation < ActiveRecord::Base
   end
 
   def fields=(fields)
-    self.field_list = fields.to_json
+    self.field_list = Array.wrap(fields).to_json
     self.fields
   end
 
