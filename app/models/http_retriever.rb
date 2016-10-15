@@ -10,7 +10,8 @@ class HttpRetriever
 
   def perform
     begin
-      HTTParty.get(url).body
+      body = HTTParty.get(url).body
+      body.force_encoding('UTF-8').gsub(/\A\xEF\xBB\xBF/, '')
     rescue
     end
   end

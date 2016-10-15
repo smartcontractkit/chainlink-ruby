@@ -6,7 +6,7 @@ describe HttpRetriever, type: :model do
     before { expect(HttpRetriever).to receive(:get).and_call_original }
 
     context "when the response is successfully retrieved" do
-      let(:response_body) { double }
+      let(:response_body) { SecureRandom.uuid }
 
       before do
         expect(HTTParty).to receive(:get)
@@ -16,6 +16,18 @@ describe HttpRetriever, type: :model do
 
       it "returns the body" do
         expect(HttpRetriever.get url).to eq(response_body)
+      end
+
+      context "when the response includes the UTF-8 BOM header" do
+        let(:body) { {a: 1}.to_json }
+        let(:response_body) { "\xEF\xBB\xBF#{body}" }
+
+        it "parses the header out" do
+          # example: http://www.w3schools.com/json/myTutorials.txt
+          parsed = HttpRetriever.get url
+          expect(parsed).to eq(body)
+          expect(parsed.encoding.to_s).to eq('UTF-8')
+        end
       end
     end
 
