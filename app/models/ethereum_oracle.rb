@@ -17,7 +17,7 @@ class EthereumOracle < ActiveRecord::Base
   scope :current, -> { joins(:term).where("terms.end_at >= ?", Time.now) }
 
   def fields=(fields)
-    self.field_list = fields.to_json
+    self.field_list = Array.wrap(fields).to_json
     self.fields
   end
 

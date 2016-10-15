@@ -1,3 +1,4 @@
+Dotenv.load('.env.test')
 Dotenv.load
 
 Rails.application.configure do

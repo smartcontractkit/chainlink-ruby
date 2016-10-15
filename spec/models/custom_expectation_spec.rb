@@ -32,12 +32,12 @@ describe CustomExpectation, type: :model do
 
     it "converts the array into a string joined by the delimiter" do
       expect {
-        expectation.update_attributes(fields: ['a', 'b'])
+        expectation.update_attributes(fields: 'b')
       }.to change {
         expectation.reload.field_list
-      }.to(['a', 'b'].to_json).and change {
+      }.to(['b'].to_json).and change {
         expectation.fields
-      }.to(['a', 'b'])
+      }.to(['b'])
     end
   end
 

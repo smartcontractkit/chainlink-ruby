@@ -33,5 +33,6 @@ group :development, :test do
 end
 
 group :staging, :production do
+  gem 'airbrake'
   gem 'rails_12factor'
 end
