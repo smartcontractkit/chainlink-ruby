@@ -18,8 +18,9 @@ class EthereumAccount < ActiveRecord::Base
   end
 
   def best_nonce
-    current_nonce = blockchain_nonce
-    nonce > current_nonce ? nonce : current_nonce
+    # current_nonce = blockchain_nonce
+    # nonce > current_nonce ? nonce : current_nonce
+    blockchain_nonce
   end
 
   def send_transaction(params)
