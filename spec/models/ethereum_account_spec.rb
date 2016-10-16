@@ -69,7 +69,7 @@ describe EthereumAccount, type: :model do
     end
   end
 
-  describe "#best_nonce" do
+  xdescribe "#best_nonce" do
     let(:account) { EthereumAccount.create address: ethereum_address, nonce: database_nonce }
     let(:database_nonce) { 100 }
 
