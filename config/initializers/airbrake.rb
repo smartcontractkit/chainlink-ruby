@@ -13,7 +13,7 @@ if ENV['AIRBRAKE_API_KEY'].present?
 
     c.environment = Rails.env
 
-    c.ignore_environments = %w(test)
+    c.ignore_environments = %w(development test)
 
     c.blacklist_keys = [/password/i]
   end
@@ -38,5 +38,7 @@ if ENV['AIRBRAKE_API_KEY'].present?
       end
     end
   end
+
+  Delayed::Worker.plugins << AirbrakePlugin
 
 end
