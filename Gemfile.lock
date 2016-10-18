@@ -70,7 +70,7 @@ GEM
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
     erubis (2.7.0)
-    eth (0.3.1)
+    eth (0.3.2)
       ethereum-base (~> 0.1.4)
       ffi (~> 1.0)
       money-tree (~> 0.9)
