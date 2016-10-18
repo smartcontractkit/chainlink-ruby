@@ -24,8 +24,11 @@ class KeyPair < ActiveRecord::Base
   end
 
   def ethereum_address
-    return unless public_key.present?
-    Eth::Key.new(pub: public_key).to_address
+    ethereum_key.to_address if private_key.present?
+  end
+
+  def uncompressed_public_key
+    ethereum_key.public_hex if private_key.present?
   end
 
   def bitcoin_key

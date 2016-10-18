@@ -35,6 +35,10 @@ class EthereumAccount < ActiveRecord::Base
     key_pair.ethereum_key.sign_hash hash
   end
 
+  def public_key
+    key_pair.uncompressed_public_key
+  end
+
 
   private
 
