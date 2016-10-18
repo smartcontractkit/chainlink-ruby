@@ -56,7 +56,7 @@ describe "Ethereum oracle contract integration" do
       solidity = template.result(address_binding)
       compiled = ethereum.solidity.compile(solidity)['contracts']['Uptime']
       uptime_txid = account.send_transaction({
-        data: compiled['bytecode'].htb,
+        data: compiled['bytecode'],
         gas_limit: (compiled['gasEstimates']['creation'].last * 10),
       }).txid
       uptime_update_hash = compiled['functionHashes']['update()']
@@ -66,7 +66,7 @@ describe "Ethereum oracle contract integration" do
       uptime_address = ethereum.get_transaction_receipt(uptime_txid).contractAddress
       update_txid = account.send_transaction({
         to: uptime_address,
-        data: uptime_update_hash.htb,
+        data: uptime_update_hash,
         gas_limit: 1_000_000,
       }).txid
       wait_for_ethereum_confirmation update_txid

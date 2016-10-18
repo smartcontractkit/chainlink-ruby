@@ -29,7 +29,7 @@ describe EthereumTransactionBuilder, type: :model do
       expect(transaction.gas_limit).to eq(21_000)
       expect(transaction.gas_price).to eq(gas_price)
       expect(transaction.nonce).to eq(next_nonce)
-      expect(transaction.to).to eq(EthereumClient::NULL_ACCOUNT)
+      expect(transaction.to).to eq(nil)
       expect(transaction.value).to eq(0)
     end
 

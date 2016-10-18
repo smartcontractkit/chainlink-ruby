@@ -57,6 +57,14 @@ describe EthereumAccount, type: :model do
       }
     end
 
+    it "creates a valid transaction record" do
+      expect {
+        account.send_transaction options
+      }.to change {
+        EthereumAccount.count
+      }
+    end
+
     it "increments the account's next nonce" do
       allow_any_instance_of(EthereumClient).to receive(:get_transaction_count)
         .and_return(0)
@@ -64,7 +72,7 @@ describe EthereumAccount, type: :model do
       expect {
         account.send_transaction options
       }.to change {
-        account.reload.nonce
+        account.reload.next_nonce
       }.by(+1)
     end
   end

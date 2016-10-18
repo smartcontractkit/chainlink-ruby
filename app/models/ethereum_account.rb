@@ -26,9 +26,9 @@ class EthereumAccount < ActiveRecord::Base
   end
 
   def send_transaction(params)
-    tx = build_signed_transaction params
-    update_attributes nonce: (tx.nonce + 1)
-    ethereum_transactions.create raw_hex: bin_to_hex(tx.encoded)
+    tx_builder.perform(params).tap do |tx|
+      ethereum.send_raw_transaction tx.raw_hex
+    end
   end
 
   def sign_hash(hash)
@@ -42,15 +42,8 @@ class EthereumAccount < ActiveRecord::Base
 
   private
 
-  def build_signed_transaction(params)
-    Eth::Tx.new({
-      data: '',
-      gas_price: ethereum.gas_price.to_i + 5000000000,
-      nonce: next_nonce,
-      value: 0,
-    }.merge(params)).tap do |tx|
-      tx.sign key_pair.ethereum_key
-    end
+  def tx_builder
+    EthereumTransactionBuilder.new self
   end
 
 end

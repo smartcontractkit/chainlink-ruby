@@ -1,5 +1,6 @@
 class EthereumTransactionBuilder
 
+  include BinaryAndHex
   include HasEthereumClient
 
   def initialize(account)
@@ -18,12 +19,11 @@ class EthereumTransactionBuilder
   attr_reader :account, :options
 
   def set_default(options)
-    @options = {
+    @options ||= {
       data: '',
-      gas_price: ethereum.gas_price.to_i,
+      gas_price: options.fetch(:gas_price, ethereum.gas_price),
       gas_limit: 21_000,
       nonce: account.next_nonce,
-      to: EthereumClient::NULL_ACCOUNT,
       value: 0,
     }.merge(options)
   end
@@ -36,7 +36,9 @@ class EthereumTransactionBuilder
   end
 
   def tx
-    @tx ||= Eth::Tx.new options
+    @tx ||= Eth::Tx.new options.merge({
+      data: hex_to_bin(options[:data]),
+    })
   end
 
 end
