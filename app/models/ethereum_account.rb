@@ -17,9 +17,12 @@ class EthereumAccount < ActiveRecord::Base
     tx.sign key_pair.ethereum_key
   end
 
-  def best_nonce
-    current_nonce = blockchain_nonce
-    nonce > current_nonce ? nonce : current_nonce
+  def next_nonce
+    if database_nonce = ethereum_transactions.maximum(:nonce)
+      database_nonce + 1
+    else
+      ethereum.get_transaction_count address
+    end
   end
 
   def send_transaction(params)
@@ -35,15 +38,11 @@ class EthereumAccount < ActiveRecord::Base
 
   private
 
-  def blockchain_nonce
-    ethereum.get_transaction_count address
-  end
-
   def build_signed_transaction(params)
     Eth::Tx.new({
       data: '',
       gas_price: ethereum.gas_price.to_i + 5000000000,
-      nonce: best_nonce,
+      nonce: next_nonce,
       value: 0,
     }.merge(params)).tap do |tx|
       tx.sign key_pair.ethereum_key
