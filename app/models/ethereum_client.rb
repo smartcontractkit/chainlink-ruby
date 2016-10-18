@@ -103,6 +103,12 @@ class EthereumClient
     @solidity ||= SolidityClient.new
   end
 
+  def to_eth_hex(data)
+    return data if data.blank?
+    data = data.to_s(16) if data.is_a? Integer
+    (data[0..1] == '0x') ? data : "0x#{data}"
+  end
+
 
   private
 
@@ -124,12 +130,6 @@ class EthereumClient
 
   def headers
     { "Content-Type" => "application/json" }
-  end
-
-  def to_eth_hex(data)
-    return data if data.blank?
-    data = data.to_s(16) if data.is_a? Integer
-    (data[0..1] == '0x') ? data : "0x#{data}"
   end
 
   def eth_account(account)
