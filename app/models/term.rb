@@ -51,7 +51,6 @@ class Term < ActiveRecord::Base
       contract.delay.check_status
       coordinator.delay.update_term id
       expectation.delay.close_out! status
-      TermStatusPublisher.delay.perform id
     end
   end
 

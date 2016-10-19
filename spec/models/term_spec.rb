@@ -147,13 +147,6 @@ describe Term, type: :model do
         term.update_status new_status
       end
 
-      it "publishes the term's status" do
-        expect(TermStatusPublisher).to receive_message_chain(:delay, :perform)
-          .with(term.id)
-
-        term.update_status new_status
-      end
-
       it "notifies the expectation to clean up" do
         expect(term.expectation).to receive_message_chain(:delay, :close_out!)
           .with(new_status)
