@@ -1,7 +1,7 @@
 describe TermStatusPublisher, type: :model do
 
   describe "#perform" do
-    let(:term) { term_factory }
+    let(:term) { factory_create :term }
 
     it "publishes the term's status into the NXT blockchain" do
       expect {
