@@ -156,6 +156,7 @@ describe Term, type: :model do
 
       it "notifies the expectation to clean up" do
         expect(term.expectation).to receive_message_chain(:delay, :close_out!)
+          .with(new_status)
 
         term.update_status new_status
       end
