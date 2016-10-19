@@ -1,6 +1,5 @@
 class EthereumContract < ActiveRecord::Base
 
-  include BinaryAndHex
   include HasCoordinatorClient
 
   belongs_to :account, class_name: 'EthereumAccount'

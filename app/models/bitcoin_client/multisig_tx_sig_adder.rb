@@ -1,10 +1,11 @@
 class BitcoinClient
   class MultisigTxSigAdder < BitcoinBuilder
+
     include BinaryAndHex
 
     def initialize(options)
       @tx = options[:tx]
-      @signatures = options[:signatures].map(&:htb)
+      @signatures = options[:signatures].map{ |sig| hex_to_bin(sig) }
       super
     end
 

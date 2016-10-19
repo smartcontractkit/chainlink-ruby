@@ -1,6 +1,5 @@
 class EthereumAccount < ActiveRecord::Base
 
-  include BinaryAndHex
   include HasEthereumClient
 
   has_one :key_pair, as: :owner
