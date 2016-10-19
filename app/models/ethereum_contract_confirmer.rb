@@ -1,4 +1,4 @@
-class EthereumReceiptWatcher
+class EthereumContractConfirmer
 
   include HasEthereumClient
 

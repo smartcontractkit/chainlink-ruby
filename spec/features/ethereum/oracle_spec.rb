@@ -20,7 +20,7 @@ describe "Ethereum oracle contract integration" do
     expect(genesis_tx).to be_persisted
 
     wait_for_ethereum_confirmation genesis_tx.txid
-    EthereumReceiptWatcher.new(contract).perform
+    EthereumContractConfirmer.new(contract).perform
     expect(contract).to be_confirmed
 
     oracle_updater = Delayed::Job.first
@@ -46,7 +46,7 @@ describe "Ethereum oracle contract integration" do
 
     it "accepts updates which can be read after confirmation" do
       wait_for_ethereum_confirmation genesis_tx.txid
-      EthereumReceiptWatcher.new(contract).perform
+      EthereumContractConfirmer.new(contract).perform
       oracle_updater = Delayed::Job.first
       oracle_updater.invoke_job
       wait_for_ethereum_confirmation oracle.writes.last.txid

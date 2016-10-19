@@ -14,6 +14,6 @@ module Clockwork
 
   every(1.minute, 'AssignmentScheduler.perform')
   every(1.minute, 'TermJanitor.clean_up')
-  every(1.minute, 'EthereumReceiptWatcher.perform')
+  every(1.minute, 'EthereumContractReceiptWatcher.perform')
   every(1.hour, 'EthereumBalanceWatcher.perform')
 end
