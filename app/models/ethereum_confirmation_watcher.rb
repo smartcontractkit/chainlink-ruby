@@ -4,7 +4,7 @@ class EthereumConfirmationWatcher
 
   def self.perform
     EthereumTransaction.unconfirmed.each do |tx|
-      new(ta).delay.perform
+      new(tx).delay.perform
     end
   end
 
@@ -17,6 +17,8 @@ class EthereumConfirmationWatcher
 
     if receipt && receipt['blockNumber']
       tx.update_attributes confirmations: 1
+    else
+      ethereum.send_raw_transaction tx.raw_hex
     end
   end
 

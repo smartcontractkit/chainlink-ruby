@@ -20,6 +20,13 @@ describe EthereumConfirmationWatcher, type: :model do
           tx.reload.confirmed?
         }.from(false)
       end
+
+      it "does rebroadcast the transaction" do
+        expect_any_instance_of(EthereumClient).to receive(:send_raw_transaction)
+          .with(tx.raw_hex)
+
+        watcher.perform
+      end
     end
 
     context "when the transaction is confirmed" do
@@ -31,6 +38,12 @@ describe EthereumConfirmationWatcher, type: :model do
         }.to change {
           tx.reload.confirmed?
         }.from(false).to(true)
+      end
+
+      it "does NOT rebroadcast the transaction" do
+        expect_any_instance_of(EthereumClient).not_to receive(:send_raw_transaction)
+
+        watcher.perform
       end
     end
   end
