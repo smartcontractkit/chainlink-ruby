@@ -5,4 +5,6 @@ class EthereumTransaction < ActiveRecord::Base
   validates :account, presence: true
   validates :txid, format: /\A0x[0-9a-f]{64}\z/
 
+  scope :unconfirmed, -> { where "confirmations = 0 OR confirmations IS null" }
+
 end
