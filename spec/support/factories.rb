@@ -1,14 +1,4 @@
 module SpecHelpers
-  def payment_factory(options = {})
-    expectation = options[:payment_expectation] || payment_expectation_factory
-    output = options[:bitcoin_output] || factory_create(:bitcoin_output)
-
-    expectation.payments.create({
-      bitcoin_output: output,
-      bitcoin_transaction: output.bitcoin_transaction
-    })
-  end
-
   def term_factory(options = {})
     factory_create :term, options
   end
