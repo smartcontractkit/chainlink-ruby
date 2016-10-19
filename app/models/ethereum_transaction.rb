@@ -7,4 +7,8 @@ class EthereumTransaction < ActiveRecord::Base
 
   scope :unconfirmed, -> { where "confirmations = 0 OR confirmations IS null" }
 
+  def confirmed?
+    confirmations.to_i > 0
+  end
+
 end

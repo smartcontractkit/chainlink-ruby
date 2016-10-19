@@ -38,7 +38,7 @@ module SpecHelpers
       jsonrpc: '2.0',
       result: {
         blockHash: ethereum_txid,
-        blockNumber: '0x7357',
+        blockNumber: options.fetch(:block_number, '0x7357'),
         contractAddress: (options[:contract_address] || ethereum_address),
         cumulativeGasUsed: ethereum_gas_price,
         gasUsed: ethereum_gas_price,
