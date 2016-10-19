@@ -31,6 +31,8 @@ RSpec.configure do |config|
       .and_return(http_response body: stubbed_response)
     allow(InputAdapterClient).to receive(:get)
       .and_return(http_response body: stubbed_response)
+    allow(InputAdapterClient).to receive(:delete)
+      .and_return(http_response body: stubbed_response)
   end
 
   config.around bitcoin_network: :bitcoin do |example|
