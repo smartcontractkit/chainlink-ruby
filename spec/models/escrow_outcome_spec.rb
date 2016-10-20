@@ -1,12 +1,12 @@
 describe EscrowOutcome, type: :model do
 
   describe "validations" do
-    subject { escrow_outcome_factory }
+    subject { factory_create :escrow_outcome }
 
     it { is_expected.to have_valid(:result).when('success', 'failure') }
     it { is_expected.not_to have_valid(:result).when(nil, '', 'anything') }
 
-    it { is_expected.to have_valid(:term).when(term_factory) }
+    it { is_expected.to have_valid(:term).when(factory_create(:term)) }
     it { is_expected.not_to have_valid(:term).when(nil) }
 
     it { is_expected.to have_valid(:transaction_hex).when(SecureRandom.hex) }
@@ -15,7 +15,7 @@ describe EscrowOutcome, type: :model do
 
   describe "#transaction_hexes" do
     let(:escrow) do
-      escrow_outcome_factory({
+      factory_create(:escrow_outcome, {
         transaction_hexes: transaction_hexes
       }).tap(&:reload)
     end
@@ -51,7 +51,7 @@ describe EscrowOutcome, type: :model do
     let(:tx_hex1) { SecureRandom.hex }
     let(:tx_hex2) { SecureRandom.hex }
     let(:bitcoin) { instance_double BitcoinClient }
-    let(:escrow) { escrow_outcome_factory transaction_hexes: [tx_hex1, tx_hex2] }
+    let(:escrow) { factory_create :escrow_outcome, transaction_hexes: [tx_hex1, tx_hex2] }
 
     before do
       allow(BitcoinClient).to receive(:new).and_return(bitcoin)

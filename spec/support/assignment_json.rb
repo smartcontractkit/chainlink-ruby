@@ -1,32 +1,34 @@
-def assignment_hash(options = {})
-  adapter_params = options.fetch(:adapterParams, nil)
-  adapter_type = options.fetch(:adapterType, AssignmentType.first.name)
-  description = options.fetch(:description, Faker::Lorem.paragraph)
-  fees = options.fetch(:fees, nil)
-  schedule = options.fetch(:schedule, {
-    endAt: options.fetch(:endAt, 1.day.from_now).to_i.to_s,
-    hour: options.fetch(:hour, '0'),
-    minute: options.fetch(:minute, '0'),
-    startAt: options[:startAt],
-  }).compact
-  signatures = options.fetch(:signatures, [])
+module SpecHelpers
+  def assignment_hash(options = {})
+    adapter_params = options.fetch(:adapterParams, nil)
+    adapter_type = options.fetch(:adapterType, AssignmentType.first.name)
+    description = options.fetch(:description, Faker::Lorem.paragraph)
+    fees = options.fetch(:fees, nil)
+    schedule = options.fetch(:schedule, {
+      endAt: options.fetch(:endAt, 1.day.from_now).to_i.to_s,
+      hour: options.fetch(:hour, '0'),
+      minute: options.fetch(:minute, '0'),
+      startAt: options[:startAt],
+    }).compact
+    signatures = options.fetch(:signatures, [])
 
-  assignment = {
-    adapterType: adapter_type,
-    adapterParams: adapter_params,
-    description: description,
-    fees: fees,
-    schedule: schedule,
-  }.compact
+    assignment = {
+      adapterType: adapter_type,
+      adapterParams: adapter_params,
+      description: description,
+      fees: fees,
+      schedule: schedule,
+    }.compact
 
-  {
-    assignment: assignment,
-    assignmentHash: options.fetch(:assignmentHash, Digest::SHA256.hexdigest(assignment.to_json)),
-    signatures: signatures,
-    version: '0.1.0',
-  }.compact.with_indifferent_access
-end
+    {
+      assignment: assignment,
+      assignmentHash: options.fetch(:assignmentHash, Digest::SHA256.hexdigest(assignment.to_json)),
+      signatures: signatures,
+      version: '0.1.0',
+    }.compact.with_indifferent_access
+  end
 
-def assignment_json(options = {})
-  assignment_hash(options).to_json
+  def assignment_json(options = {})
+    assignment_hash(options).to_json
+  end
 end

@@ -50,8 +50,7 @@ class Term < ActiveRecord::Base
     if update_attributes status: status
       contract.delay.check_status
       coordinator.delay.update_term id
-      expectation.delay.close_out!
-      TermStatusPublisher.delay.perform id
+      expectation.delay.close_out! status
     end
   end
 

@@ -1,6 +1,5 @@
 class EthereumContract < ActiveRecord::Base
 
-  include BinaryAndHex
   include HasCoordinatorClient
 
   belongs_to :account, class_name: 'EthereumAccount'
@@ -42,7 +41,7 @@ class EthereumContract < ActiveRecord::Base
     self.template ||= EthereumContractTemplate.default
 
     self.genesis_transaction = account.send_transaction({
-      data: hex_to_bin(template.evm_hex),
+      data: template.evm_hex,
       gas_limit: 300_000,
     })
   end

@@ -44,8 +44,9 @@ class Assignment < ActiveRecord::Base
     snapshots.create
   end
 
-  def close_out!
+  def close_out!(status = COMPLETED)
     adapter.stop self
+    update_status status
   end
 
   def update_status(status)

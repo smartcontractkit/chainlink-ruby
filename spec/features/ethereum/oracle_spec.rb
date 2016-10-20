@@ -20,7 +20,7 @@ describe "Ethereum oracle contract integration" do
     expect(genesis_tx).to be_persisted
 
     wait_for_ethereum_confirmation genesis_tx.txid
-    EthereumReceiptWatcher.new(contract).perform
+    EthereumContractConfirmer.new(contract).perform
     expect(contract).to be_confirmed
 
     oracle_updater = Delayed::Job.first
@@ -46,7 +46,7 @@ describe "Ethereum oracle contract integration" do
 
     it "accepts updates which can be read after confirmation" do
       wait_for_ethereum_confirmation genesis_tx.txid
-      EthereumReceiptWatcher.new(contract).perform
+      EthereumContractConfirmer.new(contract).perform
       oracle_updater = Delayed::Job.first
       oracle_updater.invoke_job
       wait_for_ethereum_confirmation oracle.writes.last.txid
@@ -56,7 +56,7 @@ describe "Ethereum oracle contract integration" do
       solidity = template.result(address_binding)
       compiled = ethereum.solidity.compile(solidity)['contracts']['Uptime']
       uptime_txid = account.send_transaction({
-        data: compiled['bytecode'].htb,
+        data: compiled['bytecode'],
         gas_limit: (compiled['gasEstimates']['creation'].last * 10),
       }).txid
       uptime_update_hash = compiled['functionHashes']['update()']
@@ -66,7 +66,7 @@ describe "Ethereum oracle contract integration" do
       uptime_address = ethereum.get_transaction_receipt(uptime_txid).contractAddress
       update_txid = account.send_transaction({
         to: uptime_address,
-        data: uptime_update_hash.htb,
+        data: uptime_update_hash,
         gas_limit: 1_000_000,
       }).txid
       wait_for_ethereum_confirmation update_txid

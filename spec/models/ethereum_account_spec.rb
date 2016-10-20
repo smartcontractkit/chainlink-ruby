@@ -57,6 +57,14 @@ describe EthereumAccount, type: :model do
       }
     end
 
+    it "creates a valid transaction record" do
+      expect {
+        account.send_transaction options
+      }.to change {
+        EthereumAccount.count
+      }
+    end
+
     it "increments the account's next nonce" do
       allow_any_instance_of(EthereumClient).to receive(:get_transaction_count)
         .and_return(0)
@@ -64,34 +72,37 @@ describe EthereumAccount, type: :model do
       expect {
         account.send_transaction options
       }.to change {
-        account.reload.nonce
+        account.reload.next_nonce
       }.by(+1)
     end
   end
 
-  describe "#best_nonce" do
-    let(:account) { EthereumAccount.create address: ethereum_address, nonce: database_nonce }
-    let(:database_nonce) { 100 }
+  describe "#next_nonce" do
+    let(:account) { EthereumAccount.create address: ethereum_address }
+    let(:blockchain_nonce) { 1000 }
+    let(:database_nonce) { 99 }
 
     before do
-      expect_any_instance_of(EthereumClient).to receive(:get_transaction_count)
+      account.ethereum_transactions.destroy_all
+
+      allow_any_instance_of(EthereumClient).to receive(:get_transaction_count)
         .with(account.address)
         .and_return(blockchain_nonce)
     end
 
-    context "when the blockchain reports a higher nonce" do
-      let(:blockchain_nonce) { 101 }
-
-      it "returns the blockchain nonce" do
-        expect(account.best_nonce).to eq(blockchain_nonce)
+    context "when the account does NOT have a last nonce" do
+      it "returns the database nonce" do
+        expect(account.next_nonce).to eq(blockchain_nonce)
       end
     end
 
-    context "when the database reports a higher nonce" do
-      let(:blockchain_nonce) { 99 }
+    context "when the account has a last nonce" do
+      let!(:past_tx_nil) { factory_create :ethereum_transaction, account: account, nonce: nil }
+      let!(:past_tx1) { factory_create :ethereum_transaction, account: account, nonce: (database_nonce - 1) }
+      let!(:past_tx2) { factory_create :ethereum_transaction, account: account, nonce: database_nonce }
 
-      it "returns the database nonce" do
-        expect(account.best_nonce).to eq(database_nonce)
+      it "returns the blockchain nonce" do
+        expect(account.next_nonce).to eq(database_nonce + 1)
       end
     end
   end

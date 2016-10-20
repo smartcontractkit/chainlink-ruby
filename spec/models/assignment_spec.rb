@@ -105,12 +105,21 @@ describe Assignment, type: :model do
   describe "#close_out!" do
     let(:assignment) { factory_create :assignment }
     let(:adapter) { assignment.adapter }
+    let(:status) { Assignment::COMPLETED }
 
     it "closes out via the adapter" do
       expect(adapter).to receive(:stop)
         .with(assignment)
 
       assignment.close_out!
+    end
+
+    it "moves the assignment into the failed state" do
+      expect {
+        assignment.close_out! status
+      }.to change {
+        assignment.status
+      }.from(Assignment::IN_PROGRESS).to(status)
     end
   end
 

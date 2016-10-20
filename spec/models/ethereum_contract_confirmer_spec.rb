@@ -1,7 +1,7 @@
-describe EthereumReceiptWatcher, type: :model do
+describe EthereumContractConfirmer, type: :model do
   describe "#perform" do
     let!(:contract) { factory_create(:ethereum_oracle).ethereum_contract }
-    let(:watcher) { EthereumReceiptWatcher.new(contract) }
+    let(:watcher) { EthereumContractConfirmer.new(contract) }
     let(:new_address) { ethereum_address }
     let(:response) { ethereum_receipt_response(contract_address: new_address).result }
 

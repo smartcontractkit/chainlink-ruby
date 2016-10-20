@@ -7,7 +7,7 @@ class BitcoinClient
 
   def get_transaction(txid)
     tx_hex = client.get_transaction_hex txid
-    Bitcoin::Protocol::Tx.new tx_hex.htb
+    Bitcoin::Protocol::Tx.new hex_to_bin(tx_hex)
   end
 
   def unsubscribe_from_address(address)

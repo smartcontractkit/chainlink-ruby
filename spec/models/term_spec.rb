@@ -53,10 +53,10 @@ describe Term, type: :model do
 
   describe ".expired" do
     subject { Term.expired }
-    let!(:failed_term) { term_factory end_at: 1.day.ago, start_at: 2.days.ago, status: Term::FAILED }
-    let!(:completed_term) { term_factory end_at: 1.day.ago, start_at: 2.days.ago, status: Term::COMPLETED }
-    let!(:expired_term) { term_factory end_at: 1.second.ago, start_at: 1.day.ago, status: Term::IN_PROGRESS }
-    let!(:in_progress_term) { term_factory end_at: 1.day.from_now, start_at: 1.day.ago, status: Term::IN_PROGRESS}
+    let!(:failed_term) { factory_create :term, end_at: 1.day.ago, start_at: 2.days.ago, status: Term::FAILED }
+    let!(:completed_term) { factory_create :term, end_at: 1.day.ago, start_at: 2.days.ago, status: Term::COMPLETED }
+    let!(:expired_term) { factory_create :term, end_at: 1.second.ago, start_at: 1.day.ago, status: Term::IN_PROGRESS }
+    let!(:in_progress_term) { factory_create :term, end_at: 1.day.from_now, start_at: 1.day.ago, status: Term::IN_PROGRESS}
 
     it { is_expected.to include expired_term }
     it { is_expected.not_to include in_progress_term }
@@ -66,9 +66,9 @@ describe Term, type: :model do
 
   describe ".in_progress" do
     subject { Term.in_progress }
-    let!(:failed_term) { term_factory end_at: 1.day.ago, status: Term::FAILED, start_at: 2.days.ago }
-    let!(:completed_term) { term_factory end_at: 1.day.ago, status: Term::COMPLETED, start_at: 2.days.ago }
-    let!(:in_progress_term) { term_factory end_at: 1.day.from_now, status: Term::IN_PROGRESS}
+    let!(:failed_term) { factory_create :term, end_at: 1.day.ago, status: Term::FAILED, start_at: 2.days.ago }
+    let!(:completed_term) { factory_create :term, end_at: 1.day.ago, status: Term::COMPLETED, start_at: 2.days.ago }
+    let!(:in_progress_term) { factory_create :term, end_at: 1.day.from_now, status: Term::IN_PROGRESS}
 
     it { is_expected.to include in_progress_term }
     it { is_expected.not_to include failed_term }
@@ -147,15 +147,9 @@ describe Term, type: :model do
         term.update_status new_status
       end
 
-      it "publishes the term's status" do
-        expect(TermStatusPublisher).to receive_message_chain(:delay, :perform)
-          .with(term.id)
-
-        term.update_status new_status
-      end
-
       it "notifies the expectation to clean up" do
         expect(term.expectation).to receive_message_chain(:delay, :close_out!)
+          .with(new_status)
 
         term.update_status new_status
       end
@@ -163,7 +157,7 @@ describe Term, type: :model do
   end
 
   describe "#outcome_signatures" do
-    let(:term) { term_factory status: status }
+    let(:term) { factory_create :term, status: status }
     let(:success_outcome) { nil }
     let(:failure_outcome) { nil }
     let(:signatures) { double }
@@ -172,8 +166,8 @@ describe Term, type: :model do
       let(:status) { Term::COMPLETED }
 
       context "when there are associated outcomes" do
-        let!(:success_outcome) { escrow_outcome_factory term: term, result: 'success' }
-        let!(:failure_outcome) { escrow_outcome_factory term: term, result: 'failure' }
+        let!(:success_outcome) { factory_create :escrow_outcome, term: term, result: 'success' }
+        let!(:failure_outcome) { factory_create :escrow_outcome, term: term, result: 'failure' }
 
         it "asks the success outcome" do
           expect_any_instance_of(EscrowOutcome).to receive(:signatures) do |instance|
@@ -195,8 +189,8 @@ describe Term, type: :model do
       let(:status) { Term::FAILED }
 
       context "when there are associated outcomes" do
-        let!(:success_outcome) { escrow_outcome_factory term: term, result: 'success' }
-        let!(:failure_outcome) { escrow_outcome_factory term: term, result: 'failure' }
+        let!(:success_outcome) { factory_create :escrow_outcome, term: term, result: 'success' }
+        let!(:failure_outcome) { factory_create :escrow_outcome, term: term, result: 'failure' }
 
         it "asks the failure outcome" do
           expect_any_instance_of(EscrowOutcome).to receive(:signatures) do |instance|
