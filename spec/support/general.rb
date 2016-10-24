@@ -31,7 +31,7 @@ module SpecHelpers
     hex.htb
   end
 
-  def coordinator_log_in(coordinator = Coordinator.create)
+  def coordinator_log_in(coordinator = factory_create(:coordinator))
     basic_auth_log_in coordinator.key, coordinator.secret
   end
 

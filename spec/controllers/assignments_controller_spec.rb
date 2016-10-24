@@ -1,6 +1,6 @@
 describe AssignmentsController, type: :controller do
   describe "#create" do
-    let(:coordinator) { Coordinator.create }
+    let(:coordinator) { factory_create :coordinator }
     let(:assignment_params) { assignment_hash }
 
     before { coordinator_log_in coordinator }
