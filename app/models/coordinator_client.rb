@@ -1,16 +1,15 @@
 class CoordinatorClient
 
   include HttpClient
-  base_uri ENV['COORDINATOR_CLIENT_URL']
 
-  def self.snapshot(id)
-    new.delay.snapshot(id)
+  def initialize(coordinator)
+    @coordinator = coordinator
   end
 
   def update_term(term_id)
     term = Term.find(term_id)
 
-    check_acknowledged hashie_post('/contracts', {
+    check_acknowledged coordinator_post('/contracts', {
       status_update: params_for(term, {
         signatures: term.outcome_signatures.flatten,
         status: term.status,
@@ -23,7 +22,7 @@ class CoordinatorClient
     contract = oracle.ethereum_contract
     template = contract.template
 
-    check_acknowledged hashie_post('/oracles', {
+    check_acknowledged coordinator_post('/oracles', {
       oracle: params_for(oracle.related_term, {
         address: contract.address,
         json_abi: template.json_abi,
@@ -36,14 +35,16 @@ class CoordinatorClient
   def snapshot(snapshot_id)
     snapshot = AssignmentSnapshot.find snapshot_id
     attributes = AssignmentSnapshotSerializer.new(snapshot).attributes
-    assignment = snapshot.assignment
+    term = snapshot.assignment.term
     path = "/snapshots"
 
-    hashie_post(path, params_for(assignment.term, attributes))
+    coordinator_post path, params_for(term, attributes)
   end
 
 
   private
+
+  attr_reader :coordinator
 
   def params_for(term, options = {})
     {
@@ -70,6 +71,11 @@ class CoordinatorClient
 
   def coordinator
     Coordinator.last
+  end
+
+  def coordinator_post(path, params)
+    url = coordinator.url + path
+    hashie_post(url, params)
   end
 
 end

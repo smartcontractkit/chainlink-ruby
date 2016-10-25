@@ -1,5 +1,6 @@
 describe CoordinatorClient, type: :model do
-  let(:client) { CoordinatorClient.new }
+  let(:coordinator) { factory_create :coordinator }
+  let(:client) { CoordinatorClient.new coordinator }
 
   describe "#update_term" do
     let(:xid) { SecureRandom.hex }
@@ -20,7 +21,7 @@ describe CoordinatorClient, type: :model do
       allow(Term).to receive(:find).and_return(term)
 
       expect(CoordinatorClient).to receive(:post)
-        .with('/contracts', {
+        .with("#{coordinator.url}/contracts", {
           basic_auth: instance_of(Hash),
           body: {
             status_update: {
@@ -66,7 +67,7 @@ describe CoordinatorClient, type: :model do
 
     before do
       expect(CoordinatorClient).to receive(:post)
-        .with('/oracles', {
+        .with("#{coordinator.url}/oracles", {
           basic_auth: instance_of(Hash),
           body: {
             oracle: {
@@ -116,7 +117,7 @@ describe CoordinatorClient, type: :model do
         assignment.update_attributes term: term
 
         expect(CoordinatorClient).to receive(:post)
-          .with("/snapshots", {
+          .with("#{coordinator.url}/snapshots", {
             basic_auth: instance_of(Hash),
             body: {
               contract: contract.xid,
@@ -161,7 +162,7 @@ describe CoordinatorClient, type: :model do
 
       before do
         expect(CoordinatorClient).to receive(:post)
-          .with("/snapshots", {
+          .with("#{coordinator.url}/snapshots", {
             basic_auth: instance_of(Hash),
             body: {
               assignment_xid: assignment.xid,

@@ -22,7 +22,7 @@ class EthereumContract < ActiveRecord::Base
     })
 
     ethereum_oracle.delay.check_status
-    coordinator.delay.oracle_instructions(ethereum_oracle.id)
+    coordinator_client.delay.oracle_instructions(ethereum_oracle.id)
   end
 
   def write_address
@@ -44,6 +44,10 @@ class EthereumContract < ActiveRecord::Base
       data: template.evm_hex,
       gas_limit: 300_000,
     })
+  end
+
+  def coordinator
+    ethereum_oracle.assignment.coordinator
   end
 
 end

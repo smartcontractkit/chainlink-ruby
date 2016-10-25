@@ -6,4 +6,8 @@ FactoryGirl.define do
     fields { [SecureRandom.urlsafe_base64] }
   end
 
+  factory :assigned_ethereum_oracle, parent: :ethereum_oracle do
+    assignment
+  end
+
 end
