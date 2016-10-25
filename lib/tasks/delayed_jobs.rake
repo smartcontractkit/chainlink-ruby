@@ -4,6 +4,7 @@ namespace :delayed_jobs do
     Delayed::Job.where("last_error IS NOT null").pluck(:id).each do |djid|
       begin
         dj = Delayed::Job.find(djid)
+        next unless dj.present?
         dj.invoke_job
         puts "destroying #{dj.handler}"
         dj.destroy
