@@ -3,7 +3,7 @@ class ContractsController < ApplicationController
   before_filter :set_coordinator
 
   def create
-    contract = ContractBuilder.perform(contract_params)
+    contract = ContractBuilder.perform(contract_params, coordinator)
 
     if contract.persisted?
       render json: {

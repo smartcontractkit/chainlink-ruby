@@ -1,7 +1,8 @@
 describe ContractBuilder, type: :model do
 
   describe "#perform" do
-    let(:contract) { ContractBuilder.perform(json) }
+    let(:coordinator) { factory_create :coordinator }
+    subject(:contract) { ContractBuilder.perform(json, coordinator) }
 
     context "when valid payment term params are passed in" do
       let(:outcomes) { true }
@@ -17,7 +18,7 @@ describe ContractBuilder, type: :model do
 
       it "creates a new contract" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.to change {
           Contract.count
         }.by(+1)
@@ -25,15 +26,31 @@ describe ContractBuilder, type: :model do
 
       it "creates new terms" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.to change {
           Term.count
         }.by(+1)
       end
 
+      it "associates the new contract with the coordinator" do
+        expect {
+          subject
+        }.to change {
+          coordinator.reload.contracts.count
+        }.by(+1)
+      end
+
+      it "associates the new assignment with the coordinator" do
+        expect {
+          subject
+        }.to change {
+          coordinator.reload.assignments.count
+        }.by(+1)
+      end
+
       it "creates new a new assignment" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.to change {
           EthereumOracle.count
         }.by(+1)
@@ -41,7 +58,7 @@ describe ContractBuilder, type: :model do
 
       it "creates new outcomes if there are any" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.to change {
           EscrowOutcome.count
         }.by(+2)
@@ -52,7 +69,7 @@ describe ContractBuilder, type: :model do
 
         it "still creates everything else" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             Contract.count
           }.by(+1)
@@ -65,7 +82,7 @@ describe ContractBuilder, type: :model do
 
         it "creates a contract" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             Contract.count
           }.by(+1)
@@ -73,7 +90,7 @@ describe ContractBuilder, type: :model do
 
         it "creates new a new assignment for the adapter of that type" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             adapter.reload.assignments.count
           }.by(+1)
@@ -85,7 +102,7 @@ describe ContractBuilder, type: :model do
 
         it "still creates a contract" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             Contract.count
           }.by(+1)
@@ -93,7 +110,7 @@ describe ContractBuilder, type: :model do
 
         it "creates a new custom bitcoin expectation" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             CustomExpectation.count
           }.by(+1)
@@ -101,7 +118,7 @@ describe ContractBuilder, type: :model do
 
         it "creates a new assignment schedule" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             AssignmentSchedule.count
           }.by(+1)
@@ -117,7 +134,7 @@ describe ContractBuilder, type: :model do
 
         it "still creates a contract" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             Contract.count
           }.by(+1)
@@ -125,7 +142,7 @@ describe ContractBuilder, type: :model do
 
         it "creates new a new SEO expectation" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             EthereumOracle.count
           }.by(+1)
@@ -133,7 +150,7 @@ describe ContractBuilder, type: :model do
 
         it "creates a new assignment schedule" do
           expect {
-            ContractBuilder.perform(json)
+            subject
           }.to change {
             AssignmentSchedule.count
           }.by(+1)
@@ -149,7 +166,7 @@ describe ContractBuilder, type: :model do
 
           it "creates a new assignment schedule" do
             expect {
-              ContractBuilder.perform(json)
+              subject
             }.to change {
               AssignmentSchedule.count
             }.by(+1)
@@ -182,7 +199,7 @@ describe ContractBuilder, type: :model do
 
       it "does not create a new contract" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.not_to change {
           Contract.count
         }
@@ -190,7 +207,7 @@ describe ContractBuilder, type: :model do
 
       it "does not create new terms" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.not_to change {
           Term.count
         }
@@ -207,8 +224,6 @@ describe ContractBuilder, type: :model do
 
         expect(EthereumOracle).to receive(:new)
           .and_raise(error_text)
-
-        contract = ContractBuilder.perform(json)
 
         expect(contract).not_to be_persisted
         expect(contract.errors.full_messages).to include error_text
@@ -232,7 +247,7 @@ describe ContractBuilder, type: :model do
 
       it "does not create a new contract" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.not_to change {
           Contract.count
         }
@@ -240,7 +255,7 @@ describe ContractBuilder, type: :model do
 
       it "does not create new terms" do
         expect {
-          ContractBuilder.perform(json)
+          subject
         }.not_to change {
           Term.count
         }
