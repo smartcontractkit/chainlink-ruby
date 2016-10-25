@@ -11,17 +11,6 @@ describe Contract, type: :model do
     it { is_expected.not_to have_valid(:xid).when(nil, '') }
   end
 
-  describe "after create" do
-    let(:nxt) { instance_double NxtClient }
-    let(:contract) { Contract.new(xid: 'XID', json_body: contract_json(id: 'XID')) }
-
-    it "does not raise errors sending to NXT" do
-      expect {
-        contract.save
-      }.not_to raise_error
-    end
-  end
-
   describe "#check_status" do
     let(:contract) { factory_create :contract }
     let!(:term1) { factory_create :term, contract: contract, status: status1 }

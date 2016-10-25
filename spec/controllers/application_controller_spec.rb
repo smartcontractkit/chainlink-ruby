@@ -6,7 +6,6 @@ describe ApplicationController, type: :controller do
 
       expect(response_json.name).to eq ENV['NODE_NAME']
       expect(response_json.bitcoin_pub).to eq ENV['BITCOIN_PUB_KEY']
-      expect(response_json.id).to eq ENV['NXT_ACCOUNT']
     end
   end
 
