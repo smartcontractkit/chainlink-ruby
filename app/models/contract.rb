@@ -4,6 +4,7 @@ class Contract < ActiveRecord::Base
   FAILED = 'failed'
   IN_PROGRESS = 'in progress'
 
+  belongs_to :coordinator
   has_many :terms, inverse_of: :contract
 
   validates :json_body, presence: true

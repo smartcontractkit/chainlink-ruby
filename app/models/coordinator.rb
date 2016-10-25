@@ -2,6 +2,7 @@ class Coordinator < ActiveRecord::Base
   URL_REGEXP = File.read 'lib/assets/custom_uri_regexp.txt'
 
   has_many :assignments
+  has_many :contracts
 
   validates :key, presence: true
   validates :secret, presence: true
