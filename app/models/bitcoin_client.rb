@@ -3,7 +3,6 @@ class BitcoinClient
   include BinaryAndHex
 
   SATOSHIS_PER_BTC = 100_000_000.to_f
-  CONFIRMATION_MINIMUM = ENV['BITCOIN_CONFIRMATION_MINIMUM'].to_i
 
   def get_transaction(txid)
     tx_hex = client.get_transaction_hex txid
