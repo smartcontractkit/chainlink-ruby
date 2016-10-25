@@ -6,8 +6,15 @@ class EthereumClient
   include HttpClient
   base_uri ENV['ETHEREUM_URL']
 
+
   def self.tx_url(txid)
     "#{ENV['ETHEREUM_EXPLORER_URL']}/tx/#{txid}"
+  end
+
+  def self.hex(data)
+    return data if data.blank?
+    data = data.to_s(16) if data.is_a? Integer
+    (data[0..1] == '0x') ? data : "0x#{data}"
   end
 
   def account_balance(account)
@@ -104,9 +111,7 @@ class EthereumClient
   end
 
   def to_eth_hex(data)
-    return data if data.blank?
-    data = data.to_s(16) if data.is_a? Integer
-    (data[0..1] == '0x') ? data : "0x#{data}"
+    self.class.hex data
   end
 
 
