@@ -1,6 +1,9 @@
 describe Contract, type: :model do
 
   describe "#initialize" do
+    it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
+    it { is_expected.not_to have_valid(:coordinator).when(nil) }
+
     it { is_expected.to have_valid(:json_body).when(contract_json) }
     it { is_expected.not_to have_valid(:json_body).when(nil, '') }
 

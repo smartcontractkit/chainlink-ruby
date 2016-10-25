@@ -7,6 +7,7 @@ class Contract < ActiveRecord::Base
   belongs_to :coordinator
   has_many :terms, inverse_of: :contract
 
+  validates :coordinator, presence: true
   validates :json_body, presence: true
   validates :status, inclusion: { in: [COMPLETED, FAILED, IN_PROGRESS] }
   validates :xid, presence: true

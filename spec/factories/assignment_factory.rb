@@ -1,9 +1,10 @@
 FactoryGirl.define do
 
   factory :assignment do
-    parameters { { SecureRandom.base64 => SecureRandom.base64 } }
     association :adapter, factory: :input_adapter
     end_at { 1.month.from_now }
+    coordinator
+    parameters { { SecureRandom.base64 => SecureRandom.base64 } }
   end
 
   factory :completed_assignment, parent: :assignment do
