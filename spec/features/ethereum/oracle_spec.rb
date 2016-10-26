@@ -1,12 +1,10 @@
 describe "Ethereum oracle contract integration" do
   before { unstub_ethereum_calls }
 
-  let(:assignment) { factory_build :assignment }
-  let!(:oracle) do
-    factory_create(:ethereum_oracle, ethereum_contract: contract, assignment: assignment)
-  end
-  let(:template) { ethereum_contract_templates :oracle }
-  let(:contract) { EthereumContract.create template: template }
+  let!(:assignment) { factory_create :assignment, adapter: oracle }
+  let(:oracle) { factory_create :ethereum_oracle }
+  let(:template) { EthereumContractTemplate.default }
+  let(:contract) { oracle.ethereum_contract }
   let(:genesis_tx) { contract.genesis_transaction }
   let(:oracle_value) { SecureRandom.base64 }
 

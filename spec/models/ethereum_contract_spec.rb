@@ -27,6 +27,16 @@ describe EthereumContract, type: :model do
     end
   end
 
+  describe "on update" do
+    let!(:contract) { factory_create :ethereum_contract }
+
+    it "assigns an account and code template" do
+      expect(contract.account).not_to receive(:send_transaction)
+
+      contract.update_attributes! updated_at: 1.minute.from_now
+    end
+  end
+
   describe "#confirmed" do
     let(:address) { ethereum_address }
     let(:contract) { factory_create :ethereum_contract }

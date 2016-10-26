@@ -8,9 +8,9 @@ describe EthereumOracleUpdater, type: :model do
 
   describe "#perform" do
     let(:account) { contract.account }
-    let(:contract) { ethereum_contract_factory address: ethereum_address }
+    let(:contract) { oracle.ethereum_contract }
     let(:code_template) { contract.template }
-    let!(:oracle) { ethereum_oracle_factory ethereum_contract: contract }
+    let!(:oracle) { factory_create :ethereum_oracle }
     let(:tx) { factory_create :ethereum_transaction }
 
     before do

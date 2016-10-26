@@ -49,18 +49,6 @@ module SpecHelpers
     })
   end
 
-  def ethereum_contract_factory(options = {})
-    EthereumContract.create({
-      account: options[:account],
-      address: options[:address],
-      template: options[:template],
-    })
-  end
-
-  def ethereum_oracle_factory(options = {})
-    factory_create :ethereum_oracle, options
-  end
-
   def ethereum
     @ethereum ||= EthereumClient.new
   end

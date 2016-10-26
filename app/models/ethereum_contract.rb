@@ -12,7 +12,7 @@ class EthereumContract < ActiveRecord::Base
   validates :genesis_transaction, presence: true
   validates :template, presence: true
 
-  before_validation :set_defaults
+  before_validation :set_defaults, on: :create
 
   scope :unconfirmed,  -> { where address: nil }
 
