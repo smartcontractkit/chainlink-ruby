@@ -7,6 +7,8 @@ class EthereumAccount < ActiveRecord::Base
 
   validates :address, format: /\A0x[0-9a-f]{40}\z/, uniqueness: true
 
+  before_validation :generate_key_pair, on: :create, unless: :address
+
   def self.default
     find_by address: ENV['ETHEREUM_ACCOUNT']
   end
@@ -43,6 +45,11 @@ class EthereumAccount < ActiveRecord::Base
 
   def tx_builder
     EthereumTransactionBuilder.new self
+  end
+
+  def generate_key_pair
+    self.key_pair = KeyPair.create
+    self.address = key_pair.ethereum_address
   end
 
 end
