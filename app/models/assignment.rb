@@ -12,6 +12,7 @@ class Assignment < ActiveRecord::Base
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 
   validates :adapter, presence: true
+  validates :coordinator, presence: true
   validates :end_at, presence: true
   validates :start_at, presence: true
   validates :status, inclusion: { in: [COMPLETED, FAILED, IN_PROGRESS] }

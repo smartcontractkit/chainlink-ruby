@@ -29,8 +29,8 @@ describe EthereumContract, type: :model do
 
   describe "#confirmed" do
     let(:address) { ethereum_address }
-    let(:contract) { ethereum_contract_factory }
-    let!(:oracle) { ethereum_oracle_factory ethereum_contract: contract }
+    let(:contract) { factory_create :ethereum_contract }
+    let!(:oracle) { factory_create :assigned_ethereum_oracle, ethereum_contract: contract }
 
     it "sets the contract's address" do
       expect {

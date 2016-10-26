@@ -49,7 +49,7 @@ class Term < ActiveRecord::Base
   def update_status(status)
     if update_attributes status: status
       contract.delay.check_status
-      coordinator.delay.update_term id
+      coordinator_client.delay.update_term id
       expectation.delay.close_out! status
     end
   end
@@ -70,6 +70,10 @@ class Term < ActiveRecord::Base
 
 
   private
+
+  def coordinator
+    contract.coordinator
+  end
 
   def final_outcome
     return success_outcome if completed?

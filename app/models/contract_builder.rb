@@ -1,12 +1,13 @@
 class ContractBuilder
 
-  def self.perform(contract_body)
-    new(contract_body).perform
+  def self.perform(contract_body, coordinator)
+    new(contract_body, coordinator).perform
   end
 
-  def initialize(contract_body)
+  def initialize(contract_body, coordinator)
+    @coordinator = coordinator
     @json_body = contract_body.to_json
-    @contract = Contract.new({
+    @contract = @coordinator.contracts.new({
       json_body: json_body
     })
     @body = Hashie::Mash.new(contract_body)
@@ -28,7 +29,7 @@ class ContractBuilder
 
   private
 
-  attr_reader :agreement, :body, :contract, :json_body
+  attr_reader :agreement, :body, :contract, :coordinator, :json_body
 
   def setup_contract
     return unless agreement.present?
@@ -53,7 +54,7 @@ class ContractBuilder
 
     agreement.terms.each do |term_body|
       outcomes = outcomes_for(term_body.name)
-      term = TermBuilder.perform(term_body, outcomes, start_time)
+      term = TermBuilder.perform(term_body, outcomes, start_time, coordinator)
       contract.terms += [term]
     end
   end

@@ -1,15 +1,16 @@
 class TermBuilder
 
-  def self.perform(body, outcomes, start_time)
-    new(body, outcomes, start_time).perform
+  def self.perform(body, outcomes, start_time, coordinator)
+    new(body, outcomes, start_time, coordinator).perform
   end
 
-  def initialize(body, outcomes, start_time)
+  def initialize(body, outcomes, start_time, coordinator)
     @body = body
     @expectation_body = body.expected
     @outcomes = outcomes
     @start_time = start_time
     @type = expectation_body.type
+    @coordinator = coordinator
     determine_schedule
     determine_adapter
   end
@@ -29,7 +30,7 @@ class TermBuilder
 
   private
 
-  attr_reader :adapter, :body, :expectation_body,
+  attr_reader :adapter, :body, :coordinator, :expectation_body,
     :outcomes, :schedule, :start_time, :type
 
   def end_at
@@ -46,6 +47,7 @@ class TermBuilder
   def expectation
     if adapter.valid? && adapter.persisted?
       adapter.create_assignment({
+        coordinator: coordinator,
         end_at: end_at,
         parameters: expectation_body,
         schedule_attributes: schedule,

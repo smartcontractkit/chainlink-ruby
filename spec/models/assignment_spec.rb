@@ -4,6 +4,9 @@ describe Assignment, type: :model do
     it { is_expected.to have_valid(:adapter).when(factory_create(:input_adapter)) }
     it { is_expected.not_to have_valid(:adapter).when(nil) }
 
+    it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
+    it { is_expected.not_to have_valid(:coordinator).when(nil) }
+
     it { is_expected.to have_valid(:json_parameters).when({a: 1}.to_json, nil) }
     it { is_expected.not_to have_valid(:json_parameters).when('blah') }
 

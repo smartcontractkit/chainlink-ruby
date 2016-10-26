@@ -24,7 +24,7 @@ class KeyPair < ActiveRecord::Base
   end
 
   def ethereum_address
-    ethereum_key.to_address if private_key.present?
+    EthereumClient.hex(ethereum_key.to_address) if private_key.present?
   end
 
   def uncompressed_public_key

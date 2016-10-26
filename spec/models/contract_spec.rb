@@ -1,6 +1,9 @@
 describe Contract, type: :model do
 
   describe "#initialize" do
+    it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
+    it { is_expected.not_to have_valid(:coordinator).when(nil) }
+
     it { is_expected.to have_valid(:json_body).when(contract_json) }
     it { is_expected.not_to have_valid(:json_body).when(nil, '') }
 
@@ -9,17 +12,6 @@ describe Contract, type: :model do
 
     it { is_expected.to have_valid(:xid).when('foobar') }
     it { is_expected.not_to have_valid(:xid).when(nil, '') }
-  end
-
-  describe "after create" do
-    let(:nxt) { instance_double NxtClient }
-    let(:contract) { Contract.new(xid: 'XID', json_body: contract_json(id: 'XID')) }
-
-    it "does not raise errors sending to NXT" do
-      expect {
-        contract.save
-      }.not_to raise_error
-    end
   end
 
   describe "#check_status" do

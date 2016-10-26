@@ -2,8 +2,34 @@ describe EthereumAccount, type: :model do
   describe "validations" do
     let(:old_account) { EthereumAccount.create address: ethereum_address }
 
-    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}") }
-    it { is_expected.not_to have_valid(:address).when(old_account.address, nil, '', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
+    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
+    it { is_expected.not_to have_valid(:address).when(old_account.address, '', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
+  end
+
+  describe "on create" do
+
+    context "when no address is specified" do
+      it "creates a new key pair" do
+        account = EthereumAccount.new
+        expect {
+          account.save
+        }.to change {
+          KeyPair.count
+        }.by(+1)
+
+        expect(account.key_pair).to eq(KeyPair.last)
+      end
+    end
+
+    context "when an address is specified" do
+      it "does NOT create a key pair" do
+        expect {
+          EthereumAccount.create address: ethereum_address
+        }.not_to change {
+          KeyPair.count
+        }
+      end
+    end
   end
 
   describe "test environment configuration" do
@@ -13,11 +39,10 @@ describe EthereumAccount, type: :model do
   end
 
   describe "#sign" do
-    let(:account) { EthereumAccount.create key_pair: key_pair }
     let(:tx) { unsigned_ethereum_tx }
 
     context "when the account has a key pair" do
-      let(:key_pair) { KeyPair.new }
+      let(:account) { factory_create :local_ethereum_account }
 
       it "returns returns a signed transaction" do
         signed = account.sign tx
@@ -29,7 +54,7 @@ describe EthereumAccount, type: :model do
     end
 
     context "when the account does not have a key pair" do
-      let(:key_pair) { nil }
+      let(:account) { factory_create :ethereum_account }
 
       it "returns nil" do
         expect(account.sign tx).to be_nil
@@ -78,7 +103,7 @@ describe EthereumAccount, type: :model do
   end
 
   describe "#next_nonce" do
-    let(:account) { EthereumAccount.create address: ethereum_address }
+    let(:account) { factory_create :ethereum_account }
     let(:blockchain_nonce) { 1000 }
     let(:database_nonce) { 99 }
 

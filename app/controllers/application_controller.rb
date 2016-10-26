@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
     render json: {
       bitcoin_pub: @bitcoin_pub,
       name: @name,
-      id: @account_id,
     }
   end
 
@@ -21,7 +20,6 @@ class ApplicationController < ActionController::Base
   def set_identity
     @bitcoin_pub = ENV['BITCOIN_PUB_KEY']
     @name = ENV['NODE_NAME']
-    @account_id = ENV['ACCOUNT_ID'] || ENV['NXT_ACCOUNT']
   end
 
   def render_authentication_message

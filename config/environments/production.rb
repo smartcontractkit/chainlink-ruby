@@ -81,7 +81,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     authentication: :login,
-    domain: ENV['EMAIL_DOMAIN'], # your domain to identify your server when connecting
+    domain: (ENV['EMAIL_DOMAIN'] || 'gmail.com'), # your domain to identify your server when connecting
     enable_starttls_auto: true, # detects and uses STARTTLS
     password: ENV['EMAIL_PASSWORD'], # SMTP password is any valid API key
     port: 587, # ports 587 and 2525 are also supported with STARTTLS

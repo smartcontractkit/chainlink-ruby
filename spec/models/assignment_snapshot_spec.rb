@@ -82,7 +82,7 @@ describe AssignmentSnapshot, type: :model do
       end
 
       it "notifies the coordinator" do
-        expect(CoordinatorClient).to receive(:snapshot) do |id|
+        expect_any_instance_of(CoordinatorClient).to receive_message_chain(:delay, :snapshot) do |id|
           expect(id).to eq(snapshot.id)
         end
 
@@ -108,7 +108,7 @@ describe AssignmentSnapshot, type: :model do
       end
 
       it "does NOT notify the coordinator" do
-        expect(CoordinatorClient).not_to receive(:snapshot)
+        expect_any_instance_of(CoordinatorClient).not_to receive(:snapshot)
 
         snapshot.save
       end
@@ -176,7 +176,7 @@ describe AssignmentSnapshot, type: :model do
 
       context "and it is marked as fulfilled" do
         it "does NOT notify the coordinator" do
-          expect(CoordinatorClient).not_to receive(:snapshot)
+          expect_any_instance_of(CoordinatorClient).not_to receive(:snapshot)
 
           snapshot.update_attributes details: {foo: SecureRandom.base64}, fulfilled: true
         end
@@ -184,7 +184,7 @@ describe AssignmentSnapshot, type: :model do
 
       context "and it is marked as unfulfilled" do
         it "does NOT notify the coordinator" do
-          expect(CoordinatorClient).not_to receive(:snapshot)
+          expect_any_instance_of(CoordinatorClient).not_to receive(:snapshot)
 
           response = snapshot.update_attributes({
             details: {foo: SecureRandom.base64},
@@ -201,8 +201,9 @@ describe AssignmentSnapshot, type: :model do
 
       context "and it is marked as fulfilled" do
         it "does notify the coordinator" do
-          expect(CoordinatorClient).to receive(:snapshot)
-            .with(snapshot.id)
+          expect_any_instance_of(CoordinatorClient).to receive_message_chain(:delay, :snapshot) do |id|
+            expect(id).to eq(snapshot.id)
+          end
 
           snapshot.update_attributes details: {foo: SecureRandom.base64}, fulfilled: true
         end
@@ -210,7 +211,7 @@ describe AssignmentSnapshot, type: :model do
 
       context "and it is marked as unfulfilled" do
         it "does NOT notify the coordinator" do
-          expect(CoordinatorClient).not_to receive(:snapshot)
+          expect_any_instance_of(CoordinatorClient).not_to receive(:snapshot)
 
           snapshot.update_attributes details: {foo: SecureRandom.base64}, fulfilled: false
         end

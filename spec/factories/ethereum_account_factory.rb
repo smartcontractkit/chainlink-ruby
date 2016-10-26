@@ -5,7 +5,7 @@ FactoryGirl.define do
   end
 
   factory :local_ethereum_account, parent: :ethereum_account do
-    key_pair
+    address { nil }
   end
 
 end

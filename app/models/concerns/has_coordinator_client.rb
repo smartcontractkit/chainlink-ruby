@@ -3,8 +3,8 @@ module HasCoordinatorClient
 
   private
 
-  def coordinator
-    @coordinator ||= CoordinatorClient.new
+  def coordinator_client
+    @coordinator_client ||= CoordinatorClient.new coordinator
   end
 
 end
