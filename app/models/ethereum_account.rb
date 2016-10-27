@@ -12,7 +12,8 @@ class EthereumAccount < ActiveRecord::Base
   scope :local, -> { joins(:key_pair).where.not('key_pairs.id' => nil) }
 
   def self.default
-    find_by address: ENV['ETHEREUM_ACCOUNT']
+    find_by(address: ENV['ETHEREUM_ACCOUNT']) ||
+      local.order(:created_at).first
   end
 
   def sign(tx)

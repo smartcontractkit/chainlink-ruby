@@ -7,7 +7,6 @@ describe EthereumAccount, type: :model do
   end
 
   describe "on create" do
-
     context "when no address is specified" do
       it "creates a new key pair" do
         account = EthereumAccount.new
@@ -35,16 +34,31 @@ describe EthereumAccount, type: :model do
   describe ".local" do
     subject { EthereumAccount.local }
 
-    let(:local) { factory_create :local_ethereum_account }
-    let(:not_local) { factory_create :ethereum_account }
+    let!(:local) { factory_create :local_ethereum_account }
+    let!(:not_local) { factory_create :ethereum_account }
 
     it { is_expected.to include local }
     it { is_expected.not_to include not_local }
   end
 
-  describe "test environment configuration" do
+  describe ".default" do
+    let!(:local1) { factory_create :local_ethereum_account }
+    let!(:local2) { factory_create :local_ethereum_account }
+    let!(:not_local1) { factory_create :ethereum_account }
+    let!(:not_local2) { factory_create :ethereum_account }
+
     it "has the same Ethereum default account as is seeded" do
-      expect(ethereum_accounts(:default).address).to eq(ENV['ETHEREUM_ACCOUNT'])
+      expect(EthereumAccount.default.address).to eq(ENV['ETHEREUM_ACCOUNT'])
+    end
+
+    context "when the account specified is not available" do
+      before do
+        EthereumAccount.find_by(address: ENV['ETHEREUM_ACCOUNT']).destroy
+      end
+
+      it "uses the first local account" do
+        expect(EthereumAccount.default).to eq(EthereumAccount.local.first)
+      end
     end
   end
 
