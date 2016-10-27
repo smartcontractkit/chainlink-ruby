@@ -32,6 +32,16 @@ describe EthereumAccount, type: :model do
     end
   end
 
+  describe ".local" do
+    subject { EthereumAccount.local }
+
+    let(:local) { factory_create :local_ethereum_account }
+    let(:not_local) { factory_create :ethereum_account }
+
+    it { is_expected.to include local }
+    it { is_expected.not_to include not_local }
+  end
+
   describe "test environment configuration" do
     it "has the same Ethereum default account as is seeded" do
       expect(ethereum_accounts(:default).address).to eq(ENV['ETHEREUM_ACCOUNT'])
