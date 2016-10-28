@@ -7,6 +7,9 @@ class KeyPair < ActiveRecord::Base
 
   before_validation :generate_keys, on: :create
 
+  scope :unowned, -> { where owner: nil }
+
+
   def self.key_for_tx(tx)
     public_keys = BitcoinClient.new.public_keys_for_tx(tx)
     where("public_key IN (?)", public_keys).first

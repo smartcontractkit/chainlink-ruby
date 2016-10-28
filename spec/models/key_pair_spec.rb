@@ -26,6 +26,16 @@ describe KeyPair, type: :model do
     end
   end
 
+  describe ".unowned" do
+    subject { KeyPair.unowned }
+
+    let!(:unowned) { KeyPair.create }
+    let!(:owned) { factory_create(:local_ethereum_account).key_pair }
+
+    it { is_expected.to include unowned }
+    it { is_expected.not_to include owned }
+  end
+
   describe "#generate_keys" do
     context "when a private key already exists" do
       let(:key_pair) { KeyPair.new private_key: SecureRandom.hex(32) }
