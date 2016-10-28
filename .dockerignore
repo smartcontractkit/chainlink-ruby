@@ -1,0 +1,8 @@
+log/
+spec/
+tmp/
+.env*
+.git/
+.gitignore
+.rspec
+.ruby-version
