@@ -26,18 +26,6 @@ describe KeyPair, type: :model do
     end
   end
 
-  describe ".attr_encrypted" do
-    let(:key_pair) { KeyPair.create }
-    let(:new_private_key) { Faker::Bitcoin.address }
-
-    it "encrypts the private key" do
-      key_pair.update_attributes private_key: new_private_key
-
-      expect(key_pair.read_attribute(:encryted_private_key)).not_to eq(new_private_key)
-      expect(key_pair.private_key).to eq(new_private_key)
-    end
-  end
-
   describe "#generate_keys" do
     context "when a private key already exists" do
       let(:key_pair) { KeyPair.new private_key: SecureRandom.hex(32) }

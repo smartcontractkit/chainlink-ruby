@@ -7,12 +7,6 @@ class KeyPair < ActiveRecord::Base
 
   before_validation :generate_keys, on: :create
 
-
-  def self.from_base58(base58)
-    key = Bitcoin::Key.from_base58 base58
-    find_or_create_by private_key: private_key
-  end
-
   def self.key_for_tx(tx)
     public_keys = BitcoinClient.new.public_keys_for_tx(tx)
     where("public_key IN (?)", public_keys).first
