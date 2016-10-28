@@ -36,6 +36,25 @@ describe KeyPair, type: :model do
     it { is_expected.not_to include owned }
   end
 
+  describe ".bitcoin_default" do
+    it "has the public key specified in the environment variables" do
+      expect(KeyPair.bitcoin_default.public_key).to eq(ENV['BITCOIN_PUB_KEY'])
+    end
+
+    context "when the key pair specified is not available" do
+      before do
+        KeyPair.bitcoin_default.destroy
+      end
+
+      let!(:unowned1) { KeyPair.create }
+      let!(:unowned2) { KeyPair.create }
+
+      it "returns the first unowned key pair" do
+        expect(KeyPair.bitcoin_default).to eq(KeyPair.unowned.first)
+      end
+    end
+  end
+
   describe "#generate_keys" do
     context "when a private key already exists" do
       let(:key_pair) { KeyPair.new private_key: SecureRandom.hex(32) }

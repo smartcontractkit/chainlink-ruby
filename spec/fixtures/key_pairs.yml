@@ -1,4 +1,11 @@
 ---
+default:
+  id: 1
+  public_key: 0334fc0f40a1cd480c3a1b7d4fe8ba171f9f87b77f1b4fec60b676711aede3f79d
+  private_key: 85af574f5c044d6e450e7ee10f465cdf225a2d76caa9d16be8e71731a14b9723
+  created_at: 2016-06-16 20:51:01.469186000 Z
+  updated_at: 2016-06-16 20:51:01.472037000 Z
+
 holding_key_pair:
   id: 111
   public_key: 03cef197809d2647aa1ef70c7737ee259c96eadd67bfbc8755d9eb6097a547d05d
@@ -50,5 +57,12 @@ ethereum_default:
   private_key: '721b3cb22661758e0a4b9d587cbe5ce672257cde7567bc7cd6640279e686391a'
   owner_type: EthereumAccount
   owner_id: '17'
+  created_at: 2016-06-16 20:51:01.469186000 Z
+  updated_at: 2016-06-16 20:51:01.472037000 Z
+
+unowned:
+  id: 201
+  public_key: 02dfe2792ef7b34a01d036c6dc413fdd6b0deacead68c4607c55afb9e561517a94
+  private_key: 95a30dc1d12ca3c577aa36faa261aab90b430100eb752294c7fcd78151775ce5
   created_at: 2016-06-16 20:51:01.469186000 Z
   updated_at: 2016-06-16 20:51:01.472037000 Z
