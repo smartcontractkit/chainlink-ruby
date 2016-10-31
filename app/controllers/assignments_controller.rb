@@ -37,8 +37,8 @@ class AssignmentsController < InputAdapterController
 
   def assignment_request_params
     {
-      body_json: params.require(:assignment).to_json,
-      body_hash: params[:assignment][:assignmentHash],
+      body_json: params.except(:action, :controller).to_json,
+      body_hash: params[:assignmentHash],
       coordinator: coordinator,
     }
   end

@@ -7,7 +7,7 @@ describe AssignmentsController, type: :controller do
 
     context "when the assignment params are valid" do
       it "returns a successful status" do
-        post :create, assignment: assignment_params
+        post :create, assignment_params
 
         expect(response).to be_success
         expect(response_json['xid']).to be_present
@@ -15,7 +15,7 @@ describe AssignmentsController, type: :controller do
 
       it "creates a new assignment for the coordinator" do
         expect {
-          post :create, assignment: assignment_params
+          post :create, assignment_params
         }.to change {
           coordinator.reload.assignments.count
         }.by(+1)
@@ -26,21 +26,21 @@ describe AssignmentsController, type: :controller do
       let(:assignment_params) { assignment_hash assignmentHash: nil }
 
       it "returns an unsuccessful status" do
-        post :create, assignment: assignment_params
+        post :create, assignment_params
 
         expect(response).to be_bad_request
       end
 
       it "does not create a new assignment" do
         expect {
-          post :create, assignment: assignment_params
+          post :create, assignment_params
         }.not_to change {
           Assignment.count
         }
       end
 
       it "returns the errors associated" do
-        post :create, assignment: assignment_params
+        post :create, assignment_params
 
         expect(response_json['errors']).to be_present
       end
