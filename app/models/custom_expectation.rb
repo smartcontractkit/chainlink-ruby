@@ -79,10 +79,10 @@ class CustomExpectation < ActiveRecord::Base
   def set_up_from_body
     return unless body.present?
 
-    self.comparison = body.comparison
-    self.endpoint = body.endpoint
-    self.fields = body.fields
-    self.final_value = body.value
+    self.comparison = body['comparison']
+    self.endpoint = body['endpoint']
+    self.fields = body['fields']
+    self.final_value = body['value']
   end
 
   def check_api
