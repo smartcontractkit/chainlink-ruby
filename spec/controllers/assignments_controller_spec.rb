@@ -1,4 +1,5 @@
 describe AssignmentsController, type: :controller do
+
   describe "#create" do
     let(:coordinator) { factory_create :coordinator }
     let(:assignment_params) { assignment_hash }
@@ -43,6 +44,42 @@ describe AssignmentsController, type: :controller do
         post :create, assignment_params
 
         expect(response_json['errors']).to be_present
+      end
+    end
+  end
+
+  describe "#show" do
+    let(:coordinator) { factory_create :coordinator }
+    let(:assignment) { factory_create :assignment, coordinator: coordinator }
+    let!(:snapshot) { factory_create :assignment_snapshot, assignment: assignment }
+
+    context "when authenticated" do
+      before { coordinator_log_in coordinator }
+
+      it "returns a summary of the assignment and its snapshots" do
+        get :show, id: assignment.xid
+
+        expect(response).to be_success
+        expect(response_json.xid).to eq(assignment.xid)
+        expect(response_json.snapshots.map(&:xid)).to include(snapshot.xid)
+      end
+    end
+
+    context "when authenticated by a different coordinator" do
+      before { coordinator_log_in factory_create(:coordinator) }
+
+      it "returns a 404" do
+        get :show, id: assignment.xid
+
+        expect(response).to be_not_found
+      end
+    end
+
+    context "when unauthenticated by a different coordinator" do
+      it "returns a 404" do
+        get :show, id: assignment.xid
+
+        expect(response).to be_unauthorized
       end
     end
   end

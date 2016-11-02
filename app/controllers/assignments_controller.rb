@@ -1,7 +1,7 @@
 class AssignmentsController < InputAdapterController
 
-  skip_before_filter :set_adapter, only: [:create]
-  before_filter :set_coordinator, only: [:create]
+  skip_before_filter :set_adapter, only: [:create, :show]
+  before_filter :set_coordinator, only: [:create, :show]
   before_filter :check_adapter_permissions, only: [:update]
 
   def create
@@ -11,6 +11,16 @@ class AssignmentsController < InputAdapterController
       success_response req
     else
       error_response req.errors.full_messages
+    end
+  end
+
+  def show
+    assignment = coordinator.assignments.find_by(xid: params[:id])
+
+    if assignment.present?
+      success_response assignment
+    else
+      response_404 "Assignment not found"
     end
   end
 
