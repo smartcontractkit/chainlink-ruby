@@ -71,6 +71,10 @@ class CustomExpectation < ActiveRecord::Base
     []
   end
 
+  def type_name
+    SCHEMA_NAME
+  end
+
 
   private
 

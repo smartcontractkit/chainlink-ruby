@@ -66,6 +66,10 @@ class EthereumOracle < ActiveRecord::Base
     []
   end
 
+  def type_name
+    SCHEMA_NAME
+  end
+
 
   private
 
