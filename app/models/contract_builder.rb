@@ -60,7 +60,7 @@ class ContractBuilder
   end
 
   def start_time
-    @start_time ||= Time.at body['start-time'].to_i
+    @start_time ||= Time.at((body['start-time'] || body['startTime']).to_i)
   end
 
   def outcomes_for(name)

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   def identity
     render json: {
-      bitcoin_pub: @bitcoin_pub,
+      bitcoinPublicKey: @bitcoin_pub,
       name: @name,
     }
   end
