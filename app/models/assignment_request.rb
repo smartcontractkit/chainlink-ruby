@@ -93,9 +93,9 @@ class AssignmentRequest < ActiveRecord::Base
     if adapter = InputAdapter.for_type(type)
       adapter
     elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
-      CustomExpectation.create(body: expectation_body)
+      CustomExpectation.create(body: assignment_body)
     elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
-      EthereumOracle.create(body: expectation_body)
+      EthereumOracle.create(body: assignment_body)
     else
       raise "no adapter type found for #{type}"
     end

@@ -10,7 +10,7 @@ class CoordinatorClient
     term = Term.find(term_id)
 
     check_acknowledged coordinator_post('/contracts', {
-      status_update: params_for(term, {
+      statusUpdate: params_for(term, {
         signatures: term.outcome_signatures.flatten,
         status: term.status,
       })
@@ -25,9 +25,9 @@ class CoordinatorClient
     check_acknowledged coordinator_post('/oracles', {
       oracle: params_for(oracle.related_term, {
         address: contract.address,
-        json_abi: template.json_abi,
-        read_address: template.read_address,
-        solidity_abi: template.solidity_abi,
+        jsonABI: template.json_abi,
+        readAddress: template.read_address,
+        solidityABI: template.solidity_abi,
       })
     })
   end
@@ -49,7 +49,7 @@ class CoordinatorClient
   def params_for(term, options = {})
     {
       contract: term.try(:contract_xid),
-      node_id: ENV['NODE_NAME'],
+      nodeID: ENV['NODE_NAME'],
       term: term.try(:name),
     }.compact.merge(options)
   end

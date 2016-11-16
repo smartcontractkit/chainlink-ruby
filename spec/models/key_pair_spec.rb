@@ -26,15 +26,32 @@ describe KeyPair, type: :model do
     end
   end
 
-  describe ".attr_encrypted" do
-    let(:key_pair) { KeyPair.create }
-    let(:new_private_key) { Faker::Bitcoin.address }
+  describe ".unowned" do
+    subject { KeyPair.unowned }
 
-    it "encrypts the private key" do
-      key_pair.update_attributes private_key: new_private_key
+    let!(:unowned) { KeyPair.create }
+    let!(:owned) { factory_create(:local_ethereum_account).key_pair }
 
-      expect(key_pair.read_attribute(:encryted_private_key)).not_to eq(new_private_key)
-      expect(key_pair.private_key).to eq(new_private_key)
+    it { is_expected.to include unowned }
+    it { is_expected.not_to include owned }
+  end
+
+  describe ".bitcoin_default" do
+    it "has the public key specified in the environment variables" do
+      expect(KeyPair.bitcoin_default.public_key).to eq(ENV['BITCOIN_PUB_KEY'])
+    end
+
+    context "when the key pair specified is not available" do
+      before do
+        KeyPair.bitcoin_default.destroy
+      end
+
+      let!(:unowned1) { KeyPair.create }
+      let!(:unowned2) { KeyPair.create }
+
+      it "returns the first unowned key pair" do
+        expect(KeyPair.bitcoin_default).to eq(KeyPair.unowned.first)
+      end
     end
   end
 

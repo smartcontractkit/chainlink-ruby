@@ -5,7 +5,7 @@ describe ApplicationController, type: :controller do
       get :identity
 
       expect(response_json.name).to eq ENV['NODE_NAME']
-      expect(response_json.bitcoin_pub).to eq ENV['BITCOIN_PUB_KEY']
+      expect(response_json.bitcoinPublicKey).to eq ENV['BITCOIN_PUB_KEY']
     end
   end
 

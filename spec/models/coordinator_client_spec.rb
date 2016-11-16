@@ -24,9 +24,9 @@ describe CoordinatorClient, type: :model do
         .with("#{coordinator.url}/contracts", {
           basic_auth: instance_of(Hash),
           body: {
-            status_update: {
+            statusUpdate: {
               contract: xid,
-              node_id: ENV['NODE_NAME'],
+              nodeID: ENV['NODE_NAME'],
               signatures: outcome_signatures.flatten,
               status: term_status,
               term: term_name
@@ -73,10 +73,10 @@ describe CoordinatorClient, type: :model do
             oracle: {
               address: ethereum_contract.address,
               contract: contract.xid,
-              json_abi: template.json_abi,
-              node_id: ENV['NODE_NAME'],
-              read_address: template.read_address,
-              solidity_abi: template.solidity_abi,
+              jsonABI: template.json_abi,
+              nodeID: ENV['NODE_NAME'],
+              readAddress: template.read_address,
+              solidityABI: template.solidity_abi,
               term: term.name,
             }
           },
@@ -121,11 +121,11 @@ describe CoordinatorClient, type: :model do
             basic_auth: instance_of(Hash),
             body: {
               contract: contract.xid,
-              assignment_xid: assignment.xid,
+              assignmentXID: assignment.xid,
               description: snapshot.description,
-              description_url: snapshot.description_url,
+              descriptionURL: snapshot.description_url,
               details: snapshot.details,
-              node_id: ENV['NODE_NAME'],
+              nodeID: ENV['NODE_NAME'],
               status: snapshot.status,
               summary: snapshot.summary,
               term: term.name,
@@ -165,11 +165,11 @@ describe CoordinatorClient, type: :model do
           .with("#{coordinator.url}/snapshots", {
             basic_auth: instance_of(Hash),
             body: {
-              assignment_xid: assignment.xid,
+              assignmentXID: assignment.xid,
               description: snapshot.description,
-              description_url: snapshot.description_url,
+              descriptionURL: snapshot.description_url,
               details: snapshot.details,
-              node_id: ENV['NODE_NAME'],
+              nodeID: ENV['NODE_NAME'],
               status: snapshot.status,
               summary: snapshot.summary,
               value: snapshot.value,

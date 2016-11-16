@@ -66,14 +66,18 @@ class EthereumOracle < ActiveRecord::Base
     []
   end
 
+  def type_name
+    SCHEMA_NAME
+  end
+
 
   private
 
   def set_up_from_body
     return unless body.present?
 
-    self.endpoint = body.endpoint
-    self.fields = body.fields
+    self.endpoint = body['endpoint']
+    self.fields = body['fields']
     build_ethereum_contract
   end
 

@@ -1,4 +1,5 @@
 describe AssignmentsController, type: :controller do
+
   describe "#create" do
     let(:coordinator) { factory_create :coordinator }
     let(:assignment_params) { assignment_hash }
@@ -7,7 +8,7 @@ describe AssignmentsController, type: :controller do
 
     context "when the assignment params are valid" do
       it "returns a successful status" do
-        post :create, assignment: assignment_params
+        post :create, assignment_params
 
         expect(response).to be_success
         expect(response_json['xid']).to be_present
@@ -15,7 +16,7 @@ describe AssignmentsController, type: :controller do
 
       it "creates a new assignment for the coordinator" do
         expect {
-          post :create, assignment: assignment_params
+          post :create, assignment_params
         }.to change {
           coordinator.reload.assignments.count
         }.by(+1)
@@ -26,23 +27,59 @@ describe AssignmentsController, type: :controller do
       let(:assignment_params) { assignment_hash assignmentHash: nil }
 
       it "returns an unsuccessful status" do
-        post :create, assignment: assignment_params
+        post :create, assignment_params
 
         expect(response).to be_bad_request
       end
 
       it "does not create a new assignment" do
         expect {
-          post :create, assignment: assignment_params
+          post :create, assignment_params
         }.not_to change {
           Assignment.count
         }
       end
 
       it "returns the errors associated" do
-        post :create, assignment: assignment_params
+        post :create, assignment_params
 
         expect(response_json['errors']).to be_present
+      end
+    end
+  end
+
+  describe "#show" do
+    let(:coordinator) { factory_create :coordinator }
+    let(:assignment) { factory_create :assignment, coordinator: coordinator }
+    let!(:snapshot) { factory_create :assignment_snapshot, assignment: assignment }
+
+    context "when authenticated" do
+      before { coordinator_log_in coordinator }
+
+      it "returns a summary of the assignment and its snapshots" do
+        get :show, id: assignment.xid
+
+        expect(response).to be_success
+        expect(response_json.xid).to eq(assignment.xid)
+        expect(response_json.snapshots.map(&:xid)).to include(snapshot.xid)
+      end
+    end
+
+    context "when authenticated by a different coordinator" do
+      before { coordinator_log_in factory_create(:coordinator) }
+
+      it "returns a 404" do
+        get :show, id: assignment.xid
+
+        expect(response).to be_not_found
+      end
+    end
+
+    context "when unauthenticated by a different coordinator" do
+      it "returns a 404" do
+        get :show, id: assignment.xid
+
+        expect(response).to be_unauthorized
       end
     end
   end

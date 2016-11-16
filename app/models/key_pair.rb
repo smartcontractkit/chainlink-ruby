@@ -7,16 +7,19 @@ class KeyPair < ActiveRecord::Base
 
   before_validation :generate_keys, on: :create
 
+  scope :unowned, -> { where owner: nil }
 
-  def self.from_base58(base58)
-    key = Bitcoin::Key.from_base58 base58
-    find_or_create_by private_key: private_key
+
+  def self.bitcoin_default
+    find_by(public_key: ENV['BITCOIN_PUB_KEY']) ||
+      unowned.order(:created_at).first
   end
 
   def self.key_for_tx(tx)
     public_keys = BitcoinClient.new.public_keys_for_tx(tx)
     where("public_key IN (?)", public_keys).first
   end
+
 
   def bitcoin_address
     return unless public_key.present?

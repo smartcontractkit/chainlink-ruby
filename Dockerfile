@@ -9,7 +9,7 @@ RUN gem install bundler
 WORKDIR /tmp
 ADD Gemfile /tmp/
 ADD Gemfile.lock /tmp/
-RUN bundle install -j 4
+RUN bundle install -j 4 --without development:test
 RUN HOSTIP=`ip -4 addr show scope global dev eth0 | grep inet | awk '{print \$2}' | cut -d / -f 1`
 
 ENV APP_HOME /nayru
@@ -18,4 +18,4 @@ WORKDIR $APP_HOME
 
 ADD . $APP_HOME
 
-CMD ["bundle", "exec", "foreman", "start"]
+CMD ["foreman", "start"]

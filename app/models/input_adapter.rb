@@ -36,6 +36,10 @@ class InputAdapter < ActiveRecord::Base
     assignment_type.schema_errors_for parameters
   end
 
+  def type_name
+    assignment_type.name
+  end
+
 
   private
 

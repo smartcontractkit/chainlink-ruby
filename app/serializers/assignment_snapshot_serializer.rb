@@ -1,10 +1,14 @@
 class AssignmentSnapshotSerializer < ActiveModel::Serializer
 
-  attributes :assignment_xid, :description, :description_url,
+  attributes :assignmentXID, :description, :descriptionURL,
     :details, :status, :summary, :value, :xid
 
-  def assignment_xid
+  def assignmentXID
     assignment.xid
+  end
+
+  def descriptionURL
+    object.description_url
   end
 
 

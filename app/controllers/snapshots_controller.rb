@@ -23,7 +23,7 @@ class SnapshotsController < InputAdapterController
   attr_reader :snapshot
 
   def assignment
-    @assignment ||= adapter.assignments.find_by xid: params[:assignment_xid]
+    @assignment ||= adapter.assignments.find_by xid: assignment_xid
   end
 
   def snapshot_params
@@ -31,18 +31,26 @@ class SnapshotsController < InputAdapterController
       details: params[:details],
       fulfilled: true,
       summary: process_summary(params[:summary]),
-      xid: (params[:id] || params[:xid]),
+      xid: xid,
     })
   end
 
   def ensure_snapshot
-    unless @snapshot = assignment.snapshots.unfulfilled.find_by(xid: params[:xid])
+    unless @snapshot = assignment.snapshots.unfulfilled.find_by(xid: xid)
       error_response 'No eligible snapshots were found.'
     end
   end
 
   def process_summary(summary)
     summary.gsub(ASSIGNMENT_NAME, assignment.name)
+  end
+
+  def xid
+    params[:id] || params[:xid]
+  end
+
+  def assignment_xid
+    params[:assignment_xid] || params[:assignmentXID]
   end
 
 end
