@@ -17,6 +17,7 @@ gem 'pg'
 gem 'puma'
 gem 'rails', '~>4.2.7'
 gem 'sysrandom', require: "sysrandom/securerandom"
+gem 'uglifier'
 
 group :development, :test do
   gem 'dotenv', require: 'dotenv'

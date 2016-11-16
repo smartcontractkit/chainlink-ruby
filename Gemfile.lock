@@ -78,6 +78,7 @@ GEM
     ethereum-base (0.1.4)
       digest-sha3 (~> 1.1)
       rlp (~> 0.6)
+    execjs (2.7.0)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.4.1)
@@ -194,6 +195,8 @@ GEM
     timecop (0.8.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    uglifier (3.0.0)
+      execjs (>= 0.3.0, < 3)
     valid_attribute (2.0.0)
     web-console (2.2.1)
       activemodel (>= 4.0)
@@ -229,6 +232,7 @@ DEPENDENCIES
   spring
   sysrandom
   timecop
+  uglifier
   valid_attribute
   web-console (~> 2.0)
 
