@@ -96,6 +96,12 @@ describe Term, type: :model do
 
         term.update_status Term::FAILED
       end
+
+      it "does not re-notify the contract when the same state is submitted" do
+        expect(term.contract).not_to receive(:delay)
+
+        term.update_status Term::COMPLETED
+      end
     end
 
     context "when the term is failed" do
@@ -113,6 +119,12 @@ describe Term, type: :model do
         expect(term.contract).not_to receive(:delay)
 
         term.update_status Term::COMPLETED
+      end
+
+      it "does not re-notify the contract when the same state is submitted" do
+        expect(term.contract).not_to receive(:delay)
+
+        term.update_status Term::FAILED
       end
     end
 
