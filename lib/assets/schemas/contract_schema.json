@@ -27,7 +27,7 @@
       "description": "publisher",
       "type": "string"
     },
-    "start-time": {
+    "startTime": {
       "description": "start time for term tracking",
       "type": "string"
     }
@@ -36,7 +36,7 @@
     "contract",
     "privacy",
     "source",
-    "start-time"
+    "startTime"
   ],
 
   "definitions": {
