@@ -41,13 +41,17 @@ class Term < ActiveRecord::Base
     status == IN_PROGRESS
   end
 
+  def unfinished?
+    !(completed? || failed?)
+  end
+
   def oracle?
     expectation_type == EthereumOracle.name ||
       (assignment? && expectation.adapter_type == EthereumOracle.name)
   end
 
   def update_status(status)
-    if update_attributes status: status
+    if unfinished? && update_attributes(status: status)
       contract.delay.check_status
       coordinator_client.delay.update_term id
       expectation.delay.close_out! status

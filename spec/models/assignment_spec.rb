@@ -106,7 +106,8 @@ describe Assignment, type: :model do
   end
 
   describe "#close_out!" do
-    let(:assignment) { factory_create :assignment }
+    let(:term) { factory_build :term }
+    let(:assignment) { factory_create :assignment, term: term }
     let(:adapter) { assignment.adapter }
     let(:status) { Assignment::COMPLETED }
 
@@ -123,6 +124,30 @@ describe Assignment, type: :model do
       }.to change {
         assignment.status
       }.from(Assignment::IN_PROGRESS).to(status)
+    end
+
+    context "when the term is already completed" do
+      before do
+        assignment.term.update_attributes status: status
+      end
+
+      it "does not change the assignment's state" do
+        expect {
+          assignment.close_out! status
+        }.not_to change {
+          assignment.status
+        }
+      end
+
+      it "does not continually try to update the status" do
+        expect_any_instance_of(CoordinatorClient).not_to receive(:delay)
+
+        expect {
+          assignment.close_out! status
+        }.not_to change {
+          Delayed::Job.count
+        }
+      end
     end
   end
 

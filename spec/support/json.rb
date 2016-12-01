@@ -48,7 +48,7 @@ module SpecHelpers
       "outcomes": outcomes,
       "privacy": "public",
       "source": "smartcontract.com",
-      "start-time": start_time
+      "startTime": start_time
     }.to_json
   end
 
