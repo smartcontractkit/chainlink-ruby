@@ -6,7 +6,7 @@ class Coordinator < ActiveRecord::Base
 
   validates :key, presence: true
   validates :secret, presence: true
-  validates :url, presence: true, format: { with: /\A#{URL_REGEXP}\z/x }
+  validates :url, format: { with: /\A#{URL_REGEXP}\z/x, allow_blank: true }
 
   before_validation :generate_credentials, on: :create
 

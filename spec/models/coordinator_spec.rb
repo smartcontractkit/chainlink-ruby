@@ -4,8 +4,8 @@ describe Coordinator, type: :model do
     it { is_expected.to have_valid(:key).when(SecureRandom.hex) }
     it { is_expected.to have_valid(:secret).when(SecureRandom.hex) }
 
-    it { is_expected.to have_valid(:url).when("https://www.example.com:1234/api") }
-    it { is_expected.not_to have_valid(:url).when(nil, '', 'www.example.com:1234/api', 'blah') }
+    it { is_expected.to have_valid(:url).when(nil, '', "https://www.example.com:1234/api") }
+    it { is_expected.not_to have_valid(:url).when('www.example.com:1234/api', 'blah') }
   end
 
   describe "on create" do
