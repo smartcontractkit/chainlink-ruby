@@ -131,12 +131,6 @@ describe Term, type: :model do
     context "when the term is in progress" do
       let(:status) { Term::IN_PROGRESS }
       let(:new_status) { Term::COMPLETED }
-      let(:coordinator) { instance_double CoordinatorClient, update_term: true }
-
-      before do
-        allow(CoordinatorClient).to receive_message_chain(:new, :delay)
-          .and_return(coordinator)
-      end
 
       it "changes the term's status" do
         expect {
@@ -153,7 +147,7 @@ describe Term, type: :model do
       end
 
       it "notifiies the contract coordinator" do
-        expect(coordinator).to receive(:update_term)
+        expect(contract.coordinator).to receive(:update_term)
           .with(term.id)
 
         term.update_status new_status

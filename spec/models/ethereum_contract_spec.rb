@@ -57,10 +57,7 @@ describe EthereumContract, type: :model do
     end
 
     it "sends instructions to the frontend" do
-      delayed_coordinator = double
-      expect_any_instance_of(CoordinatorClient).to receive(:delay)
-        .and_return(delayed_coordinator)
-      expect(delayed_coordinator).to receive(:oracle_instructions)
+      expect(oracle.assignment.coordinator).to receive(:oracle_instructions)
         .with(oracle.id)
 
       contract.confirmed address

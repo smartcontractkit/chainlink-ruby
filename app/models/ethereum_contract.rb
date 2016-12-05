@@ -1,7 +1,5 @@
 class EthereumContract < ActiveRecord::Base
 
-  include HasCoordinatorClient
-
   belongs_to :account, class_name: 'EthereumAccount'
   belongs_to :template, class_name: 'EthereumContractTemplate'
   belongs_to :genesis_transaction, class_name: 'EthereumTransaction'
@@ -22,7 +20,7 @@ class EthereumContract < ActiveRecord::Base
     })
 
     ethereum_oracle.delay.check_status
-    coordinator_client.delay.oracle_instructions(ethereum_oracle.id)
+    coordinator.oracle_instructions ethereum_oracle.id
   end
 
   def write_address

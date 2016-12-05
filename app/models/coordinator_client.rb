@@ -7,6 +7,7 @@ class CoordinatorClient
   end
 
   def update_term(term_id)
+    return unless url?
     term = Term.find(term_id)
 
     check_acknowledged coordinator_post('/contracts', {
@@ -18,6 +19,7 @@ class CoordinatorClient
   end
 
   def oracle_instructions(oracle_id)
+    return unless url?
     oracle = EthereumOracle.find(oracle_id)
     contract = oracle.ethereum_contract
     template = contract.template
@@ -33,6 +35,7 @@ class CoordinatorClient
   end
 
   def snapshot(snapshot_id)
+    return unless url?
     snapshot = AssignmentSnapshot.find snapshot_id
     attributes = AssignmentSnapshotSerializer.new(snapshot).attributes
     term = snapshot.assignment.term
@@ -69,13 +72,13 @@ class CoordinatorClient
     }
   end
 
-  def coordinator
-    Coordinator.last
-  end
-
   def coordinator_post(path, params)
     url = coordinator.url + path
     hashie_post(url, params)
+  end
+
+  def url?
+    coordinator.url.present?
   end
 
 end
