@@ -1,7 +1,5 @@
 class Term < ActiveRecord::Base
 
-  include HasCoordinatorClient
-
   COMPLETED = 'completed'
   FAILED = 'failed'
   IN_PROGRESS = 'in progress'
@@ -53,7 +51,7 @@ class Term < ActiveRecord::Base
   def update_status(status)
     if unfinished? && update_attributes(status: status)
       contract.delay.check_status
-      coordinator_client.delay.update_term id
+      coordinator.update_term id
       expectation.delay.close_out! status
     end
   end

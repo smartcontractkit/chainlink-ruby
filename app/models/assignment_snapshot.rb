@@ -1,7 +1,5 @@
 class AssignmentSnapshot < ActiveRecord::Base
 
-  include HasCoordinatorClient
-
   belongs_to :assignment, inverse_of: :snapshots
 
   validates :assignment, presence: true
@@ -83,7 +81,7 @@ class AssignmentSnapshot < ActiveRecord::Base
   end
 
   def report_snapshot
-    coordinator_client.delay.snapshot id
+    coordinator.snapshot id
     self.report_to_coordinator = false
   end
 

@@ -14,12 +14,32 @@ class Coordinator < ActiveRecord::Base
     AssignmentBuilder.perform self, assignment_params
   end
 
+  def update_term(term_id)
+    client.delay.update_term term_id if url?
+  end
+
+  def oracle_instructions(oracle_id)
+    client.delay.oracle_instructions oracle_id if url?
+  end
+
+  def snapshot(snapshot_id)
+    client.delay.snapshot snapshot_id if url?
+  end
+
 
   private
 
   def generate_credentials
     self.key = SecureRandom.urlsafe_base64(32)
     self.secret = SecureRandom.urlsafe_base64(32)
+  end
+
+  def client
+    @client ||= CoordinatorClient.new(self)
+  end
+
+  def url?
+    url.present?
   end
 
 end

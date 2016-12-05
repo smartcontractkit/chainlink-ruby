@@ -82,7 +82,8 @@ describe AssignmentSnapshot, type: :model do
       end
 
       it "notifies the coordinator" do
-        expect_any_instance_of(CoordinatorClient).to receive_message_chain(:delay, :snapshot) do |id|
+        expect_any_instance_of(Coordinator).to receive(:snapshot) do |coordinator, id|
+          expect(coordinator).to eq(assignment.coordinator)
           expect(id).to eq(snapshot.id)
         end
 
@@ -201,9 +202,8 @@ describe AssignmentSnapshot, type: :model do
 
       context "and it is marked as fulfilled" do
         it "does notify the coordinator" do
-          expect_any_instance_of(CoordinatorClient).to receive_message_chain(:delay, :snapshot) do |id|
-            expect(id).to eq(snapshot.id)
-          end
+          expect(snapshot.assignment.coordinator).to receive(:snapshot)
+            .with(snapshot.id)
 
           snapshot.update_attributes details: {foo: SecureRandom.base64}, fulfilled: true
         end
