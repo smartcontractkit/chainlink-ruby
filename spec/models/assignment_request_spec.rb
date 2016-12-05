@@ -43,6 +43,14 @@ describe AssignmentRequest, type: :model do
         coordinator.reload.assignments.count
       }.by(+1)
     end
+
+    it "creates an assignment schedule" do
+      expect {
+        request.save
+      }.to change {
+        AssignmentSchedule.count
+      }.by(+1)
+    end
   end
 
 end

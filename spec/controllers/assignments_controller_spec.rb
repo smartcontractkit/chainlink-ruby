@@ -21,6 +21,14 @@ describe AssignmentsController, type: :controller do
           coordinator.reload.assignments.count
         }.by(+1)
       end
+
+      it "creates a new assignment schedule" do
+        expect {
+          post :create, assignment_params
+        }.to change {
+          AssignmentSchedule.count
+        }.by(+1)
+      end
     end
 
     context "when the assignment params are NOT valid" do
