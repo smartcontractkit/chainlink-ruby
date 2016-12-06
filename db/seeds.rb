@@ -15,18 +15,5 @@ unless KeyPair.bitcoin_default.present?
 end
 
 unless EthereumContractTemplate.any?
-  contract_name = 'Oracle'
-  code = File.read('lib/assets/contracts/Oracle.sol')
-  compiled = SolidityClient.compile code
-  oracle = compiled['contracts'][contract_name]
-
-  EthereumContractTemplate.create!({
-    code: code,
-    construction_gas: (oracle['gasEstimates']['creation'].last * 10),
-    evm_hex: oracle['bytecode'],
-    json_abi: oracle['interface'],
-    read_address: oracle['functionHashes']['current()'],
-    solidity_abi: SolidityClient.sol_abi(contract_name, oracle['interface']),
-    write_address: oracle['functionHashes']['update(bytes32)'],
-  })
+  EthereumContractTemplate.create_contract_template
 end

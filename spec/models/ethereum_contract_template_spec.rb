@@ -23,4 +23,14 @@ describe EthereumContractTemplate, type: :model do
     it { is_expected.not_to have_valid(:write_address).when('', nil) }
   end
 
+  describe ".create_template_contract" do
+    it "creates a new contract template" do
+      expect {
+        EthereumContractTemplate.create_contract_template
+      }.to change {
+        EthereumContractTemplate.count
+      }.by(+1)
+    end
+  end
+
 end
