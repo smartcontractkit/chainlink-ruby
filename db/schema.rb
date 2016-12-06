@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20161025183628) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "api_results", force: :cascade do |t|
     t.text     "parsed_value"
     t.integer  "custom_expectation_id"
