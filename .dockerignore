@@ -1,4 +1,5 @@
 log/
+script/
 spec/
 tmp/
 .env*
@@ -6,3 +7,4 @@ tmp/
 .gitignore
 .rspec
 .ruby-version
+README.md
