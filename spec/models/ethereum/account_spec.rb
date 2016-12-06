@@ -1,6 +1,6 @@
-describe EthereumAccount, type: :model do
+describe Ethereum::Account, type: :model do
   describe "validations" do
-    let(:old_account) { EthereumAccount.create address: ethereum_address }
+    let(:old_account) { Ethereum::Account.create address: ethereum_address }
 
     it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
     it { is_expected.not_to have_valid(:address).when(old_account.address, '', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
@@ -9,7 +9,7 @@ describe EthereumAccount, type: :model do
   describe "on create" do
     context "when no address is specified" do
       it "creates a new key pair" do
-        account = EthereumAccount.new
+        account = Ethereum::Account.new
         expect {
           account.save
         }.to change {
@@ -23,7 +23,7 @@ describe EthereumAccount, type: :model do
     context "when an address is specified" do
       it "does NOT create a key pair" do
         expect {
-          EthereumAccount.create address: ethereum_address
+          Ethereum::Account.create address: ethereum_address
         }.not_to change {
           KeyPair.count
         }
@@ -32,7 +32,7 @@ describe EthereumAccount, type: :model do
   end
 
   describe ".local" do
-    subject { EthereumAccount.local }
+    subject { Ethereum::Account.local }
 
     let!(:local) { factory_create :local_ethereum_account }
     let!(:not_local) { factory_create :ethereum_account }
@@ -48,16 +48,16 @@ describe EthereumAccount, type: :model do
     let!(:not_local2) { factory_create :ethereum_account }
 
     it "has the same Ethereum default account as is seeded" do
-      expect(EthereumAccount.default.address).to eq(ENV['ETHEREUM_ACCOUNT'])
+      expect(Ethereum::Account.default.address).to eq(ENV['ETHEREUM_ACCOUNT'])
     end
 
     context "when the account specified is not available" do
       before do
-        EthereumAccount.find_by(address: ENV['ETHEREUM_ACCOUNT']).destroy
+        Ethereum::Account.find_by(address: ENV['ETHEREUM_ACCOUNT']).destroy
       end
 
       it "uses the first local account" do
-        expect(EthereumAccount.default).to eq(EthereumAccount.local.first)
+        expect(Ethereum::Account.default).to eq(Ethereum::Account.local.first)
       end
     end
   end
@@ -88,7 +88,7 @@ describe EthereumAccount, type: :model do
 
   describe "#send_transaction" do
     let(:key_pair) { KeyPair.new }
-    let(:account) { EthereumAccount.create key_pair: key_pair, address: ethereum_address }
+    let(:account) { Ethereum::Account.create key_pair: key_pair, address: ethereum_address }
     let(:recipient) { ethereum_address }
     let(:options) do
       {
@@ -102,7 +102,7 @@ describe EthereumAccount, type: :model do
       expect {
         account.send_transaction options
       }.to change {
-        EthereumAccount.count
+        Ethereum::Account.count
       }
     end
 
@@ -110,7 +110,7 @@ describe EthereumAccount, type: :model do
       expect {
         account.send_transaction options
       }.to change {
-        EthereumAccount.count
+        Ethereum::Account.count
       }
     end
 

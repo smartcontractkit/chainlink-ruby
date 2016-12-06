@@ -6,8 +6,8 @@ unless Coordinator.any?
   })
 end
 
-unless EthereumAccount.default.present?
-  EthereumAccount.create!
+unless Ethereum::Account.default.present?
+  Ethereum::Account.create!
 end
 
 unless KeyPair.bitcoin_default.present?

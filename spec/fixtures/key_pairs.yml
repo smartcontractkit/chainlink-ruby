@@ -55,7 +55,7 @@ ethereum_default:
   id: 200
   public_key: 04d3533614037f9779673de8e77bc4f585d285ad0be399dcb8054eba4f3499ad9e606b5a8ec6f08c22fbde5e3d93ec9fd73b01033a987fd7bec25c64ed288e9fe0
   private_key: '721b3cb22661758e0a4b9d587cbe5ce672257cde7567bc7cd6640279e686391a'
-  owner_type: EthereumAccount
+  owner_type: Ethereum::Account
   owner_id: '17'
   created_at: 2016-06-16 20:51:01.469186000 Z
   updated_at: 2016-06-16 20:51:01.472037000 Z

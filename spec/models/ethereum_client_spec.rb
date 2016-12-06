@@ -7,7 +7,7 @@ describe EthereumClient, type: :model do
   end
 
   describe "#create_transaction" do
-    let(:account) { EthereumAccount.new address: ethereum_address }
+    let(:account) { Ethereum::Account.new address: ethereum_address }
     let(:data) { SecureRandom.hex }
     let(:gas_amount) { Random.rand(1_000_000) }
     let(:gas_price) { ethereum_gas_price }

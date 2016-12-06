@@ -39,7 +39,7 @@ describe "Ethereum oracle contract integration" do
   end
 
   context "with a contract reading from the oracle" do
-    let(:account) { EthereumAccount.default }
+    let(:account) { Ethereum::Account.default }
     let(:oracle_value) { 'UP' }
 
     it "accepts updates which can be read after confirmation" do

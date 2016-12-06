@@ -1,6 +1,6 @@
 FactoryGirl.define do
 
-  factory :ethereum_account do
+  factory :ethereum_account, class: Ethereum::Account do
     address { "0x#{SecureRandom.hex 20}" }
   end
 

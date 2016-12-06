@@ -57,7 +57,7 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def ethereum_account
-    EthereumAccount.default
+    Ethereum::Account.default
   end
 
   def matches_assignment_schema

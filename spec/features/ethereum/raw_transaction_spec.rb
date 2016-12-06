@@ -4,7 +4,7 @@ describe "building and signing transactions in the app, broadcasting to a node" 
   let(:key) { Eth::Key.new }
   let(:pub) { key.public_bytes }
   let(:address) { key.to_address }
-  let(:account) { EthereumAccount.default }
+  let(:account) { Ethereum::Account.default }
 
 
   it "signs a valid ethereum transaction" do
@@ -24,7 +24,7 @@ describe "building and signing transactions in the app, broadcasting to a node" 
       gas_price: gas_price,
       nonce: 0,
       gas_limit: 100000,
-      to: EthereumAccount.default.address,
+      to: Ethereum::Account.default.address,
       value: (value * 0.9).to_i,
     })
     tx.sign key
