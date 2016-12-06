@@ -1,0 +1,10 @@
+contract Oracle {
+	event Updated(bytes32 current);
+	event UpdatedOwner(address to, address from);
+	function Oracle(bytes32 newCurrent);
+	function current() constant returns (bytes32);
+	function owner() constant returns (address);
+	function setOwner(address newOwner);
+	function update(bytes32 newCurrent);
+	function updatedAt() constant returns (uint256);
+}
