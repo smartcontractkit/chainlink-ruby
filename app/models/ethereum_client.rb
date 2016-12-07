@@ -127,10 +127,14 @@ class EthereumClient
   end
 
   def http_client_auth_params
-    {
-      password: ENV['ETHEREUM_PASSWORD'],
-      username: ENV['ETHEREUM_USERNAME'],
-    }
+    if ENV['ETHEREUM_PASSWORD'].present? && ENV['ETHEREUM_USERNAME'].present?
+      {
+        password: ENV['ETHEREUM_PASSWORD'],
+        username: ENV['ETHEREUM_USERNAME'],
+      }
+    else
+      nil
+    end
   end
 
   def headers

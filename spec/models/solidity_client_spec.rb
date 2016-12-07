@@ -5,7 +5,7 @@ describe SolidityClient, type: :model do
     it "makes a request to the Solidity service" do
       expect(SolidityClient).to receive(:post)
         .with('/compile', {
-          basic_auth: {},
+          basic_auth: nil,
           body: {
             solidity: body
           },
