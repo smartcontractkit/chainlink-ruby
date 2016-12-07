@@ -23,5 +23,7 @@ namespace :db do
       `cat tmp/latest.dump | pg_restore --clean --no-owner -d nayru_development`
     end
   end
+
+  task update: ['db:create', 'db:migrate', 'db:seed']
 end
 

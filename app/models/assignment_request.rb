@@ -44,6 +44,7 @@ class AssignmentRequest < ActiveRecord::Base
       coordinator: coordinator,
       end_at: parse_time(schedule[:endAt]),
       parameters: assignment_body,
+      schedule_attributes: schedule_params,
       start_at: parse_time(schedule[:startAt] || Time.now),
     })
   end
@@ -56,7 +57,7 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def ethereum_account
-    EthereumAccount.default
+    Ethereum::Account.default
   end
 
   def matches_assignment_schema
@@ -101,5 +102,8 @@ class AssignmentRequest < ActiveRecord::Base
     end
   end
 
+  def schedule_params
+    @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
+  end
 
 end

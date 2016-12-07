@@ -18,4 +18,6 @@ WORKDIR $APP_HOME
 
 ADD . $APP_HOME
 
+ENTRYPOINT ["bundle", "exec"]
+
 CMD ["foreman", "start"]

@@ -55,4 +55,22 @@ module SpecHelpers
   def create_assignment_response(options = {})
     double :assignment_response, {errors: nil}.merge(options)
   end
+
+  def port_open?(ip, port, seconds=1)
+    Timeout::timeout(seconds) do
+        begin
+          TCPSocket.new(ip, port).close
+          true
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+          false
+        end
+      end
+    rescue Timeout::Error
+      false
+  end
+
+  def port_closed?(ip, port, seconds=1)
+    !port_open? ip, port, seconds
+  end
+
 end

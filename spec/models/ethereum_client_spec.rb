@@ -7,7 +7,7 @@ describe EthereumClient, type: :model do
   end
 
   describe "#create_transaction" do
-    let(:account) { EthereumAccount.new address: ethereum_address }
+    let(:account) { Ethereum::Account.new address: ethereum_address }
     let(:data) { SecureRandom.hex }
     let(:gas_amount) { Random.rand(1_000_000) }
     let(:gas_price) { ethereum_gas_price }
@@ -17,7 +17,7 @@ describe EthereumClient, type: :model do
     it "posts a new transaction to Ethereum" do
       expect(EthereumClient).to receive(:post)
         .with('/', {
-          basic_auth: instance_of(Hash),
+          basic_auth: nil,
           body: {
             id: random_id,
             jsonrpc: '2.0',
@@ -51,7 +51,7 @@ describe EthereumClient, type: :model do
     it "posts a new transaction to Ethereum" do
       expect(EthereumClient).to receive(:post)
         .with('/', {
-          basic_auth: instance_of(Hash),
+          basic_auth: nil,
           body: {
             id: 7357,
             jsonrpc: '2.0',
@@ -141,7 +141,7 @@ describe EthereumClient, type: :model do
     it "posts a new transaction to Ethereum" do
       expect(EthereumClient).to receive(:post)
         .with('/', {
-          basic_auth: instance_of(Hash),
+          basic_auth: nil,
           body: {
             id: random_id,
             jsonrpc: '2.0',

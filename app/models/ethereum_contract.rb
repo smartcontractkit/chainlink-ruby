@@ -1,6 +1,6 @@
 class EthereumContract < ActiveRecord::Base
 
-  belongs_to :account, class_name: 'EthereumAccount'
+  belongs_to :account, class_name: 'Ethereum::Account'
   belongs_to :template, class_name: 'EthereumContractTemplate'
   belongs_to :genesis_transaction, class_name: 'EthereumTransaction'
   has_one :ethereum_oracle
@@ -35,7 +35,7 @@ class EthereumContract < ActiveRecord::Base
   private
 
   def set_defaults
-    self.account ||= EthereumAccount.default
+    self.account ||= Ethereum::Account.default
     self.template ||= EthereumContractTemplate.default
 
     self.genesis_transaction = account.send_transaction({

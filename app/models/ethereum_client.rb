@@ -36,7 +36,7 @@ class EthereumClient
   def create_transaction(options)
     epost('eth_sendTransaction', {
       data: to_eth_hex(options[:data]),
-      from: eth_account(options[:from] || EthereumAccount.default),
+      from: eth_account(options[:from] || Ethereum::Account.default),
       gas: to_eth_hex(options[:gas]),
       gasPrice: hex_gas_price(options[:gas_price]),
       to: eth_account(options[:to]),
@@ -127,10 +127,14 @@ class EthereumClient
   end
 
   def http_client_auth_params
-    {
-      password: ENV['ETHEREUM_PASSWORD'],
-      username: ENV['ETHEREUM_USERNAME'],
-    }
+    if ENV['ETHEREUM_PASSWORD'].present? && ENV['ETHEREUM_USERNAME'].present?
+      {
+        password: ENV['ETHEREUM_PASSWORD'],
+        username: ENV['ETHEREUM_USERNAME'],
+      }
+    else
+      nil
+    end
   end
 
   def headers
@@ -139,7 +143,7 @@ class EthereumClient
 
   def eth_account(account)
     return if account.blank?
-    account.instance_of?(EthereumAccount) ? account.address : account
+    account.instance_of?(Ethereum::Account) ? account.address : account
   end
 
   def hex_gas_price(price)
