@@ -1,2 +1,1 @@
-Rake::Task[:default].clear
-task default: ['env:test', 'spec']
+task(:default).clear.enhance(['env:test', 'spec'])

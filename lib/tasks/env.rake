@@ -3,4 +3,3 @@ namespace :env do
     Dotenv.overload('.env.test')
   end
 end
-
