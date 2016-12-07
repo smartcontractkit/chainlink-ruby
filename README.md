@@ -26,9 +26,10 @@ foreman start
 ```
 
 ### Testing
+To run the full test suite [geth](https://github.com/ethereum/go-ethereum) must be installed. For the duration of the test run, geth will spin up and listen on port 7434.
+
+To run the full test suite run:
 ```
-npm install -g ethereumjs-testrpc
-testrpc --account="0x721b3cb22661758e0a4b9d587cbe5ce672257cde7567bc7cd6640279e686391a,10000000000000000000000000" # or whatever private key you prefer
 rake
 ```
 
