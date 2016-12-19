@@ -70,4 +70,13 @@ module SpecHelpers
       sleep (1 / try_rate)
     end
   end
+
+  def get_contract_value(contract)
+    result_hex = ethereum.call({
+      to: contract.address,
+      data: contract.template.read_address,
+      gas: 2000000,
+    }).result
+    ethereum.hex_to_utf8(result_hex)
+  end
 end

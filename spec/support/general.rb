@@ -31,17 +31,19 @@ module SpecHelpers
     hex.htb
   end
 
-  def coordinator_log_in(coordinator = factory_create(:coordinator))
-    basic_auth_log_in coordinator.key, coordinator.secret
+  def coordinator_log_in(coordinator = factory_create(:coordinator), env = nil)
+    basic_auth_log_in coordinator.key, coordinator.secret, env
   end
 
-  def input_adapter_log_in(adapter = factory_create(:input_adapter))
-    basic_auth_log_in adapter.username, adapter.password
+  def input_adapter_log_in(adapter = factory_create(:input_adapter), env = nil)
+    basic_auth_log_in adapter.username, adapter.password, env
   end
 
-  def basic_auth_log_in(username, password)
+  def basic_auth_log_in(username, password, env = nil)
+    env ||= request.env
     auth = ActionController::HttpAuthentication::Basic.encode_credentials username, password
-    request.env['HTTP_AUTHORIZATION'] = auth
+    env['HTTP_AUTHORIZATION'] = auth
+    env
   end
 
   def new_bitcoin_address
@@ -50,6 +52,10 @@ module SpecHelpers
 
   def http_response(options = {})
     double(:fake_http_response, {body: {}.to_json, success?: true}.merge(options))
+  end
+
+  def acknowledged_response(options = {})
+    http_response body: {acknowledged_at: Time.now.to_i}.to_json
   end
 
   def create_assignment_response(options = {})
