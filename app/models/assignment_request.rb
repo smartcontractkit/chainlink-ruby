@@ -68,7 +68,7 @@ class AssignmentRequest < ActiveRecord::Base
 
   def schema
     return @schema if @schema.present?
-    json = File.read 'lib/assets/schemas/assignment_schema.json'
+    json = File.read 'lib/assets/schemas/assignment_v0_1_0.json'
     @schema = SchemaValidator.new(json)
   end
 

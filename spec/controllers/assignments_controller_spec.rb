@@ -2,7 +2,7 @@ describe AssignmentsController, type: :controller do
 
   describe "#create" do
     let(:coordinator) { factory_create :coordinator }
-    let(:assignment_params) { assignment_hash }
+    let(:assignment_params) { assignment_0_1_0_hash }
 
     before { coordinator_log_in coordinator }
 
@@ -32,7 +32,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment params are NOT valid" do
-      let(:assignment_params) { assignment_hash assignmentHash: nil }
+      let(:assignment_params) { assignment_0_1_0_hash assignmentHash: nil }
 
       it "returns an unsuccessful status" do
         post :create, assignment_params

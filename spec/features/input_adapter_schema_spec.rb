@@ -73,7 +73,7 @@ describe "assignment validating its type" do
     end
   end
 
-  context "when validating an Bitcoin bond schema" do
+  context "when validating a Bitcoin bond schema" do
     let(:type) { assignment_types(:payment) }
     let(:amount) { 100_000 }
     let(:recipient) { new_bitcoin_address }

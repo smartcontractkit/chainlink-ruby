@@ -5,6 +5,7 @@ describe "assignment creation and performance", type: :request do
   let(:coordinator) { factory_create :coordinator, url: coordinator_url }
   let(:headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
   let(:endpoint) { "https://example.com/api/data" }
+  let(:oracle_value) { "790.28" }
   let(:adapter_params) do
     {
       endpoint: endpoint,
@@ -13,12 +14,11 @@ describe "assignment creation and performance", type: :request do
   end
   let(:adapter_type) { EthereumOracle::SCHEMA_NAME }
   let(:assignment_params) do
-    assignment_json({
+    assignment_0_1_0_json({
       adapterParams: adapter_params,
       adapterType: adapter_type
     })
   end
-  let(:oracle_value) { "790.28" }
 
   before do
     allow(HttpRetriever).to receive(:get)
