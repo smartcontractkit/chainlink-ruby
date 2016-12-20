@@ -1,12 +1,12 @@
-describe EthereumContractConfirmer, type: :model do
+describe Ethereum::ContractConfirmer, type: :model do
   describe "#perform" do
     let!(:contract) { factory_create(:assigned_ethereum_oracle).ethereum_contract }
-    let(:watcher) { EthereumContractConfirmer.new(contract) }
+    let(:watcher) { Ethereum::ContractConfirmer.new(contract) }
     let(:new_address) { ethereum_address }
     let(:response) { ethereum_receipt_response(contract_address: new_address).result }
 
     before do
-      allow_any_instance_of(EthereumClient).to receive(:get_transaction_receipt)
+      allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_receipt)
         .with(contract.genesis_transaction.txid)
         .and_return(response)
     end

@@ -4,7 +4,7 @@ module HasEthereumClient
   private
 
   def ethereum
-    @ethereum ||= EthereumClient.new
+    @ethereum ||= Ethereum::Client.new
   end
 
 end

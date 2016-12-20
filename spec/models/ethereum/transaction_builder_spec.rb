@@ -1,6 +1,6 @@
-describe EthereumTransactionBuilder, type: :model do
+describe Ethereum::TransactionBuilder, type: :model do
   let(:account) { factory_create :local_ethereum_account }
-  let(:builder) { EthereumTransactionBuilder.new account }
+  let(:builder) { Ethereum::TransactionBuilder.new account }
 
   describe "#perform" do
     let(:gas_price) { 123_456_789 }
@@ -8,7 +8,7 @@ describe EthereumTransactionBuilder, type: :model do
     let(:options) { Hash.new }
 
     before do
-      allow_any_instance_of(EthereumClient).to receive(:gas_price)
+      allow_any_instance_of(Ethereum::Client).to receive(:gas_price)
         .and_return(gas_price)
     end
 

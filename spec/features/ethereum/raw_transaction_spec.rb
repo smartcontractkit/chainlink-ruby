@@ -9,7 +9,7 @@ describe "building and signing transactions in the app, broadcasting to a node" 
 
   it "signs a valid ethereum transaction" do
     gas_price = ethereum.gas_price
-    value = EthereumClient::WEI_PER_ETHER
+    value = Ethereum::WEI_PER_ETHER
     response = account.send_transaction({
       gas_limit: 1_000_000,
       to: address,

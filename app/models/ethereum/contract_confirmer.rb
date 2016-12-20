@@ -1,4 +1,4 @@
-class EthereumContractConfirmer
+class Ethereum::ContractConfirmer
 
   include HasEthereumClient
 

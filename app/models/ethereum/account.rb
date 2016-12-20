@@ -50,7 +50,7 @@ module Ethereum
     private
 
     def tx_builder
-      EthereumTransactionBuilder.new self
+      Ethereum::TransactionBuilder.new self
     end
 
     def generate_key_pair

@@ -1,5 +1,5 @@
-describe EthereumOracleUpdater, type: :model do
-  let(:oracle_updater) { EthereumOracleUpdater.new(oracle) }
+describe Ethereum::OracleUpdater, type: :model do
+  let(:oracle_updater) { Ethereum::OracleUpdater.new(oracle) }
 
   before do
     allow_any_instance_of(EthereumOracle).to receive(:current_value)

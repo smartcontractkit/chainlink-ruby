@@ -1,4 +1,4 @@
-class EthereumOracleUpdater
+class Ethereum::OracleUpdater
 
   include HasEthereumClient
 

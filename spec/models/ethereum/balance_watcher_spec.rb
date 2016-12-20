@@ -1,11 +1,11 @@
-describe EthereumBalanceWatcher, type: :model do
+describe Ethereum::BalanceWatcher, type: :model do
 
   describe "#perform" do
     let(:address) { ENV['ETHEREUM_ACCOUNT'] }
     let(:mail) { double Notification }
 
     before do
-      allow_any_instance_of(EthereumClient).to receive(:account_balance)
+      allow_any_instance_of(Ethereum::Client).to receive(:account_balance)
         .and_return(balance)
     end
 
@@ -15,7 +15,7 @@ describe EthereumBalanceWatcher, type: :model do
       it "does NOT send a notification" do
         expect(Notification).not_to receive(:ethereum_balance)
 
-        EthereumBalanceWatcher.perform
+        Ethereum::BalanceWatcher.perform
       end
     end
 
@@ -28,7 +28,7 @@ describe EthereumBalanceWatcher, type: :model do
           .and_return(mail)
         expect(mail).to receive(:deliver_now)
 
-        EthereumBalanceWatcher.perform
+        Ethereum::BalanceWatcher.perform
       end
     end
   end

@@ -50,7 +50,7 @@ module SpecHelpers
   end
 
   def ethereum
-    @ethereum ||= EthereumClient.new
+    @ethereum ||= Ethereum::Client.new
   end
 
   def wait_for_ethereum_confirmation(txid)

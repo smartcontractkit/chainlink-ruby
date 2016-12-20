@@ -29,13 +29,13 @@ module SpecHelpers
 
   def run_ethereum_contract_confirmer
     run_generated_jobs do
-      EthereumContractConfirmer.perform
+      Ethereum::ContractConfirmer.perform
     end
   end
 
   def run_ethereum_confirmation_watcher
     run_generated_jobs do
-      EthereumConfirmationWatcher.perform
+      Ethereum::ConfirmationWatcher.perform
     end
   end
 
@@ -47,7 +47,7 @@ module SpecHelpers
 
   def ethereum_balance_watcher
     run_generated_jobs do
-      EthereumBalanceWatcher.perform
+      Ethereum::BalanceWatcher.perform
     end
   end
 

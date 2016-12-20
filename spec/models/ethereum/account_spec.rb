@@ -115,7 +115,7 @@ describe Ethereum::Account, type: :model do
     end
 
     it "increments the account's next nonce" do
-      allow_any_instance_of(EthereumClient).to receive(:get_transaction_count)
+      allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_count)
         .and_return(0)
 
       expect {
@@ -134,7 +134,7 @@ describe Ethereum::Account, type: :model do
     before do
       account.ethereum_transactions.destroy_all
 
-      allow_any_instance_of(EthereumClient).to receive(:get_transaction_count)
+      allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_count)
         .with(account.address)
         .and_return(blockchain_nonce)
     end

@@ -20,12 +20,12 @@ module MockAndStubHelpers
       allow(CoordinatorClient).to receive(:post)
         .and_return(http_response body: {}.to_json)
 
-      allow(EthereumClient).to receive(:post)
+      allow(Ethereum::Client).to receive(:post)
         .with("/", instance_of(Hash))
         .and_return(http_response body: ethereum_create_transaction_response.to_json)
-      allow_any_instance_of(EthereumClient).to receive(:gas_price)
+      allow_any_instance_of(Ethereum::Client).to receive(:gas_price)
         .and_return(22_333)
-      allow_any_instance_of(EthereumClient).to receive(:get_transaction_count)
+      allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_count)
         .and_return(rand 100_000)
 
       allow(HttpRetriever).to receive(:get)
@@ -47,9 +47,9 @@ module MockAndStubHelpers
   end
 
   def unstub_ethereum_calls
-    allow(EthereumClient).to receive(:post).and_call_original
-    allow_any_instance_of(EthereumClient).to receive(:gas_price).and_call_original
-    allow_any_instance_of(EthereumClient).to receive(:get_transaction_count).and_call_original
+    allow(Ethereum::Client).to receive(:post).and_call_original
+    allow_any_instance_of(Ethereum::Client).to receive(:gas_price).and_call_original
+    allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_count).and_call_original
   end
 
 end

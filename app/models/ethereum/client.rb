@@ -1,7 +1,4 @@
-class EthereumClient
-  WEI_PER_ETHER = 10**18
-  NULL_ACCOUNT = "0x#{'0' * 40}"
-  EMPTY_BYTE = "\x00".encode 'utf-8', 'utf-8', invalid: :replace
+class Ethereum::Client
 
   include HttpClient
   base_uri ENV['ETHEREUM_URL']
@@ -53,7 +50,7 @@ class EthereumClient
   def call(options)
     epost('eth_call', [{
       data: to_eth_hex(options[:data]),
-      from: eth_account(options[:from] || NULL_ACCOUNT),
+      from: eth_account(options[:from] || Ethereum::NULL_ACCOUNT),
       gas: to_eth_hex(options[:gas] || 1_000_000_000),
       gasPrice: hex_gas_price(options[:gas_price]),
       to: eth_account(options[:to]),
@@ -78,7 +75,7 @@ class EthereumClient
   end
 
   def hex_to_utf8(hex)
-    hex_to_bytes32(hex).delete(EMPTY_BYTE)
+    hex_to_bytes32(hex).delete(Ethereum::EMPTY_BYTE)
   end
 
   def hex_to_bytes32(hex)

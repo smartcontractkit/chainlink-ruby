@@ -1,5 +1,5 @@
-describe EthereumClient, type: :model do
-  let(:ethereum) { EthereumClient.new }
+describe Ethereum::Client, type: :model do
+  let(:ethereum) { Ethereum::Client.new }
   let(:random_id) { 7357 }
 
   before do
@@ -15,7 +15,7 @@ describe EthereumClient, type: :model do
     let(:stubbed_response) { ethereum_create_transaction_response(txid: txid) }
 
     it "posts a new transaction to Ethereum" do
-      expect(EthereumClient).to receive(:post)
+      expect(Ethereum::Client).to receive(:post)
         .with('/', {
           basic_auth: nil,
           body: {
@@ -34,7 +34,7 @@ describe EthereumClient, type: :model do
           headers: instance_of(Hash)
         }).and_return(http_response body: stubbed_response.to_json)
 
-      response = EthereumClient.new.create_transaction({
+      response = Ethereum::Client.new.create_transaction({
         gas: gas_amount,
         gas_price: gas_price,
         from: account,
@@ -49,7 +49,7 @@ describe EthereumClient, type: :model do
     let(:txid) { ethereum_txid }
 
     it "posts a new transaction to Ethereum" do
-      expect(EthereumClient).to receive(:post)
+      expect(Ethereum::Client).to receive(:post)
         .with('/', {
           basic_auth: nil,
           body: {
@@ -61,7 +61,7 @@ describe EthereumClient, type: :model do
           headers: instance_of(Hash)
         }).and_return(http_response body: ethereum_receipt_response(transaction_hash: txid).to_json)
 
-      response = EthereumClient.new.get_transaction_receipt(txid)
+      response = Ethereum::Client.new.get_transaction_receipt(txid)
 
       expect(response.transactionHash).to eq(txid)
     end
@@ -139,7 +139,7 @@ describe EthereumClient, type: :model do
     let(:stubbed_response) { ethereum_create_transaction_response(txid: txid) }
 
     it "posts a new transaction to Ethereum" do
-      expect(EthereumClient).to receive(:post)
+      expect(Ethereum::Client).to receive(:post)
         .with('/', {
           basic_auth: nil,
           body: {
@@ -151,7 +151,7 @@ describe EthereumClient, type: :model do
           headers: instance_of(Hash)
         }).and_return(http_response body: stubbed_response.to_json)
 
-      response = EthereumClient.new.send_raw_transaction(tx_hex)
+      response = Ethereum::Client.new.send_raw_transaction(tx_hex)
       expect(response.txid).to eq(txid)
     end
   end
