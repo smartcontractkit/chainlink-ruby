@@ -10,6 +10,7 @@ class AssignmentSnapshot < ActiveRecord::Base
 
   before_validation :set_up, on: :create
   before_validation :check_fulfillment
+  after_create :create_adapter_snapshots
   after_save :report_snapshot, if: :report_to_coordinator
 
   scope :unfulfilled, -> { where fulfilled: false }
@@ -88,6 +89,12 @@ class AssignmentSnapshot < ActiveRecord::Base
 
   def coordinator
     assignment.coordinator
+  end
+
+  def create_adapter_snapshots
+    assignment.adapter_assignments.each do |adapter_assignment|
+      adapter_snapshots.create(adapter_assignment: adapter_assignment)
+    end
   end
 
 end

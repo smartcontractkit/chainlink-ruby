@@ -47,6 +47,23 @@ describe AssignmentSnapshot, type: :model do
       }.from(nil)
     end
 
+    context "with adapters" do
+      before do
+        factory_create :adapter_assignment, assignment: assignment
+        factory_create :adapter_assignment, assignment: assignment
+        factory_create :adapter_assignment, assignment: assignment
+        assignment.reload
+      end
+
+      it "creates an adapter snapshot for each adapter of the assignment" do
+        expect {
+          snapshot.save
+        }.to change {
+          snapshot.adapter_snapshots.count
+        }.by(+3)
+      end
+    end
+
     context "when the adapter responds with more information" do
       let(:status) { Term::IN_PROGRESS }
       let(:value) { SecureRandom.hex }
