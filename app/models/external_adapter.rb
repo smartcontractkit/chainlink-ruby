@@ -1,6 +1,7 @@
 class ExternalAdapter < ActiveRecord::Base
 
   belongs_to :assignment_type
+  has_many :adapter_assignment, as: :adapter
   has_many :assignments, as: :adapter
 
   validates :assignment_type, presence: true

@@ -2,6 +2,7 @@ class CustomExpectation < ActiveRecord::Base
   SCHEMA_NAME = 'bitcoinComparisonJSON'
   URL_REGEXP = File.read 'lib/assets/custom_uri_regexp.txt'
 
+  has_one :adapter_assignment, as: :adapter
   has_one :assignment, as: :adapter
   has_one :term, as: :expectation, inverse_of: :expectation
   has_many :api_results, inverse_of: :custom_expectation

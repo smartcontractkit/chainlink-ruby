@@ -2,6 +2,7 @@ class EthereumOracle < ActiveRecord::Base
   SCHEMA_NAME = 'ethereumBytes32JSON'
 
   belongs_to :ethereum_contract
+  has_one :adapter_assignment, as: :adapter
   has_one :assignment, as: :adapter
   has_one :term, as: :expectation
   has_many :writes, class_name: 'EthereumOracleWrite', foreign_key: :oracle_id

@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161221003723) do
+ActiveRecord::Schema.define(version: 20161221035727) do
+
+  create_table "adapter_assignments", force: :cascade do |t|
+    t.string   "adapter_type"
+    t.integer  "adapter_id"
+    t.integer  "assignment_id"
+    t.integer  "index"
+    t.text     "adapter_params_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "api_results", force: :cascade do |t|
     t.text     "parsed_value"

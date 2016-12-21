@@ -9,6 +9,8 @@ class Assignment < ActiveRecord::Base
   has_one :term, as: :expectation, inverse_of: :expectation
   has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
   has_one :schedule, class_name: 'AssignmentSchedule', inverse_of: :assignment
+  has_many :adapters, through: :adapter_assignments
+  has_many :adapter_assignments
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 
   validates :adapter, presence: true
