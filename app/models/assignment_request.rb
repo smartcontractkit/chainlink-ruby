@@ -61,15 +61,17 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def matches_assignment_schema
-    unless schema.validate body_json
-      schema.errors.each {|error| errors.add :body_json, error }
-    end if body_json.present?
+    if schema.present?
+      unless schema.validate body_json
+        schema.errors.each {|error| errors.add :body_json, error }
+      end
+    else
+      errors.add :body_json, "invalid assignment version"
+    end
   end
 
   def schema
-    return @schema if @schema.present?
-    json = File.read 'lib/assets/schemas/assignment_v0_1_0.json'
-    @schema = SchemaValidator.new(json)
+    @schema ||= SchemaValidator.version(body['version']) if body_json.present?
   end
 
   def assignment_body

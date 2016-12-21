@@ -8,6 +8,7 @@ describe AssignmentRequest, type: :model do
     it { is_expected.not_to have_valid(:body_hash).when(nil, '') }
 
     it { is_expected.to have_valid(:body_json).when(assignment_0_1_0_json) }
+    it { is_expected.to have_valid(:body_json).when(assignment_1_0_0_json) }
     it { is_expected.not_to have_valid(:body_json).when(nil, '', {}.to_json) }
 
     it { is_expected.to have_valid(:signature).when(SecureRandom.hex) }
