@@ -2,6 +2,7 @@ class AdapterAssignment < ActiveRecord::Base
 
   belongs_to :adapter, polymorphic: true
   belongs_to :assignment, inverse_of: :adapter_assignments
+  has_many :adapter_snapshots
 
   validates :adapter, presence: true
   validates :assignment, presence: true

@@ -1,6 +1,7 @@
 class AssignmentSnapshot < ActiveRecord::Base
 
   belongs_to :assignment, inverse_of: :snapshots
+  has_many :adapter_snapshots
 
   validates :assignment, presence: true
   validates :summary, presence: true, if: :fulfilled?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161221035727) do
+ActiveRecord::Schema.define(version: 20161221215140) do
 
   create_table "adapter_assignments", force: :cascade do |t|
     t.string   "adapter_type"
@@ -19,6 +19,19 @@ ActiveRecord::Schema.define(version: 20161221035727) do
     t.integer  "assignment_id"
     t.integer  "index"
     t.text     "adapter_params_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "adapter_snapshots", force: :cascade do |t|
+    t.integer  "assignment_snapshot_id"
+    t.integer  "adapter_assignment_id"
+    t.text     "description"
+    t.text     "description_url"
+    t.text     "details_json"
+    t.boolean  "fulfilled",              default: false
+    t.text     "summary"
+    t.text     "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
