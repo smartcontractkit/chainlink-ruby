@@ -8,6 +8,9 @@ class AdapterAssignment < ActiveRecord::Base
   validates :index, uniqueness: { scope: [:assignment] },
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  before_validation :start_tracking, on: :create
+
+
   def parameters
     JSON.parse(adapter_params_json) if adapter_params_json.present?
   end
@@ -15,6 +18,20 @@ class AdapterAssignment < ActiveRecord::Base
   def parameters=(params)
     self.adapter_params_json = params ? params.to_json : nil
     parameters
+  end
+
+
+  private
+
+  def start_tracking
+    return if assignment.blank? || adapter.blank?
+    response = adapter.start assignment
+
+    if response.errors.present?
+      response.errors.each do |error_message|
+        errors.add(:base, "Adapter: #{error_message}")
+      end
+    end
   end
 
 end

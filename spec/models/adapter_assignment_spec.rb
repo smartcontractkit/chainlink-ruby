@@ -17,6 +17,24 @@ describe AdapterAssignment, type: :model do
 
       it { is_expected.not_to have_valid(:index).when(old.index) }
     end
+
+    context "when the adapter gets an error" do
+      let(:adapter_assignment) { factory_build :adapter_assignment }
+      let(:adapter) { adapter_assignment.adapter }
+      let(:assignment) { adapter_assignment.assignment }
+      let(:remote_error_message) { 'big errors. great job.' }
+
+      it "includes the adapter error" do
+        expect(adapter).to receive(:start)
+          .with(assignment)
+          .and_return(create_assignment_response errors: [remote_error_message])
+
+        adapter_assignment.save
+
+        full_messages = adapter_assignment.errors.full_messages
+        expect(full_messages).to include("Adapter: #{remote_error_message}")
+      end
+    end
   end
 
 end
