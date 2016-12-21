@@ -34,7 +34,7 @@ describe AssignmentSnapshot, type: :model do
     end
 
     before do
-      allow_any_instance_of(InputAdapter).to receive(:get_status)
+      allow_any_instance_of(ExternalAdapter).to receive(:get_status)
         .with(snapshot)
         .and_return(hashie adapter_response)
     end

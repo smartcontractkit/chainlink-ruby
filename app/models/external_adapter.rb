@@ -1,4 +1,4 @@
-class InputAdapter < ActiveRecord::Base
+class ExternalAdapter < ActiveRecord::Base
 
   belongs_to :assignment_type
   has_many :assignments, as: :adapter
@@ -44,7 +44,7 @@ class InputAdapter < ActiveRecord::Base
   private
 
   def client
-    @client ||= InputAdapterClient.new(self)
+    @client ||= ExternalAdapterClient.new(self)
   end
 
   def set_up

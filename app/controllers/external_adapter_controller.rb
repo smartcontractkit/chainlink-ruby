@@ -1,4 +1,4 @@
-class InputAdapterController < ApplicationController
+class ExternalAdapterController < ApplicationController
 
   before_filter :set_adapter
 
@@ -10,7 +10,7 @@ class InputAdapterController < ApplicationController
   def authenticate_adapter
     id, password = ActionController::HttpAuthentication::Basic::user_name_and_password request
 
-    unless @adapter = InputAdapter.find_by(username: id, password: password)
+    unless @adapter = ExternalAdapter.find_by(username: id, password: password)
       render_authentication_message
     end
   end

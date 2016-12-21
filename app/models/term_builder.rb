@@ -58,7 +58,7 @@ class TermBuilder
   end
 
   def determine_adapter
-    if @adapter = InputAdapter.for_type(type)
+    if @adapter = ExternalAdapter.for_type(type)
       adapter
     elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
       @adapter = CustomExpectation.create(body: expectation_body)

@@ -104,7 +104,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment is in progress and authenticated" do
-      before { input_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in assignment.adapter }
 
       it "updates the assignment" do
         expect {
@@ -129,7 +129,7 @@ describe AssignmentsController, type: :controller do
 
     context "when the assignment is NOT in progress" do
       before do
-        input_adapter_log_in assignment.adapter
+        external_adapter_log_in assignment.adapter
         assignment.update_attributes status: Assignment::FAILED
       end
 
@@ -146,7 +146,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the requester is not authorized" do
-      before { input_adapter_log_in }
+      before { external_adapter_log_in }
 
       it "responds with an error" do
         expect {

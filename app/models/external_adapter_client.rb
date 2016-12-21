@@ -1,4 +1,4 @@
-class InputAdapterClient
+class ExternalAdapterClient
 
   include HttpClient
 

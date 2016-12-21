@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025183628) do
+ActiveRecord::Schema.define(version: 20161221003723) do
 
   create_table "api_results", force: :cascade do |t|
     t.text     "parsed_value"
@@ -186,7 +186,7 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.integer  "gas_limit"
   end
 
-  create_table "input_adapters", force: :cascade do |t|
+  create_table "external_adapters", force: :cascade do |t|
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"

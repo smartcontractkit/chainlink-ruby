@@ -1,7 +1,7 @@
 describe Assignment, type: :model do
 
   describe "validations" do
-    it { is_expected.to have_valid(:adapter).when(factory_create(:input_adapter)) }
+    it { is_expected.to have_valid(:adapter).when(factory_create(:external_adapter)) }
     it { is_expected.not_to have_valid(:adapter).when(nil) }
 
     it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }

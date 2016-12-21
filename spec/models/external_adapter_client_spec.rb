@@ -1,11 +1,11 @@
-describe InputAdapterClient, type: :model do
+describe ExternalAdapterClient, type: :model do
   let(:assignment) { factory_create :assignment }
   let(:validator) { assignment.adapter }
-  let(:client) { InputAdapterClient.new(validator) }
+  let(:client) { ExternalAdapterClient.new(validator) }
 
   describe "#create_assignment" do
     it "sends a post message to the validator client" do
-      expect(InputAdapterClient).to receive(:post)
+      expect(ExternalAdapterClient).to receive(:post)
         .with("#{validator.url}/assignments", {
           basic_auth: {
             password: validator.password,
@@ -29,7 +29,7 @@ describe InputAdapterClient, type: :model do
     let(:expected_response) { hashie({a: 1}) }
 
     it "sends a post message to the validator client" do
-      expect(InputAdapterClient).to receive(:post)
+      expect(ExternalAdapterClient).to receive(:post)
         .with("#{validator.url}/assignments/#{assignment.xid}/snapshots", {
           basic_auth: {
             password: validator.password,
@@ -51,7 +51,7 @@ describe InputAdapterClient, type: :model do
     let(:expected_response) { hashie({a: 1}) }
 
     it "sends a post message to the validator client" do
-      expect(InputAdapterClient).to receive(:delete)
+      expect(ExternalAdapterClient).to receive(:delete)
         .with("#{validator.url}/assignments/#{assignment.xid}", {
           basic_auth: {
             password: validator.password,

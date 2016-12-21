@@ -77,7 +77,7 @@ describe ContractBuilder, type: :model do
       end
 
       context "when an expectation type is passed in for an input adapter" do
-        let(:adapter) { factory_create :input_adapter }
+        let(:adapter) { factory_create :external_adapter }
         let(:json) { JSON.parse(contract_json term: term_json(type: adapter.type)) }
 
         it "creates a contract" do

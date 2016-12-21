@@ -35,7 +35,7 @@ module SpecHelpers
     basic_auth_log_in coordinator.key, coordinator.secret, env
   end
 
-  def input_adapter_log_in(adapter = factory_create(:input_adapter), env = nil)
+  def external_adapter_log_in(adapter = factory_create(:external_adapter), env = nil)
     basic_auth_log_in adapter.username, adapter.password, env
   end
 

@@ -91,7 +91,7 @@ class AssignmentRequest < ActiveRecord::Base
   def create_adapter
     return unless assignment_params && type = assignment_params[:adapterType]
 
-    if adapter = InputAdapter.for_type(type)
+    if adapter = ExternalAdapter.for_type(type)
       adapter
     elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
       CustomExpectation.create(body: assignment_body)
