@@ -9,11 +9,10 @@ class Assignment < ActiveRecord::Base
   has_one :term, as: :expectation, inverse_of: :expectation
   has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
   has_one :schedule, class_name: 'AssignmentSchedule', inverse_of: :assignment
-  has_many :adapters, through: :adapter_assignments
-  has_many :adapter_assignments
+  has_many :adapter_assignments, inverse_of: :assignment
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 
-  validates :adapter, presence: true
+  validates :adapter, presence: true, unless: :any_adapters?
   validates :coordinator, presence: true
   validates :end_at, presence: true
   validates :start_at, presence: true
@@ -27,6 +26,10 @@ class Assignment < ActiveRecord::Base
 
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
+
+  def adapters
+    adapter_assignments.map(&:adapter)
+  end
 
   def parameters
     JSON.parse(json_parameters) if json_parameters.present?
@@ -131,6 +134,10 @@ class Assignment < ActiveRecord::Base
     if changed.include?('status') && changed_attributes[:status] != IN_PROGRESS
       errors.add(:status, 'is no longer in progress')
     end
+  end
+
+  def any_adapters?
+    adapters.any?
   end
 
 end

@@ -3,6 +3,13 @@ describe Assignment, type: :model do
   describe "validations" do
     it { is_expected.to have_valid(:adapter).when(factory_create(:external_adapter)) }
     it { is_expected.not_to have_valid(:adapter).when(nil) }
+    context "when the assignment has adapters" do
+      let(:adapter) { factory_create :external_adapter }
+      let(:adapter_assignment) { AdapterAssignment.new adapter: adapter }
+      subject { Assignment.new(adapter_assignments: [adapter_assignment]) }
+
+      it { is_expected.to have_valid(:adapter).when(nil) }
+    end
 
     it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
     it { is_expected.not_to have_valid(:coordinator).when(nil) }
