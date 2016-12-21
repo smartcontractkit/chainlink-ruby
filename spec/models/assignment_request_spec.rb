@@ -17,7 +17,8 @@ describe AssignmentRequest, type: :model do
 
   describe "on creation" do
     let(:coordinator) { factory_create :coordinator }
-    let(:request) { factory_build :assignment_request, coordinator: coordinator }
+    let(:body_json) { assignment_0_1_0_json }
+    let(:request) { factory_build :assignment_request, coordinator: coordinator, body_json: body_json }
 
     it "signs the body hash" do
       expect {
@@ -51,6 +52,34 @@ describe AssignmentRequest, type: :model do
       }.to change {
         AssignmentSchedule.count
       }.by(+1)
+    end
+
+    context "when the assingment is pre-version 1.0" do
+      let(:body_json) { assignment_0_1_0_json }
+
+      before { request.save }
+
+      it "creates an associated assignment" do
+        expect(request.assignment.adapter).to be_present
+      end
+
+      it "does not create a list of assignments" do
+        expect(request.reload.assignment.adapters).to be_empty
+      end
+    end
+
+    context "when the assignment is version 1.0 or greater" do
+      let(:body_json) { assignment_1_0_0_json }
+
+      before { request.save }
+
+      it "creates an associated assignment" do
+        expect(request.assignment.adapter).to be_nil
+      end
+
+      it "does not create a list of assignments" do
+        expect(request.reload.assignment.adapters.size).to eq 2
+      end
     end
   end
 

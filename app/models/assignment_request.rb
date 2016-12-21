@@ -40,7 +40,8 @@ class AssignmentRequest < ActiveRecord::Base
     return unless body.present?
 
     self.assignment ||= build_assignment({
-      adapter: create_adapter,
+      adapter: create_adapter(assignment_params),
+      adapter_assignments: adapter_assignments,
       coordinator: coordinator,
       end_at: parse_time(schedule[:endAt]),
       parameters: assignment_body,
@@ -90,8 +91,8 @@ class AssignmentRequest < ActiveRecord::Base
     Time.at time.to_i
   end
 
-  def create_adapter
-    return unless assignment_params && type = assignment_params[:adapterType]
+  def create_adapter(params)
+    return unless params && type = params[:adapterType]
 
     if adapter = ExternalAdapter.for_type(type)
       adapter
@@ -106,6 +107,20 @@ class AssignmentRequest < ActiveRecord::Base
 
   def schedule_params
     @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
+  end
+
+  def pipeline_params
+    assignment_params[:pipeline] || []
+  end
+
+  def adapter_assignments
+    @adapter_assignments ||= pipeline_params.map.with_index do |adapter_params, index|
+      AdapterAssignment.create({
+        adapter: create_adapter(adapter_params),
+        index: index,
+        parameters: adapter_params[:adapterParams],
+      })
+    end
   end
 
 end

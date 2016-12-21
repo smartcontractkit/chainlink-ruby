@@ -24,7 +24,7 @@ class Assignment < ActiveRecord::Base
   before_validation :set_up, on: :create
   before_validation :start_tracking, on: :create, if: :adapter
 
-  validates_associated :schedule
+  validates_associated :schedule, :adapter_assignments
   accepts_nested_attributes_for :schedule
 
   def adapters
