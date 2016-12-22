@@ -24,4 +24,12 @@ class AdapterSnapshot < ActiveRecord::Base
     adapter_assignment.index
   end
 
+  def adapter
+    adapter_assignment.adapter
+  end
+
+  def assignment
+    adapter_assignment.assignment
+  end
+
 end
