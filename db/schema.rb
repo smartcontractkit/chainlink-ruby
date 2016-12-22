@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161221215140) do
+ActiveRecord::Schema.define(version: 20161222214927) do
 
   create_table "adapter_assignments", force: :cascade do |t|
     t.string   "adapter_type"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20161221215140) do
     t.text     "value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "progress"
   end
 
   create_table "api_results", force: :cascade do |t|
@@ -76,6 +77,8 @@ ActiveRecord::Schema.define(version: 20161221215140) do
     t.text     "summary"
     t.text     "description"
     t.text     "description_url"
+    t.string   "progress"
+    t.integer  "adapter_index"
   end
 
   create_table "assignment_types", force: :cascade do |t|
