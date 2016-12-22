@@ -17,7 +17,7 @@ class AdapterSnapshot < ActiveRecord::Base
   end
 
   def xid
-    "#{assignment_snapshot.xid}:#{index}"
+    "#{assignment_snapshot.xid}=#{index}"
   end
 
   def index

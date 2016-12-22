@@ -31,7 +31,7 @@ describe AdapterSnapshot do
     let(:adapter_assignment) { adapter_snapshot.adapter_assignment }
 
     it "equals the assignment snapshot ID and adapter index" do
-      expect(adapter_snapshot.xid).to eq("#{assignment_snapshot.xid}:#{adapter_assignment.index}")
+      expect(adapter_snapshot.xid).to eq("#{assignment_snapshot.xid}=#{adapter_assignment.index}")
     end
   end
 
