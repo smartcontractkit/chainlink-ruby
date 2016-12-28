@@ -6,6 +6,9 @@ describe AssignmentSnapshot, type: :model do
 
     it { is_expected.to have_valid(:details).when(nil, '', {a: 1}) }
 
+    it { is_expected.to have_valid(:progress).when(nil, 'started', 'completed', 'failed') }
+    it { is_expected.not_to have_valid(:progress).when('', 'foo') }
+
     it { is_expected.to have_valid(:status).when(nil, 'in progress', 'completed', 'failed') }
     it { is_expected.not_to have_valid(:status).when('', 'foo') }
 
@@ -45,6 +48,14 @@ describe AssignmentSnapshot, type: :model do
       }.to change {
         snapshot.xid
       }.from(nil)
+    end
+
+    it "sets the progress to started" do
+      expect {
+        snapshot.save
+      }.to change {
+        snapshot.progress
+      }.from(nil).to(AssignmentSnapshot::STARTED)
     end
 
     context "with adapters" do

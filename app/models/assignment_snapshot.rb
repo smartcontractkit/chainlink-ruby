@@ -1,10 +1,14 @@
 class AssignmentSnapshot < ActiveRecord::Base
+  COMPLETED = 'completed'
+  FAILED = 'failed'
+  STARTED = 'started'
 
   belongs_to :assignment, inverse_of: :snapshots
   has_many :adapter_snapshots
 
   validates :assignment, presence: true
   validates :summary, presence: true, if: :fulfilled?
+  validates :progress, inclusion: { in: [nil, COMPLETED, FAILED, STARTED] }
   validates :status, inclusion: { in: [nil, Term::IN_PROGRESS, Term::COMPLETED, Term::FAILED] }
   validates :xid, presence: true
 
@@ -38,6 +42,7 @@ class AssignmentSnapshot < ActiveRecord::Base
   end
 
   def set_up
+    self.progress ||= STARTED
     self.xid ||= SecureRandom.uuid
     return if fulfilled? || assignment.nil?
     response = adapter.get_status(self)
