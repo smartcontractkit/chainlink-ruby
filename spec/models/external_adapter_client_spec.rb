@@ -36,6 +36,7 @@ describe ExternalAdapterClient, type: :model do
             username: validator.username,
           },
           body: {
+            details: {},
             xid: snapshot.xid,
           },
           headers: {}

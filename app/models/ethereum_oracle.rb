@@ -53,7 +53,7 @@ class EthereumOracle < ActiveRecord::Base
     term || assignment.term
   end
 
-  def get_status(assignment_snapshot)
+  def get_status(assignment_snapshot, _details = {})
     write = updater.perform
     assignment_snapshot.xid = write.txid if write.success?
     write.snapshot_decorator

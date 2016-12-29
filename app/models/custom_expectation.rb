@@ -60,7 +60,7 @@ class CustomExpectation < ActiveRecord::Base
     term || assignment.term
   end
 
-  def get_status(assignment_snapshot)
+  def get_status(assignment_snapshot, _details = {})
     updater.perform.snapshot_decorator
   end
 

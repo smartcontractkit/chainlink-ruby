@@ -21,8 +21,8 @@ class ExternalAdapter < ActiveRecord::Base
     client.start_assignment assignment
   end
 
-  def get_status(status_record)
-    client.assignment_snapshot status_record
+  def get_status(status_record, details = {})
+    client.assignment_snapshot status_record, details
   end
 
   def stop(assignment)
