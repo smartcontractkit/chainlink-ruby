@@ -5,4 +5,8 @@ FactoryGirl.define do
     assignment_snapshot
   end
 
+  factory :fulfilled_adapter_snapshot, parent: :adapter_snapshot do
+    fulfilled { true }
+  end
+
 end

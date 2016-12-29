@@ -32,4 +32,12 @@ class AdapterSnapshot < ActiveRecord::Base
     adapter_assignment.assignment
   end
 
+  def response_errors
+    details['errors'] if details.present?
+  end
+
+  def last?
+    self == assignment_snapshot.adapter_snapshots.last
+  end
+
 end
