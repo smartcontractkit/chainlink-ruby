@@ -73,6 +73,14 @@ describe AssignmentSnapshot, type: :model do
           snapshot.adapter_snapshots.count
         }.by(+3)
       end
+
+      it "sets the adapter index to the first possible" do
+        expect {
+          snapshot.save
+        }.to change {
+          snapshot.adapter_index
+        }.from(nil).to(assignment.adapter_assignments.first.index)
+      end
     end
 
     context "when the adapter responds with more information" do
@@ -296,6 +304,36 @@ describe AssignmentSnapshot, type: :model do
         expect(snapshot.xid).to be_present
         expect(snapshot.details_json).to eq({value: result.parsed_value}.to_json)
       end
+    end
+  end
+
+  describe "#current_adapter_snapshot" do
+    let(:snapshot) { factory_create :assignment_snapshot }
+    let!(:adapter_snapshot1) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
+    let!(:adapter_snapshot2) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
+    let!(:adapter_snapshot3) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
+
+    before do
+      snapshot.update_attributes(adapter_index: adapter_snapshot2.index)
+    end
+
+    it "returns the adapter snapshot that matches the index" do
+      expect(snapshot.current_adapter_snapshot).to eq(adapter_snapshot2)
+    end
+  end
+
+  describe "#current_adapter_snapshot" do
+    let(:snapshot) { factory_create :assignment_snapshot }
+    let!(:adapter_snapshot1) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
+    let!(:adapter_snapshot2) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
+    let!(:adapter_snapshot3) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
+
+    before do
+      snapshot.update_attributes(adapter_index: adapter_snapshot1.index)
+    end
+
+    it "returns the next adapter snapshot above the current index" do
+      expect(snapshot.next_adapter_snapshot).to eq(adapter_snapshot2)
     end
   end
 

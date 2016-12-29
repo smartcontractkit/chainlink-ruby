@@ -4,7 +4,9 @@ class AssignmentSnapshot < ActiveRecord::Base
   STARTED = 'started'
 
   belongs_to :assignment, inverse_of: :snapshots
-  has_many :adapter_snapshots
+  has_many :adapter_snapshots, -> {
+    includes(:adapter_assignment).order("adapter_assignments.index")
+  }
 
   validates :assignment, presence: true
   validates :summary, presence: true, if: :fulfilled?
@@ -30,6 +32,16 @@ class AssignmentSnapshot < ActiveRecord::Base
   def details=(new_details)
     self.details_json = new_details.present? ? new_details.to_json : nil
     self.details
+  end
+
+  def current_adapter_snapshot
+    return if adapter_index.nil? || adapter_snapshots.none?
+    adapter_snapshots.find { |adapter| adapter.index == adapter_index }
+  end
+
+  def next_adapter_snapshot
+    return if adapter_index.nil? || adapter_snapshots.none?
+    adapter_snapshots.find { |adapter| adapter.index > adapter_index }
   end
 
 
@@ -100,6 +112,8 @@ class AssignmentSnapshot < ActiveRecord::Base
     assignment.adapter_assignments.each do |adapter_assignment|
       adapter_snapshots.create(adapter_assignment: adapter_assignment)
     end
+    self.adapter_index ||= adapter_snapshots.first.index if adapter_snapshots.any?
+    save
   end
 
 end
