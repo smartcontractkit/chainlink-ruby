@@ -35,4 +35,33 @@ describe AdapterSnapshot do
     end
   end
 
+  describe "#start" do
+    let(:adapter_snapshot) { factory_create :adapter_snapshot }
+    let(:adapter_assignment) { adapter_snapshot.adapter_assignment }
+
+    context "when parameters are passed in" do
+      let(:params) { { SecureRandom.hex => SecureRandom.hex } }
+
+      it "merges them with the adapter's parameters" do
+        expect_any_instance_of(AdapterSnapshotHandler).to receive(:perform)
+          .with(params.merge({
+            config: adapter_assignment.parameters
+          }))
+
+        adapter_snapshot.start(params)
+      end
+    end
+
+    context "when no parameters are passed in" do
+      it "merges them with the adapter's parameters" do
+        expect_any_instance_of(AdapterSnapshotHandler).to receive(:perform)
+          .with({
+            config: adapter_assignment.parameters
+          })
+
+        adapter_snapshot.start
+      end
+    end
+  end
+
 end

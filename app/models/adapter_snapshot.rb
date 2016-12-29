@@ -40,4 +40,15 @@ class AdapterSnapshot < ActiveRecord::Base
     self == assignment_snapshot.adapter_snapshots.last
   end
 
+  def start(params = {})
+    handler.perform params.merge config: adapter_assignment.parameters
+  end
+
+
+  private
+
+  def handler
+    @handler ||= AdapterSnapshotHandler.new(self)
+  end
+
 end

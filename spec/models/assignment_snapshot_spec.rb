@@ -337,4 +337,23 @@ describe AssignmentSnapshot, type: :model do
     end
   end
 
+  describe "#adapter_response" do
+    let(:snapshot) { factory_create :assignment_snapshot }
+    let(:handler) { instance_double AssignmentSnapshotHandler }
+    let(:adapter_snapshot) { factory_create :adapter_snapshot }
+
+    before do
+      allow(AssignmentSnapshotHandler).to receive(:new)
+        .with(snapshot)
+        .and_return(handler)
+    end
+
+    it "passes the response on to a handler" do
+      expect(handler).to receive(:adapter_response)
+        .with(adapter_snapshot)
+
+      snapshot.adapter_response(adapter_snapshot)
+    end
+  end
+
 end

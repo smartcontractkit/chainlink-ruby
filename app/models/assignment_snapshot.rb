@@ -44,6 +44,10 @@ class AssignmentSnapshot < ActiveRecord::Base
     adapter_snapshots.find { |adapter| adapter.index > adapter_index }
   end
 
+  def adapter_response(adapter_snapshot)
+    handler.adapter_response adapter_snapshot
+  end
+
 
   private
 
@@ -114,6 +118,10 @@ class AssignmentSnapshot < ActiveRecord::Base
     end
     self.adapter_index ||= adapter_snapshots.first.index if adapter_snapshots.any?
     save
+  end
+
+  def handler
+    @handler ||= AssignmentSnapshotHandler.new(self)
   end
 
 end
