@@ -100,6 +100,8 @@ class AssignmentRequest < ActiveRecord::Base
       CustomExpectation.create(body: assignment_body)
     elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
       EthereumOracle.create(body: assignment_body)
+    elsif [JsonAdapter::SCHEMA_NAME].include? type
+      JsonAdapter.create(body: assignment_body)
     else
       raise "no adapter type found for #{type}"
     end
