@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161230015558) do
+ActiveRecord::Schema.define(version: 20161230162330) do
 
   create_table "adapter_assignments", force: :cascade do |t|
     t.string   "adapter_type"
@@ -158,6 +158,13 @@ ActiveRecord::Schema.define(version: 20161230015558) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "nonce",      default: 0
+  end
+
+  create_table "ethereum_bytes32_oracles", force: :cascade do |t|
+    t.string   "address"
+    t.string   "update_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "ethereum_contract_templates", force: :cascade do |t|
