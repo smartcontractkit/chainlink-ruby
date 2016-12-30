@@ -94,16 +94,17 @@ class AssignmentRequest < ActiveRecord::Base
   def create_adapter(params)
     return unless params && type = params[:adapterType]
 
+    adapter_params = params[:adapterParams] || assignment_body
     if adapter = ExternalAdapter.for_type(type)
       adapter
     elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
-      CustomExpectation.create(body: assignment_body)
+      CustomExpectation.create(body: adapter_params)
     elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
-      EthereumOracle.create(body: assignment_body)
+      EthereumOracle.create(body: adapter_params)
     elsif [JsonAdapter::SCHEMA_NAME].include? type
-      JsonAdapter.create(body: assignment_body)
+      JsonAdapter.create(body: adapter_params)
     elsif [Ethereum::Bytes32Oracle::SCHEMA_NAME].include? type
-      Ethereum::Bytes32Oracle.create(body: assignment_body)
+      Ethereum::Bytes32Oracle.create(body: adapter_params)
     else
       raise "no adapter type found for #{type}"
     end
