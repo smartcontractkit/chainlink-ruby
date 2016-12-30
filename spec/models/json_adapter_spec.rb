@@ -23,4 +23,35 @@ describe JsonAdapter do
     end
   end
 
+  describe "#get_status" do
+    let(:adapter) { factory_create :json_adapter }
+    let(:adapter_assignment) { factory_create :adapter_assignment, adapter: adapter }
+    let(:snapshot) { factory_create :adapter_snapshot, adapter_assignment: adapter_assignment }
+    let(:_params) { {dont: 'matter'} }
+    let(:response) { double }
+    let(:value) { '22,the-moon' }
+
+    before do
+      allow(HttpRetriever).to receive(:get)
+        .with(adapter.url)
+        .and_return(response)
+
+      allow(JsonTraverser).to receive(:parse)
+        .with(response, adapter.fields)
+        .and_return(value)
+    end
+
+    it "formats the parsed response of the HTTP request for a snapshot" do
+      status = adapter.get_status(snapshot, _params)
+
+      expect(status.errors).to be_empty
+      expect(status.fulfilled).to be true
+      expect(status.description).to be_nil
+      expect(status.description_url).to be_nil
+      expect(status.details).to eq(value: value)
+      expect(status.summary).to eq("The parsed JSON returned \"#{value}\".")
+      expect(status.value).to eq(value)
+    end
+  end
+
 end
