@@ -64,6 +64,8 @@ describe AssignmentSnapshot, type: :model do
         factory_create :adapter_assignment, assignment: assignment
         factory_create :adapter_assignment, assignment: assignment
         assignment.reload
+
+        allow_any_instance_of(AdapterSnapshot).to receive(:start)
       end
 
       it "creates an adapter snapshot for each adapter of the assignment" do
@@ -83,7 +85,9 @@ describe AssignmentSnapshot, type: :model do
       end
 
       it "starts the adapter snapshot pipeline process" do
-        expect_any_instance_of(AdapterSnapshot).to receive()
+        expect_any_instance_of(AdapterSnapshot).to receive(:start) do |adapter_snapshot|
+          expect(adapter_snapshot).to eq(snapshot.current_adapter_snapshot)
+        end
 
         snapshot.save
       end
