@@ -16,7 +16,7 @@ class AssignmentSnapshot < ActiveRecord::Base
 
   before_validation :set_up, on: :create
   before_validation :check_fulfillment
-  after_create :create_adapter_snapshots
+  before_create :create_adapter_snapshots
   after_save :report_snapshot, if: :report_to_coordinator
 
   scope :unfulfilled, -> { where fulfilled: false }
@@ -113,15 +113,18 @@ class AssignmentSnapshot < ActiveRecord::Base
   end
 
   def create_adapter_snapshots
-    assignment.adapter_assignments.each do |adapter_assignment|
-      adapter_snapshots.create(adapter_assignment: adapter_assignment)
+    adapter_assignments.each do |adapter_assignment|
+      adapter_snapshots.build(adapter_assignment: adapter_assignment)
     end
-    self.adapter_index ||= adapter_snapshots.first.index if adapter_snapshots.any?
-    save
+    self.adapter_index ||= adapter_assignments.collect(&:index).min
   end
 
   def handler
     @handler ||= AssignmentSnapshotHandler.new(self)
+  end
+
+  def adapter_assignments
+    assignment.adapter_assignments
   end
 
 end
