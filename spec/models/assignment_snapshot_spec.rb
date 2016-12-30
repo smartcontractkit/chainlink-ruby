@@ -81,6 +81,12 @@ describe AssignmentSnapshot, type: :model do
           snapshot.adapter_index
         }.from(nil).to(assignment.adapter_assignments.first.index)
       end
+
+      it "starts the adapter snapshot pipeline process" do
+        expect_any_instance_of(AdapterSnapshot).to receive()
+
+        snapshot.save
+      end
     end
 
     context "when the adapter responds with more information" do

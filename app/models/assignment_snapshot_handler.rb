@@ -1,8 +1,8 @@
 class AssignmentSnapshotHandler
 
-  def self.perform(id)
+  def self.start(id)
     snapshot = AssignmentSnapshot.find(id)
-    new(snapshot).perform
+    new(snapshot).start
   end
 
   def initialize(snapshot)
@@ -10,8 +10,8 @@ class AssignmentSnapshotHandler
     @adapter_snapshots = snapshot.adapter_snapshots
   end
 
-  def perform
-    latest_unchecked.check_adapter
+  def start
+    latest_unchecked.start
   end
 
   def adapter_response(adapter_snapshot)
@@ -30,7 +30,7 @@ class AssignmentSnapshotHandler
   attr_reader :adapter_snapshots, :snapshot
 
   def latest_unchecked
-    adapter_snapshots[0]
+    snapshot.current_adapter_snapshot
   end
 
   def assignment

@@ -1,20 +1,30 @@
 describe AssignmentSnapshotHandler do
+  let!(:adapter_assignment1) { factory_create :adapter_assignment }
+  let!(:adapter_assignment2) { factory_create :adapter_assignment, assignment: assignment }
+  let!(:adapter_assignment3) { factory_create :adapter_assignment, assignment: assignment }
+  let(:snapshot) { factory_create(:assignment_snapshot, assignment: assignment) }
+  let(:handler) { AssignmentSnapshotHandler.new snapshot }
+  let(:assignment) { adapter_assignment1.assignment }
+  let(:adapter_snapshot1) { snapshot.adapter_snapshots[0] }
+  let(:adapter_snapshot2) { snapshot.adapter_snapshots[1] }
+  let(:adapter_snapshot3) { snapshot.adapter_snapshots[2] }
+
+
+  before { assignment.reload }
+
+  describe "#start" do
+    it "starts the first adapter snapshot" do
+      expect(adapter_snapshot1).to receive(:start)
+
+      handler.start
+    end
+  end
 
   describe "#adapter_response" do
-    let!(:adapter_assignment1) { factory_create :adapter_assignment }
-    let!(:adapter_assignment2) { factory_create :adapter_assignment, assignment: assignment }
-    let!(:adapter_assignment3) { factory_create :adapter_assignment, assignment: assignment }
-    let(:snapshot) { factory_create(:assignment_snapshot, assignment: assignment) }
-    let(:handler) { AssignmentSnapshotHandler.new snapshot }
-    let(:assignment) { adapter_assignment1.assignment }
     let(:response) { { "result" => { SecureRandom.hex => SecureRandom.hex } } }
-    let(:adapter_snapshot1) { snapshot.adapter_snapshots[0] }
-    let(:adapter_snapshot2) { snapshot.adapter_snapshots[1] }
-    let(:adapter_snapshot3) { snapshot.adapter_snapshots[2] }
     let(:adapter_snapshot) { adapter_snapshot1 }
 
     before do
-      assignment.reload
       expect(assignment.adapters.count).to eq(3)
       expect(adapter_snapshot.reload.assignment_snapshot).to eq(snapshot.reload)
       adapter_snapshot.update_attributes!({
