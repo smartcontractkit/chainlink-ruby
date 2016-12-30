@@ -102,6 +102,8 @@ class AssignmentRequest < ActiveRecord::Base
       EthereumOracle.create(body: assignment_body)
     elsif [JsonAdapter::SCHEMA_NAME].include? type
       JsonAdapter.create(body: assignment_body)
+    elsif [Ethereum::Bytes32Oracle::SCHEMA_NAME].include? type
+      Ethereum::Bytes32Oracle.create(body: assignment_body)
     else
       raise "no adapter type found for #{type}"
     end

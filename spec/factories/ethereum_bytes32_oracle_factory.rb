@@ -4,7 +4,7 @@ FactoryGirl.define do
     body do
       hashie({
         address: (address.present? ? address : ethereum_address),
-        update_address: (update_address.present? ? update_address : SecureRandom.hex),
+        updateAddress: (update_address.present? ? update_address : SecureRandom.hex),
       })
     end
   end
