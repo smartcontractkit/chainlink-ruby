@@ -9,7 +9,7 @@ class EthereumOracle < ActiveRecord::Base
 
   validates :endpoint, format: { with: /\A#{CustomExpectation::URL_REGEXP}\z/x }
   validates :ethereum_contract, presence: true
-  validates :field_list, presence: true
+  validates :fields, presence: true
 
   before_validation :set_up_from_body, on: :create
 
@@ -17,7 +17,7 @@ class EthereumOracle < ActiveRecord::Base
 
 
   def fields=(fields)
-    self.field_list = Array.wrap(fields).to_json
+    self.field_list = Array.wrap(fields).to_json if fields.present?
     self.fields
   end
 

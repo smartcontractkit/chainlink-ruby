@@ -6,8 +6,8 @@ describe EthereumOracle, type: :model do
     it { is_expected.to have_valid(:ethereum_contract).when(EthereumContract.new) }
     it { is_expected.not_to have_valid(:ethereum_contract).when(nil) }
 
-    it { is_expected.to have_valid(:field_list).when('recent', 'recent?!?0?!?high') }
-    it { is_expected.not_to have_valid(:field_list).when(nil, '') }
+    it { is_expected.to have_valid(:fields).when('recent', ['recent', 'high']) }
+    it { is_expected.not_to have_valid(:fields).when(nil, '', []) }
   end
 
   describe "#current_value" do
