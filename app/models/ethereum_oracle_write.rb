@@ -1,7 +1,6 @@
 class EthereumOracleWrite < ActiveRecord::Base
 
-  belongs_to :oracle, class_name: 'EthereumOracle'
-  has_one :assignment, through: :oracle
+  belongs_to :oracle, polymorphic: true
 
   validates :oracle, presence: true
   validates :txid, presence: true
@@ -16,6 +15,10 @@ class EthereumOracleWrite < ActiveRecord::Base
 
   def snapshot_decorator
     AssignmentSnapshot::EthereumOracleWriteDecorator.new self
+  end
+
+  def assignment
+    oracle.assignment
   end
 
 end

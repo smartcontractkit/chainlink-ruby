@@ -5,7 +5,7 @@ class EthereumOracle < ActiveRecord::Base
   has_one :assignment, as: :adapter
   has_one :ethereum_contract, as: :owner
   has_one :term, as: :expectation
-  has_many :writes, class_name: 'EthereumOracleWrite', foreign_key: :oracle_id
+  has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
 
   validates :endpoint, format: { with: /\A#{CustomExpectation::URL_REGEXP}\z/x }
   validates :ethereum_contract, presence: true
