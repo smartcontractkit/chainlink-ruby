@@ -1,6 +1,7 @@
 class EthereumOracle < ActiveRecord::Base
   SCHEMA_NAME = 'ethereumBytes32JSON'
 
+  has_one :account, through: :ethereum_contract
   has_one :adapter_assignment, as: :adapter
   has_one :assignment, as: :adapter
   has_one :ethereum_contract, as: :owner
@@ -14,7 +15,6 @@ class EthereumOracle < ActiveRecord::Base
   before_validation :set_up_from_body, on: :create
 
   attr_accessor :body
-
 
   def fields=(fields)
     self.field_list = Array.wrap(fields).to_json if fields.present?
@@ -54,7 +54,7 @@ class EthereumOracle < ActiveRecord::Base
   end
 
   def get_status(assignment_snapshot, _details = {})
-    write = updater.perform
+    write = updater.perform(current_value)
     assignment_snapshot.xid = write.txid if write.success?
     write.snapshot_decorator
   end
@@ -73,6 +73,14 @@ class EthereumOracle < ActiveRecord::Base
 
   def coordinator
     assignment.coordinator
+  end
+
+  def address
+    ethereum_contract.address
+  end
+
+  def write_address
+    ethereum_contract.write_address
   end
 
 
