@@ -3,7 +3,7 @@ class EthereumOracleWrite < ActiveRecord::Base
   belongs_to :oracle, polymorphic: true
 
   validates :oracle, presence: true
-  validates :txid, presence: true
+  validates :txid, format: /\A0x[0-9a-f]{64}\z/
 
   def term
     oracle.related_term
