@@ -79,7 +79,7 @@ class EthereumOracle < ActiveRecord::Base
     ethereum_contract.address
   end
 
-  def write_address
+  def update_address
     ethereum_contract.write_address
   end
 

@@ -68,4 +68,40 @@ describe Ethereum::Bytes32Oracle do
     end
   end
 
+  describe "#get_status" do
+    let(:adapter) { factory_create :ethereum_bytes32_oracle }
+    let(:adapter_assignment) { factory_create :adapter_assignment, adapter: adapter }
+    let(:snapshot) { factory_create :adapter_snapshot, adapter_assignment: adapter_assignment }
+    let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
+    let(:truncated_value) { value[0..31] }
+    let(:params) { {value: value} }
+    let(:assignment) { adapter.assignment }
+    let(:txid) { ethereum_txid }
+
+    it "formats the response of the oracle" do
+      status = adapter.get_status(snapshot, params)
+
+      expect(status.errors).to be_empty
+      expect(status.fulfilled).to be true
+      expect(status.description).to match /Blockchain record: 0x[0-9a-f]{64}/
+      expect(status.description_url).to match /#{ENV['ETHEREUM_EXPLORER_URL']}\/tx\/0x[0-9a-f]{64}/
+      expect(status.details).to eq({
+        txid: EthereumOracleWrite.last.txid,
+        value: truncated_value,
+      })
+
+      expect(status.value).to eq(truncated_value)
+    end
+
+    it "creates a new ethereum oracle write record" do
+      expect {
+        adapter.get_status(snapshot, params)
+      }.to change {
+        EthereumOracleWrite.count
+      }.by(+1)
+
+      expect(adapter.writes.last).to eq(EthereumOracleWrite.last)
+    end
+  end
+
 end
