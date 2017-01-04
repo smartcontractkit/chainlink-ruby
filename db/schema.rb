@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170103181249) do
+ActiveRecord::Schema.define(version: 20170104001827) do
 
   create_table "adapter_assignments", force: :cascade do |t|
     t.string   "adapter_type"
@@ -165,6 +165,7 @@ ActiveRecord::Schema.define(version: 20170103181249) do
     t.string   "update_address"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ethereum_account_id"
   end
 
   create_table "ethereum_contract_templates", force: :cascade do |t|

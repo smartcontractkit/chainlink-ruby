@@ -4,6 +4,7 @@ module Ethereum
   class Bytes32Oracle < ActiveRecord::Base
     SCHEMA_NAME = 'ethereumBytes32'
 
+    belongs_to :ethereum_account, class_name: 'Ethereum::Account'
     has_one :assignment, as: :adapter
     has_one :ethereum_contract, as: :owner
 
@@ -31,7 +32,11 @@ module Ethereum
         self.update_address = body['updateAddress'] || body['method']
       end
 
-      build_ethereum_contract if address.nil?
+      if address.nil?
+        build_ethereum_contract
+      else
+        self.ethereum_account = Account.default
+      end
     end
   end
 end

@@ -29,6 +29,14 @@ describe Ethereum::Bytes32Oracle do
           oracle.ethereum_contract
         }.from(nil)
       end
+
+      it "does save an ethereum account" do
+        expect {
+          oracle.save
+        }.to change {
+          oracle.ethereum_account
+        }.from(nil).to(Ethereum::Account.default)
+      end
     end
 
     context "when the address does not exist in the body" do
@@ -47,6 +55,14 @@ describe Ethereum::Bytes32Oracle do
           oracle.save
         }.to change {
           oracle.ethereum_contract
+        }.from(nil)
+      end
+
+      it "does NOT save an ethereum account" do
+        expect {
+          oracle.save
+        }.not_to change {
+          oracle.ethereum_account
         }.from(nil)
       end
     end
