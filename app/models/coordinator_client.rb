@@ -18,10 +18,10 @@ class CoordinatorClient
     })
   end
 
-  def oracle_instructions(oracle_id)
+  def oracle_instructions(contract_id)
     return unless url?
-    oracle = EthereumOracle.find(oracle_id)
-    contract = oracle.ethereum_contract
+    contract = EthereumContract.find(contract_id)
+    oracle = contract.owner
     template = contract.template
 
     check_acknowledged coordinator_post('/oracles', {

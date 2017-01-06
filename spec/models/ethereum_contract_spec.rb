@@ -60,7 +60,7 @@ describe EthereumContract, type: :model do
 
     it "sends instructions to the frontend" do
       expect(oracle.assignment.coordinator).to receive(:oracle_instructions)
-        .with(oracle.id)
+        .with(contract.id)
 
       contract.confirmed address
     end

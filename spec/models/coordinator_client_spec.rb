@@ -103,7 +103,7 @@ describe CoordinatorClient, type: :model do
 
         it "does not raise an error" do
           expect {
-            client.oracle_instructions oracle.id
+            client.oracle_instructions ethereum_contract.id
           }.not_to raise_error
         end
       end
@@ -113,7 +113,7 @@ describe CoordinatorClient, type: :model do
 
         it "raise an error" do
           expect {
-            client.oracle_instructions oracle.id
+            client.oracle_instructions ethereum_contract.id
           }.to raise_error "Not acknowledged, try again. Errors: "
         end
       end
@@ -125,7 +125,7 @@ describe CoordinatorClient, type: :model do
       it "does NOT post" do
         expect(CoordinatorClient).not_to receive(:post)
 
-        client.oracle_instructions oracle.id
+        client.oracle_instructions ethereum_contract.id
       end
     end
   end

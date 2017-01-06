@@ -18,8 +18,8 @@ class Coordinator < ActiveRecord::Base
     client.delay.update_term term_id if url?
   end
 
-  def oracle_instructions(oracle_id)
-    client.delay.oracle_instructions oracle_id if url?
+  def oracle_instructions(contract_id)
+    client.delay.oracle_instructions contract_id if url?
   end
 
   def snapshot(snapshot_id)

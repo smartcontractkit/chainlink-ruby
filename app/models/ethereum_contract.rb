@@ -20,7 +20,7 @@ class EthereumContract < ActiveRecord::Base
     })
 
     owner.delay.check_status
-    coordinator.oracle_instructions owner.id
+    coordinator.oracle_instructions id
   end
 
   def write_address
