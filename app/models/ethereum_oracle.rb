@@ -75,11 +75,11 @@ class EthereumOracle < ActiveRecord::Base
     assignment.coordinator
   end
 
-  def address
+  def contract_address
     ethereum_contract.address
   end
 
-  def update_address
+  def contract_write_address
     ethereum_contract.write_address
   end
 

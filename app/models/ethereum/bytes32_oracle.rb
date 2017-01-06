@@ -25,6 +25,10 @@ module Ethereum
       assignment.check_status
     end
 
+    def related_term
+      assignment.term
+    end
+
     def start(assignment)
       # see Assignment#start_tracking
       Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
@@ -46,6 +50,14 @@ module Ethereum
 
     def account
       ethereum_account || ethereum_contract.try(:account)
+    end
+
+    def contract_address
+      address || ethereum_contract.address
+    end
+
+    def contract_write_address
+      update_address || ethereum_contract.write_address
     end
 
 
