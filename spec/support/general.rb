@@ -31,6 +31,10 @@ module SpecHelpers
     hex.htb
   end
 
+  def bin_to_hex(bin)
+    bin.bth
+  end
+
   def coordinator_log_in(coordinator = factory_create(:coordinator), env = nil)
     basic_auth_log_in coordinator.key, coordinator.secret, env
   end

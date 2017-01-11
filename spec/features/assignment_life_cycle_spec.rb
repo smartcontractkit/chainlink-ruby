@@ -51,7 +51,7 @@ describe "assignment creation and performance", type: :request do
       run_delayed_jobs
       wait_for_ethereum_confirmation oracle.writes.last.txid
     }.to change {
-      get_contract_value contract
+      get_oracle_value oracle
     }.from('').to(oracle_value)
 
     expect(CoordinatorClient).to receive(:post)

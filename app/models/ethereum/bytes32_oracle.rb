@@ -14,6 +14,7 @@ module Ethereum
     validates :update_address, format: { with: /\A(?:0x)?[0-9a-f]*\z/, allow_nil: true }
 
     before_validation :set_up_from_body, on: :create
+    after_create :delay_initial_status_check
 
     attr_accessor :body
 
@@ -21,20 +22,20 @@ module Ethereum
       assignment.coordinator
     end
 
-    def check_status
-      assignment.check_status
-    end
-
     def related_term
       assignment.term
     end
 
-    def start(assignment)
+    def check_status
+      assignment.check_status
+    end
+
+    def start(_assignment = nil)
       # see Assignment#start_tracking
       Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
     end
 
-    def stop(assignment)
+    def stop(_assignment)
       # see Assignment#close_out!
     end
 
@@ -78,6 +79,14 @@ module Ethereum
 
     def updater
       Ethereum::OracleUpdater.new(self)
+    end
+
+    def delay_initial_status_check
+      self.delay.check_initial_status
+    end
+
+    def check_initial_status
+      reload.check_status if assignment.present? && ethereum_contract.blank?
     end
 
   end

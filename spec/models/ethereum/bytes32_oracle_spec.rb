@@ -9,8 +9,11 @@ describe Ethereum::Bytes32Oracle do
   end
 
   describe "on create" do
+    let(:assignment) { factory_create :assignment }
+    let(:adapter_assignment) { factory_build :adapter_assignment, adapter: oracle, assignment: assignment }
+
     context "when the address exists in the body" do
-      let(:oracle) { factory_build(:ethereum_bytes32_oracle) }
+      let(:oracle) { factory_build :external_bytes32_oracle }
 
       it "fills in its fields from the given body" do
         expect {
@@ -37,10 +40,19 @@ describe Ethereum::Bytes32Oracle do
           oracle.ethereum_account
         }.from(nil).to(Ethereum::Account.default)
       end
+
+      it "does create a write record" do
+        expect_any_instance_of(Assignment).to receive(:check_status) do |receiver|
+          expect(receiver).to eq(assignment)
+        end
+
+        adapter_assignment.save # saves the oracle indirectly
+        Delayed::Job.last.invoke_job
+      end
     end
 
     context "when the address does not exist in the body" do
-      let(:oracle) { Ethereum::Bytes32Oracle.new }
+      let(:oracle) { factory_build :ethereum_bytes32_oracle, assignment: assignment }
 
       it "fills in its fields from the given body" do
         expect {
@@ -65,11 +77,17 @@ describe Ethereum::Bytes32Oracle do
           oracle.ethereum_account
         }.from(nil)
       end
+
+      it "does not create a write record" do
+        expect(assignment).not_to receive(:check_status)
+
+        oracle.save
+      end
     end
   end
 
   describe "#get_status" do
-    let(:adapter) { factory_create :ethereum_bytes32_oracle }
+    let!(:adapter) { factory_create :ethereum_bytes32_oracle }
     let(:adapter_assignment) { factory_create :adapter_assignment, adapter: adapter }
     let(:snapshot) { factory_create :adapter_snapshot, adapter_assignment: adapter_assignment }
     let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
