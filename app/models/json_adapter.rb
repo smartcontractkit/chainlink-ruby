@@ -1,6 +1,8 @@
 class JsonAdapter < ActiveRecord::Base
   SCHEMA_NAME = 'httpGetJSON'
 
+  include AdapterBase
+
   has_one :adapter_assignment, as: :adapter
   has_one :assignment, through: :adapter_assignment
 
@@ -10,7 +12,6 @@ class JsonAdapter < ActiveRecord::Base
 
   before_validation :set_up_from_body, on: :create
 
-  attr_accessor :body
 
   def fields=(fields)
     self.field_list = Array.wrap(fields).to_json if fields.present?
@@ -20,27 +21,6 @@ class JsonAdapter < ActiveRecord::Base
   def fields
     return [] if field_list.blank?
     JSON.parse(field_list)
-  end
-
-  def start(assignment)
-    # see Assignment#start_tracking
-    Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
-  end
-
-  def stop(assignment)
-    # see Assignment#close_out!
-  end
-
-  def close_out!
-    # see Term#update_status
-  end
-
-  def coordinator
-    assignment.coordinator
-  end
-
-  def check_status
-    assignment.check_status
   end
 
   def get_status(_assignment, _params)

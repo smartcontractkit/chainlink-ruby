@@ -1,6 +1,8 @@
 class EthereumOracle < ActiveRecord::Base
   SCHEMA_NAME = 'ethereumBytes32JSON'
 
+  include AdapterBase
+
   has_one :account, through: :ethereum_contract
   has_one :adapter_assignment, as: :adapter
   has_one :assignment, as: :adapter
@@ -14,7 +16,6 @@ class EthereumOracle < ActiveRecord::Base
 
   before_validation :set_up_from_body, on: :create
 
-  attr_accessor :body
 
   def fields=(fields)
     self.field_list = Array.wrap(fields).to_json if fields.present?
@@ -32,19 +33,6 @@ class EthereumOracle < ActiveRecord::Base
     @current_value = JsonTraverser.parse endpoint_response, fields
   end
 
-  def start(assignment)
-    # see Assignment#start_tracking
-    Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
-  end
-
-  def stop(assignment)
-    # see Assignment#close_out!
-  end
-
-  def close_out!
-    # see Term#update_status
-  end
-
   def assignment_type
     'ethereum'
   end
@@ -59,20 +47,8 @@ class EthereumOracle < ActiveRecord::Base
     write.snapshot_decorator
   end
 
-  def check_status
-    assignment.check_status
-  end
-
   def schema_errors_for(parameters)
     []
-  end
-
-  def type_name
-    SCHEMA_NAME
-  end
-
-  def coordinator
-    assignment.coordinator
   end
 
   def contract_address

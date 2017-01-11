@@ -4,6 +4,8 @@ module Ethereum
   class Bytes32Oracle < ActiveRecord::Base
     SCHEMA_NAME = 'ethereumBytes32'
 
+    include AdapterBase
+
     belongs_to :ethereum_account, class_name: 'Ethereum::Account'
     has_one :adapter_assignment, as: :adapter
     has_one :assignment, through: :adapter_assignment
@@ -16,32 +18,6 @@ module Ethereum
     before_validation :set_up_from_body, on: :create
     after_create :delay_initial_status_check
 
-    attr_accessor :body
-
-    def coordinator
-      assignment.coordinator
-    end
-
-    def related_term
-      assignment.term
-    end
-
-    def check_status
-      assignment.check_status
-    end
-
-    def start(_assignment = nil)
-      # see Assignment#start_tracking
-      Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
-    end
-
-    def stop(_assignment)
-      # see Assignment#close_out!
-    end
-
-    def close_out!
-      # see Term#update_status
-    end
 
     def get_status(assignment_snapshot, params = {})
       current_value = params && params.with_indifferent_access['value']
