@@ -33,7 +33,7 @@ describe "assignment creation and performance", type: :request do
       coordinator.assignments.count
     }.by(+1)
     assignment = Assignment.find_by xid: response_json['xid']
-    oracle = assignment.adapter
+    oracle = assignment.adapters.first
     contract = oracle.ethereum_contract
     genesis_txid = contract.genesis_transaction.txid
     wait_for_ethereum_confirmation genesis_txid

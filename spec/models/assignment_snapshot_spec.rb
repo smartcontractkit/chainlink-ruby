@@ -285,7 +285,6 @@ describe AssignmentSnapshot, type: :model do
         expect(snapshot.status).to be_nil
         expect(snapshot.value).to eq(write.value)
         expect(snapshot.summary).to eq("#{assignment.name} updated its value to be empty.")
-        expect(snapshot.xid).to eq(write.txid)
         expect(snapshot.details_json).to eq({value: write.value, txid: write.txid}.to_json)
       end
     end

@@ -60,11 +60,11 @@ describe AssignmentRequest, type: :model do
       before { request.save }
 
       it "creates an associated assignment" do
-        expect(request.assignment.adapter).to be_present
+        expect(request.assignment.adapter).to be_nil
       end
 
       it "does not create a list of assignments" do
-        expect(request.reload.assignment.adapters).to be_empty
+        expect(request.reload.assignment.adapters.size).to eq(1)
       end
     end
 

@@ -40,7 +40,6 @@ class AssignmentRequest < ActiveRecord::Base
     return unless body.present?
 
     self.assignment ||= build_assignment({
-      adapter: build_adapter(assignment_params),
       adapter_assignments: adapter_assignments,
       coordinator: coordinator,
       end_at: parse_time(schedule[:endAt]),
@@ -115,7 +114,7 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def pipeline_params
-    assignment_params[:pipeline] || []
+    assignment_params[:pipeline] || [assignment_params]
   end
 
   def adapter_assignments

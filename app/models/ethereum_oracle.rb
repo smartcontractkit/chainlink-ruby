@@ -16,6 +16,9 @@ class EthereumOracle < ActiveRecord::Base
 
   before_validation :set_up_from_body, on: :create
 
+  def assignment
+    adapter_assignment.try(:assignment) || super
+  end
 
   def fields=(fields)
     self.field_list = Array.wrap(fields).to_json if fields.present?
@@ -43,7 +46,6 @@ class EthereumOracle < ActiveRecord::Base
 
   def get_status(assignment_snapshot, _details = {})
     write = updater.perform(current_value)
-    assignment_snapshot.xid = write.txid if write.success?
     write.snapshot_decorator
   end
 

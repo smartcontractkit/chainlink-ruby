@@ -18,6 +18,10 @@ class CustomExpectation < ActiveRecord::Base
   after_create :check_api
 
 
+  def assignment
+    adapter_assignment.try(:assignment) || super
+  end
+
   def check_rankings
     if completed_rankings.any?
       related_term.update_status Term::COMPLETED
