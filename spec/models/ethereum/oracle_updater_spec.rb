@@ -17,7 +17,7 @@ describe Ethereum::OracleUpdater, type: :model do
       expect(account).to receive(:send_transaction)
         .with({
           data: "#{code_template.write_address}4869204d6f6d21",
-          gas_limit: 50_000,
+          gas_limit: 100_000,
           to: contract.address,
         })
         .and_return(tx)
