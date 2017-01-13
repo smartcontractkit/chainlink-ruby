@@ -93,7 +93,9 @@ describe AssignmentsController, type: :controller do
   end
 
   describe "#update" do
-    let(:assignment) { factory_create :assignment }
+    let(:adapter) { factory_create :external_adapter }
+    let(:adapter_assignment) { factory_build :adapter_assignment, adapter: adapter, assignment: nil }
+    let(:assignment) { factory_create :assignment, adapter_assignments: [adapter_assignment] }
     let(:new_status) { Term::COMPLETED }
     let(:assignment_params) do
       {
@@ -104,7 +106,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment is in progress and authenticated" do
-      before { external_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in adapter }
 
       it "updates the assignment" do
         expect {
@@ -129,7 +131,7 @@ describe AssignmentsController, type: :controller do
 
     context "when the assignment is NOT in progress" do
       before do
-        external_adapter_log_in assignment.adapter
+        external_adapter_log_in adapter
         assignment.update_attributes status: Assignment::FAILED
       end
 

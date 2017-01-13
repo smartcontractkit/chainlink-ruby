@@ -18,11 +18,8 @@ class AssignmentRequest < ActiveRecord::Base
   attr_writer :coordinator
 
   def body
-    if @body.present?
-      @body
-    elsif body_json.present?
-      @body = JSON.parse(body_json).with_indifferent_access
-    end
+    return @body if @body.present?
+    @body = JSON.parse(body_json).with_indifferent_access if body_json.present?
   end
 
   def coordinator
@@ -43,7 +40,6 @@ class AssignmentRequest < ActiveRecord::Base
       adapter_assignments: adapter_assignments,
       coordinator: coordinator,
       end_at: parse_time(schedule[:endAt]),
-      parameters: assignment_body,
       schedule_attributes: schedule_params,
       start_at: parse_time(schedule[:startAt] || Time.now),
     })

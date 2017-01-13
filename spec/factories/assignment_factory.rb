@@ -1,10 +1,9 @@
 FactoryGirl.define do
 
   factory :assignment do
-    association :adapter, factory: :external_adapter
+    adapter_assignments { [factory_build(:adapter_assignment, assignment: nil)] }
     end_at { 1.month.from_now }
     coordinator
-    parameters { { SecureRandom.base64 => SecureRandom.base64 } }
   end
 
   factory :completed_assignment, parent: :assignment do
@@ -12,7 +11,12 @@ FactoryGirl.define do
   end
 
   factory :ethereum_assignment, parent: :assignment do
-    association :adapter, factory: :ethereum_oracle
+    adapter_assignments do
+      [factory_build(:adapter_assignment, {
+        adapter: factory_build(:ethereum_oracle),
+        assignment: nil,
+      })]
+    end
   end
 
   factory :failed_assignment, parent: :assignment do

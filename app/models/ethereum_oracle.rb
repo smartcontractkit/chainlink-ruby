@@ -5,7 +5,7 @@ class EthereumOracle < ActiveRecord::Base
 
   has_one :account, through: :ethereum_contract
   has_one :adapter_assignment, as: :adapter
-  has_one :assignment, as: :adapter
+  has_one :assignment, through: :adapter_assignment
   has_one :ethereum_contract, as: :owner
   has_one :term, as: :expectation
   has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
@@ -16,9 +16,6 @@ class EthereumOracle < ActiveRecord::Base
 
   before_validation :set_up_from_body, on: :create
 
-  def assignment
-    adapter_assignment.try(:assignment) || super
-  end
 
   def fields=(fields)
     self.field_list = Array.wrap(fields).to_json if fields.present?

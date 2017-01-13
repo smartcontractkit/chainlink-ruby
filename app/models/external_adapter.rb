@@ -3,8 +3,8 @@ class ExternalAdapter < ActiveRecord::Base
   include AdapterBase
 
   belongs_to :assignment_type
-  has_many :adapter_assignment, as: :adapter
-  has_many :assignments, as: :adapter
+  has_many :adapter_assignments, as: :adapter
+  has_many :assignments, through: :adapter_assignments
 
   validates :assignment_type, presence: true
   validates :url, presence: true

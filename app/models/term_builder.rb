@@ -12,7 +12,6 @@ class TermBuilder
     @type = expectation_body.type
     @coordinator = coordinator
     determine_schedule
-    determine_adapter
   end
 
   def perform
@@ -44,39 +43,42 @@ class TermBuilder
     }) if outcome_body.present?
   end
 
-  def expectation
-    if adapter.valid? && adapter.persisted?
-      adapter.create_assignment({
-        coordinator: coordinator,
-        end_at: end_at,
-        parameters: expectation_body,
-        schedule_attributes: schedule,
-      }.compact)
-    else
-      adapter
-    end
+  def assignment_request
+    @assignment_request ||= AssignmentRequest.create({
+      coordinator: coordinator,
+      body_json: {
+        assignment: assignment_hash,
+        assignmentHash: Digest::SHA256.hexdigest(assignment_hash.to_json),
+        schedule: schedule,
+        signatures: [],
+        version: '0.1.0'
+      }.to_json
+    })
   end
 
-  def determine_adapter
-    if @adapter = ExternalAdapter.for_type(type)
-      adapter
-    elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
-      @adapter = CustomExpectation.create(body: expectation_body)
-    elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
-      @adapter = EthereumOracle.create(body: expectation_body)
-    else
-      raise "no term type specified for Term##{body.name}"
-    end
+  def assignment_hash
+    {
+      adapterParams: body.expected,
+      adapterType: type,
+      schedule: schedule.merge({
+        endAt: end_at.to_i.to_s,
+        startAt: start_time.to_i.to_s,
+      }),
+    }
+  end
+
+  def expectation
+    assignment_request.assignment
   end
 
   def determine_schedule
-    return @schedule if @schedule = expectation_body.delete(:schedule)
+    return @schedule if @schedule.present?
 
-    if [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
-      @schedule = {minute: '0', hour: '*'}
-    else
-      @schedule = {minute: '0', hour: '0'}
-    end
+    @schedule = expectation_body.delete(:schedule)
+    @schedule ||= {
+      minute: '0',
+      hour: ([CustomExpectation::SCHEMA_NAME, 'custom'].include?(type) ? '*' : '0'),
+    }
   end
 
 end

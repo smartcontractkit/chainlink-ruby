@@ -34,8 +34,6 @@ describe AssignmentRequest, type: :model do
       }.to change {
         request.assignment
       }.from(nil)
-
-      expect(request.assignment.parameters).to eq(request.body[:assignmentParams])
     end
 
     it "associates the coordinator with the assignment" do
@@ -59,11 +57,7 @@ describe AssignmentRequest, type: :model do
 
       before { request.save }
 
-      it "creates an associated assignment" do
-        expect(request.assignment.adapter).to be_nil
-      end
-
-      it "does not create a list of assignments" do
+      it "creates a list of assignments" do
         expect(request.reload.assignment.adapters.size).to eq(1)
       end
     end
@@ -73,11 +67,7 @@ describe AssignmentRequest, type: :model do
 
       before { request.save }
 
-      it "creates an associated assignment" do
-        expect(request.assignment.adapter).to be_nil
-      end
-
-      it "does not create a list of assignments" do
+      it "creates a list of assignments" do
         expect(request.reload.assignment.adapters.size).to eq 2
       end
     end
