@@ -26,13 +26,13 @@ describe AdapterAssignment, type: :model do
 
       it "includes the adapter error" do
         expect(adapter).to receive(:start)
-          .with(assignment)
+          .with(adapter_assignment)
           .and_return(create_assignment_response errors: [remote_error_message])
 
         adapter_assignment.save
 
         full_messages = adapter_assignment.errors.full_messages
-        expect(full_messages).to include("Adapter: #{remote_error_message}")
+        expect(full_messages).to include("Adapter##{adapter_assignment.index} Error: #{remote_error_message}")
       end
     end
   end

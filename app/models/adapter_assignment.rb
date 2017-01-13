@@ -8,6 +8,7 @@ class AdapterAssignment < ActiveRecord::Base
   validates :assignment, presence: true
   validates :index, uniqueness: { scope: [:assignment] },
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validate :parameters_against_schema
 
   before_validation :start_tracking, on: :create
 
@@ -21,17 +22,33 @@ class AdapterAssignment < ActiveRecord::Base
     parameters
   end
 
+  def end_at
+    assignment.end_at
+  end
+
+  def xid
+    "#{assignment.xid}##{index}"
+  end
+
 
   private
 
   def start_tracking
     return if assignment.blank? || adapter.blank?
-    response = adapter.start assignment
+    response = adapter.start self
 
     if response.errors.present?
       response.errors.each do |error_message|
-        errors.add(:base, "Adapter: #{error_message}")
+        errors.add(:base, "Adapter##{index} Error: #{error_message}")
       end
+    end
+  end
+
+  def parameters_against_schema
+    return unless parameters.present? && adapter.present?
+
+    adapter.schema_errors_for(parameters).each do |error|
+      errors.add(:base, error)
     end
   end
 

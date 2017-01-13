@@ -262,7 +262,7 @@ describe ContractBuilder, type: :model do
       end
 
       it "returns errors with the JSON schema" do
-        expect(contract.errors.full_messages).to include "Term Error: CustomExpectation Error: Endpoint is invalid"
+        expect(contract.errors.full_messages).to include "Term Error: Assignment Error: Adapter#0 Error: Endpoint is invalid"
       end
     end
   end

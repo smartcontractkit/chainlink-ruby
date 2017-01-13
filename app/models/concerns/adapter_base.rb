@@ -35,4 +35,8 @@ module AdapterBase
     SCHEMA_NAME
   end
 
+  def schema_errors_for(parameters)
+    []
+  end
+
 end
