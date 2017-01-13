@@ -1,5 +1,5 @@
-describe EthereumOracleUpdater, type: :model do
-  let(:oracle_updater) { EthereumOracleUpdater.new(oracle) }
+describe Ethereum::OracleUpdater, type: :model do
+  let(:oracle_updater) { Ethereum::OracleUpdater.new(oracle) }
 
   before do
     allow_any_instance_of(EthereumOracle).to receive(:current_value)
@@ -17,7 +17,7 @@ describe EthereumOracleUpdater, type: :model do
       expect(account).to receive(:send_transaction)
         .with({
           data: "#{code_template.write_address}4869204d6f6d21",
-          gas_limit: 50_000,
+          gas_limit: 100_000,
           to: contract.address,
         })
         .and_return(tx)

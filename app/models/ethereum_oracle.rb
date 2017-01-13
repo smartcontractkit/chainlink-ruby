@@ -82,7 +82,7 @@ class EthereumOracle < ActiveRecord::Base
   end
 
   def updater
-    EthereumOracleUpdater.new(self)
+    Ethereum::OracleUpdater.new(self)
   end
 
 end

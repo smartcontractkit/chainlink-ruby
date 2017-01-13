@@ -1,4 +1,4 @@
-class EthereumConfirmationWatcher
+class Ethereum::ConfirmationWatcher
 
   include HasEthereumClient
 

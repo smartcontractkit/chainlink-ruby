@@ -1,4 +1,4 @@
-class EthereumTransactionBuilder
+class Ethereum::TransactionBuilder
 
   include BinaryAndHex
   include HasEthereumClient

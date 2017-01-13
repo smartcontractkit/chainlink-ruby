@@ -1,11 +1,11 @@
-describe EthereumConfirmationWatcher, type: :model do
+describe Ethereum::ConfirmationWatcher, type: :model do
   describe "#perform" do
     let!(:tx) { factory_create(:ethereum_transaction, confirmations: 0) }
-    let(:watcher) { EthereumConfirmationWatcher.new tx }
+    let(:watcher) { Ethereum::ConfirmationWatcher.new tx }
     let(:response) { ethereum_receipt_response(block_number: block_number).result }
 
     before do
-      allow_any_instance_of(EthereumClient).to receive(:get_transaction_receipt)
+      allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_receipt)
         .with(tx.txid)
         .and_return(response)
     end
@@ -22,7 +22,7 @@ describe EthereumConfirmationWatcher, type: :model do
       end
 
       it "does rebroadcast the transaction" do
-        expect_any_instance_of(EthereumClient).to receive(:send_raw_transaction)
+        expect_any_instance_of(Ethereum::Client).to receive(:send_raw_transaction)
           .with(tx.raw_hex)
 
         watcher.perform
@@ -41,7 +41,7 @@ describe EthereumConfirmationWatcher, type: :model do
       end
 
       it "does NOT rebroadcast the transaction" do
-        expect_any_instance_of(EthereumClient).not_to receive(:send_raw_transaction)
+        expect_any_instance_of(Ethereum::Client).not_to receive(:send_raw_transaction)
 
         watcher.perform
       end

@@ -14,10 +14,10 @@ module Clockwork
   end
 
   every(1.minute, 'AssignmentScheduler.perform')
-  every(1.minute, 'EthereumConfirmationWatcher.perform')
-  every(1.minute, 'EthereumContractConfirmer.perform')
+  every(1.minute, 'Ethereum::ConfirmationWatcher.perform')
+  every(1.minute, 'Ethereum::ContractConfirmer.perform')
   every(1.minute, 'TermJanitor.clean_up')
 
-  every(1.hour, 'EthereumBalanceWatcher.perform')
+  every(1.hour, 'Ethereum::BalanceWatcher.perform')
 
 end

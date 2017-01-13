@@ -1,4 +1,4 @@
-class EthereumBalanceWatcher
+class Ethereum::BalanceWatcher
 
   include HasEthereumClient
 
@@ -23,7 +23,7 @@ class EthereumBalanceWatcher
   attr_reader :account
 
   def minimum_balance
-    (ENV['ETHEREUM_MINIMUM_BALANCE'] || EthereumClient::WEI_PER_ETHER).to_i
+    (ENV['ETHEREUM_MINIMUM_BALANCE'] || Ethereum::WEI_PER_ETHER).to_i
   end
 
 end

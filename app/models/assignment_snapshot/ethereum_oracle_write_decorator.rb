@@ -15,7 +15,7 @@ class AssignmentSnapshot
     end
 
     def description_url
-      EthereumClient.tx_url txid
+      Ethereum::Client.tx_url txid
     end
 
     def details
