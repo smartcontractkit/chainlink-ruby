@@ -27,19 +27,13 @@ describe AssignmentSnapshot, type: :model do
 
   describe "on create" do
     let(:snapshot) { factory_build :assignment_snapshot, assignment: assignment }
-    let(:assignment) { factory_create :assignment }
-    let(:adapter) { assignment.adapter }
+    let!(:assignment) { factory_create :assignment }
+    let!(:adapter) { assignment.adapters.first }
     let(:adapter_response) do
       {
         fulfilled: false,
         xid: snapshot.xid,
       }
-    end
-
-    before do
-      allow_any_instance_of(ExternalAdapter).to receive(:get_status)
-        .with(snapshot)
-        .and_return(hashie adapter_response)
     end
 
     it "generates an external ID" do
@@ -73,7 +67,7 @@ describe AssignmentSnapshot, type: :model do
           snapshot.save
         }.to change {
           snapshot.adapter_snapshots.count
-        }.by(+3)
+        }.by(assignment.adapters.size)
       end
 
       it "sets the adapter index to the first possible" do
@@ -88,113 +82,6 @@ describe AssignmentSnapshot, type: :model do
         expect_any_instance_of(AdapterSnapshot).to receive(:start) do |adapter_snapshot|
           expect(adapter_snapshot).to eq(snapshot.current_adapter_snapshot)
         end
-
-        snapshot.save
-      end
-    end
-
-    context "when the adapter responds with more information" do
-      let(:status) { Term::IN_PROGRESS }
-      let(:value) { SecureRandom.hex }
-      let(:details) { {key: SecureRandom.hex} }
-      let(:adapter_response) do
-        {
-          status: status,
-          fulfilled: true,
-          details: details,
-          value: value,
-          xid: snapshot.xid,
-        }
-      end
-
-      it "marks itself as fulfilled" do
-        expect {
-          snapshot.save
-        }.to change {
-          snapshot.fulfilled
-        }.from(false).to(true)
-      end
-
-      it "records the information" do
-        expect {
-          snapshot.save
-        }.to change {
-          snapshot.status
-        }.from(nil).to(status).and change {
-          snapshot.value
-        }.from(nil).to(value).and change {
-          snapshot.details_json
-        }.from(nil).to(details.to_json)
-      end
-
-      it "notifies the coordinator" do
-        expect_any_instance_of(Coordinator).to receive(:snapshot) do |coordinator, id|
-          expect(coordinator).to eq(assignment.coordinator)
-          expect(id).to eq(snapshot.id)
-        end
-
-        snapshot.save
-      end
-    end
-
-    context "when the adapter responds without information" do
-      it "marks itself as unfulfilled" do
-        expect {
-          snapshot.save
-        }.not_to change {
-          snapshot.fulfilled
-        }.from(false)
-      end
-
-      it "records the information" do
-        expect {
-          snapshot.save
-        }.not_to change {
-          snapshot.value
-        }
-      end
-
-      it "does NOT notify the coordinator" do
-        expect_any_instance_of(CoordinatorClient).not_to receive(:snapshot)
-
-        snapshot.save
-      end
-    end
-
-    context "when nothing is returned by the adapter" do
-      let(:adapter_response) { nil }
-
-      it "does NOT create a snapshot" do
-        expect {
-          snapshot.save
-        }.not_to change {
-          snapshot.persisted?
-        }.from(false)
-      end
-
-      it "sends out a notifaction" do
-        expect(Notification).to receive_message_chain(:delay, :snapshot_failure)
-          .with(assignment, nil)
-
-        snapshot.save
-      end
-    end
-
-    context "when nothing is returned by the adapter" do
-      let(:errors) { ["foo", "bar"] }
-      let(:adapter_response) { { errors: errors } }
-
-      it "does NOT create a snapshot" do
-        expect {
-          snapshot.save
-        }.not_to change {
-          snapshot.persisted?
-        }.from(false)
-      end
-
-      it "sends out a notifaction" do
-        expect(Notification).to receive_message_chain(:delay, :snapshot_failure)
-          .with(assignment, errors)
 
         snapshot.save
       end
@@ -263,57 +150,6 @@ describe AssignmentSnapshot, type: :model do
         end
       end
     end
-
-    context "when the adapter is an Ethereum oracle" do
-      let(:oracle) { factory_create :ethereum_oracle }
-      let(:assignment) { factory_create :assignment, adapter: oracle }
-      let(:snapshot) { assignment.snapshots.build }
-
-      it "creates a fulfilled snapshot" do
-        expect {
-          snapshot.save
-        }.to change {
-          oracle.reload.writes.count
-        }.by(+1)
-      end
-
-      it "sets all the values off of the oracle write record" do
-        snapshot.save
-        write = EthereumOracleWrite.last
-
-        expect(snapshot).to be_fulfilled
-        expect(snapshot.status).to be_nil
-        expect(snapshot.value).to eq(write.value)
-        expect(snapshot.summary).to eq("#{assignment.name} updated its value to be empty.")
-        expect(snapshot.details_json).to eq({value: write.value, txid: write.txid}.to_json)
-      end
-    end
-
-    context "when the adapter is a Bitcoin oracle" do
-      let(:oracle) { factory_create :custom_expectation }
-      let(:assignment) { factory_create :assignment, adapter: oracle }
-      let(:snapshot) { assignment.snapshots.build }
-
-      it "creates an API result record" do
-        expect {
-          snapshot.save
-        }.to change {
-          oracle.reload.api_results.count
-        }.by(+1)
-      end
-
-      it "sets all the values off of the oracle write record" do
-        snapshot.save
-        result = ApiResult.last
-
-        expect(snapshot).to be_fulfilled
-        expect(snapshot.status).to be_nil
-        expect(snapshot.value).to eq(result.parsed_value)
-        expect(snapshot.summary).to eq("#{assignment.name} parsed a null value.")
-        expect(snapshot.xid).to be_present
-        expect(snapshot.details_json).to eq({value: result.parsed_value}.to_json)
-      end
-    end
   end
 
   describe "#current_adapter_snapshot" do
@@ -323,7 +159,7 @@ describe AssignmentSnapshot, type: :model do
     let!(:adapter_snapshot3) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
 
     before do
-      snapshot.update_attributes(adapter_index: adapter_snapshot2.index)
+      snapshot.reload.update_attributes(adapter_index: adapter_snapshot2.index)
     end
 
     it "returns the adapter snapshot that matches the index" do
@@ -338,7 +174,7 @@ describe AssignmentSnapshot, type: :model do
     let!(:adapter_snapshot3) { factory_create :adapter_snapshot, assignment_snapshot: snapshot }
 
     before do
-      snapshot.update_attributes(adapter_index: adapter_snapshot1.index)
+      snapshot.reload.update_attributes(adapter_index: adapter_snapshot1.index)
     end
 
     it "returns the next adapter snapshot above the current index" do
@@ -347,9 +183,9 @@ describe AssignmentSnapshot, type: :model do
   end
 
   describe "#adapter_response" do
-    let(:snapshot) { factory_create :assignment_snapshot }
+    let!(:snapshot) { factory_create :assignment_snapshot }
+    let!(:adapter_snapshot) { factory_create :adapter_snapshot }
     let(:handler) { instance_double AssignmentSnapshotHandler }
-    let(:adapter_snapshot) { factory_create :adapter_snapshot }
 
     before do
       allow(AssignmentSnapshotHandler).to receive(:new)
@@ -358,7 +194,7 @@ describe AssignmentSnapshot, type: :model do
     end
 
     it "passes the response on to a handler" do
-      expect(handler).to receive(:adapter_response)
+      expect_any_instance_of(AssignmentSnapshotHandler).to receive(:adapter_response)
         .with(adapter_snapshot)
 
       snapshot.adapter_response(adapter_snapshot)

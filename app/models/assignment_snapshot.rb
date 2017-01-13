@@ -17,8 +17,8 @@ class AssignmentSnapshot < ActiveRecord::Base
   before_validation :set_up, on: :create
   before_validation :check_fulfillment
   before_create :build_adapter_snapshots
-  after_save :report_snapshot, if: :report_to_coordinator
   after_create :start_adapter_pipeline
+  after_save :report_snapshot, if: :report_to_coordinator
 
   scope :unfulfilled, -> { where fulfilled: false }
 
@@ -54,10 +54,6 @@ class AssignmentSnapshot < ActiveRecord::Base
 
   attr_accessor :report_to_coordinator
 
-  def adapter
-    assignment.adapter
-  end
-
   def adapters
     assignment.adapters
   end
@@ -65,15 +61,6 @@ class AssignmentSnapshot < ActiveRecord::Base
   def set_up
     self.progress ||= STARTED
     self.xid ||= SecureRandom.uuid
-    return if fulfilled? || assignment.nil? || adapter.nil?
-    response = adapter.get_status(self)
-
-    if response.present? && response.errors.blank?
-      parse_adapter_response response
-    else
-      errors.add(:base, "Invalid adapter response.")
-      Notification.delay.snapshot_failure assignment, response.try(:errors)
-    end
   end
 
   def parse_adapter_response(response)

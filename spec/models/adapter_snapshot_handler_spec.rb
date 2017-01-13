@@ -1,5 +1,5 @@
 describe AdapterSnapshotHandler do
-  let(:handler) { AdapterSnapshotHandler.new(snapshot) }
+  let(:handler) { AdapterSnapshotHandler.new(snapshot.reload) }
 
   describe "#perform" do
     let!(:snapshot) { factory_create :adapter_snapshot, assignment_snapshot: assignment_snapshot }
@@ -75,7 +75,9 @@ describe AdapterSnapshotHandler do
       end
 
       it "passes the response up to the assignment snapshot" do
-        expect(assignment_snapshot).to receive(:adapter_response)
+        expect_any_instance_of(AssignmentSnapshot).to receive(:adapter_response) do |instance|
+          expect(instance).to eq(assignment_snapshot)
+        end
 
         handler.perform params
       end
@@ -110,7 +112,9 @@ describe AdapterSnapshotHandler do
       end
 
       it "passes the response up to the assignment snapshot" do
-        expect(assignment_snapshot).to receive(:adapter_response)
+        expect_any_instance_of(AssignmentSnapshot).to receive(:adapter_response) do |instance|
+          expect(instance).to eq(assignment_snapshot)
+        end
 
         handler.perform params
       end

@@ -16,7 +16,7 @@ describe SnapshotsController, type: :controller do
     end
 
     context "when the adapter is authorized" do
-      before { external_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in assignment.adapters.first }
 
       it "creates a snapshot for the assignment" do
         expect {
@@ -77,7 +77,7 @@ describe SnapshotsController, type: :controller do
     end
 
     context "when the adapter is authorized" do
-      before { external_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in assignment.adapters.first }
 
       it "does NOT create a new record" do
         expect {

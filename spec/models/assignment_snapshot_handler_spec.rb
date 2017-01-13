@@ -1,16 +1,14 @@
 describe AssignmentSnapshotHandler do
-  let!(:adapter_assignment1) { factory_create :adapter_assignment }
-  let!(:adapter_assignment2) { factory_create :adapter_assignment, assignment: assignment }
-  let!(:adapter_assignment3) { factory_create :adapter_assignment, assignment: assignment }
+  let!(:adapter_assignment1) { factory_build :adapter_assignment, assignment: nil }
+  let!(:adapter_assignment2) { factory_build :adapter_assignment, assignment: nil }
+  let!(:adapter_assignment3) { factory_build :adapter_assignment, assignment: nil }
   let(:snapshot) { factory_create(:assignment_snapshot, assignment: assignment) }
   let(:handler) { AssignmentSnapshotHandler.new snapshot }
-  let(:assignment) { adapter_assignment1.assignment }
+  let(:assignment) { factory_create :assignment, adapter_assignments: [adapter_assignment1, adapter_assignment2, adapter_assignment3] }
   let(:adapter_snapshot1) { snapshot.adapter_snapshots[0] }
   let(:adapter_snapshot2) { snapshot.adapter_snapshots[1] }
   let(:adapter_snapshot3) { snapshot.adapter_snapshots[2] }
 
-
-  before { assignment.reload }
 
   describe "#start" do
     it "starts the first adapter snapshot" do

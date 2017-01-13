@@ -37,7 +37,7 @@ class AdapterSnapshot < ActiveRecord::Base
   end
 
   def last?
-    self == assignment_snapshot.adapter_snapshots.last
+    self == snapshot_peers.last
   end
 
   def start(params = {})
@@ -49,6 +49,10 @@ class AdapterSnapshot < ActiveRecord::Base
 
   def handler
     @handler ||= AdapterSnapshotHandler.new(self)
+  end
+
+  def snapshot_peers
+    assignment_snapshot.adapter_snapshots
   end
 
 end
