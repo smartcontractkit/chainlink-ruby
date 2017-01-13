@@ -1,21 +1,11 @@
 describe Assignment, type: :model do
 
   describe "validations" do
-    it { is_expected.to have_valid(:adapter).when(factory_create(:external_adapter)) }
-    it { is_expected.not_to have_valid(:adapter).when(nil) }
-    context "when the assignment has adapters" do
-      let(:adapter) { factory_create :external_adapter }
-      let(:adapter_assignment) { AdapterAssignment.new adapter: adapter }
-      subject { Assignment.new(adapter_assignments: [adapter_assignment]) }
-
-      it { is_expected.to have_valid(:adapter).when(nil) }
-    end
+    it { is_expected.to have_valid(:adapter_assignments).when([factory_build(:adapter_assignment, assignment: nil)]) }
+    it { is_expected.not_to have_valid(:adapter_assignments).when([]) }
 
     it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
     it { is_expected.not_to have_valid(:coordinator).when(nil) }
-
-    it { is_expected.to have_valid(:json_parameters).when({a: 1}.to_json, nil) }
-    it { is_expected.not_to have_valid(:json_parameters).when('blah') }
 
     it { is_expected.to have_valid(:status).when('completed', 'failed', 'in progress') }
     it { is_expected.not_to have_valid(:status).when('other') }
@@ -24,18 +14,19 @@ describe Assignment, type: :model do
 
     context "when the adapter gets an error" do
       let(:assignment) { factory_build :assignment }
+      let(:adapter_assignment) { assignment.adapter_assignments.first }
       let(:remote_error_message) { 'big errors. great job.' }
 
       it "includes the adapter error" do
-        expect(assignment.adapter).to receive(:start)
-          .with(assignment)
+        allow(adapter_assignment.adapter).to receive(:start)
+          .with(adapter_assignment)
           .and_return(create_assignment_response errors: [remote_error_message])
 
         assignment.save
 
-        expect(assignment.errors.full_messages).to include("Adapter: #{remote_error_message}")
+        expect(assignment.errors.full_messages).to include("Adapter##{adapter_assignment.index} Error: #{remote_error_message}")
       end
-   end
+    end
 
     context "when the term start date is before the end date" do
       it "is not valid" do
@@ -66,14 +57,6 @@ describe Assignment, type: :model do
       }.to change {
         assignment.xid
       }.from(nil)
-    end
-
-    it "sends the work over to the adapter" do
-      expect(assignment.adapter).to receive(:start)
-        .with(assignment)
-        .and_return(create_assignment_response)
-
-      assignment.save
     end
 
     it "does NOT create a schedule" do
@@ -115,7 +98,7 @@ describe Assignment, type: :model do
   describe "#close_out!" do
     let(:term) { factory_build :term }
     let(:assignment) { factory_create :assignment, term: term }
-    let(:adapter) { assignment.adapter }
+    let(:adapter) { assignment.adapters.first }
     let(:status) { Assignment::COMPLETED }
 
     it "closes out via the adapter" do

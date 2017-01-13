@@ -4,7 +4,6 @@ class Assignment < ActiveRecord::Base
   FAILED = 'failed'
   IN_PROGRESS = 'in progress'
 
-  belongs_to :adapter, polymorphic: true
   belongs_to :coordinator
   has_one :term, as: :expectation, inverse_of: :expectation
   has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
@@ -12,34 +11,22 @@ class Assignment < ActiveRecord::Base
   has_many :adapter_assignments, inverse_of: :assignment
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 
-  validates :adapter, presence: true, unless: :any_adapters?
+  validates :adapter_assignments, presence: true
   validates :coordinator, presence: true
   validates :end_at, presence: true
   validates :start_at, presence: true
   validates :status, inclusion: { in: [COMPLETED, FAILED, IN_PROGRESS] }
+  validate :associations_including_errors
   validate :start_at_before_end_at
   validate :finished_status_remains
-  validate :valid_schema_parameters
 
   before_validation :set_up, on: :create
-  before_validation :start_tracking, on: :create, if: :adapter
 
-  validates_associated :schedule, :adapter_assignments
+  validates_associated :schedule
   accepts_nested_attributes_for :schedule
 
   def adapters
     adapter_assignments.map(&:adapter)
-  end
-
-  def parameters
-    JSON.parse(json_parameters) if json_parameters.present?
-  end
-
-  def parameters=(new_parameters)
-    return if new_parameters.nil?
-
-    self.json_parameters = new_parameters.to_json
-    self.parameters
   end
 
   def term_status
@@ -51,7 +38,10 @@ class Assignment < ActiveRecord::Base
   end
 
   def close_out!(status = COMPLETED)
-    adapter.stop self
+    adapters.each do |adapter|
+      adapter.stop self
+    end
+
     update_status status
   end
 
@@ -73,45 +63,18 @@ class Assignment < ActiveRecord::Base
     term
   end
 
+  def adapter_types
+    adapter_assignments.pluck(:adapter_type)
+  end
+
 
   private
-
-  def type
-    adapter.assignment_type
-  end
 
   def set_up
     self.end_at ||= term.try(:end_at)
     self.start_at ||= Time.now
     self.status ||= IN_PROGRESS
     self.xid = SecureRandom.uuid
-  end
-
-  def start_tracking
-    response = adapter.start self
-
-    if response.errors.present?
-      response.errors.each do |error_message|
-        errors.add(:base, "Adapter: #{error_message}")
-      end
-    end
-  end
-
-  def valid_schema_parameters
-    return unless valid_json_parameters?
-
-    adapter.schema_errors_for(parameters).each do |error|
-      errors.add(:base, error)
-    end if adapter.present?
-  end
-
-  def valid_json_parameters?
-    begin
-      parameters
-    rescue JSON::ParserError
-      errors.add(:json_parameters, "are not valid JSON")
-      false
-    end
   end
 
   def start_at_before_end_at
@@ -136,8 +99,12 @@ class Assignment < ActiveRecord::Base
     end
   end
 
-  def any_adapters?
-    adapters.any?
+  def associations_including_errors
+    adapter_assignments.each do |associated|
+      associated.errors.full_messages.each do |message|
+        errors[:base] << message
+      end unless associated.valid?
+    end
   end
 
 end
