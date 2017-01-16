@@ -128,7 +128,7 @@ describe Ethereum::Client, type: :model do
 
     context "when the string is less than 32 bytes" do
       let(:size) { 30 }
-      it { expect(output.size).to equal(size * 2) }
+      it { expect(output.size).to equal(64) }
       it { expect(ethereum.hex_to_utf8 output).to eq(string) }
     end
   end

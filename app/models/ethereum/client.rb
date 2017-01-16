@@ -96,7 +96,7 @@ class Ethereum::Client
 
   def format_bytes32_hex(input)
     string = input.dup.to_s.force_encoding 'ASCII'
-    utf8_to_hex(string[0...32])
+    utf8_to_hex(string[0...32]).ljust(64, '0')
   end
 
   def hex_to_int(hex)
@@ -109,6 +109,18 @@ class Ethereum::Client
 
   def to_eth_hex(data)
     self.class.hex data
+  end
+
+  def format_address_hex(address)
+    address.to_s.gsub(/^0x/,'').rjust(64, "0")
+  end
+
+  def format_hex_array(array_of_hex)
+    format_int_to_hex(array_of_hex.size) + array_of_hex.join
+  end
+
+  def format_int_to_hex(integer, bytes = 32)
+    integer.to_s(16).rjust(2 * bytes, '0')
   end
 
 
