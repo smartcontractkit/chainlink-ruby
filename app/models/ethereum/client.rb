@@ -123,6 +123,10 @@ class Ethereum::Client
     integer.to_s(16).rjust(2 * bytes, '0')
   end
 
+  def get_code(address, tag = 'pending')
+    epost('eth_getCode', [address, tag]).result
+  end
+
 
   private
 
