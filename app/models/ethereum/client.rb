@@ -51,7 +51,7 @@ class Ethereum::Client
     epost('eth_call', [{
       data: to_eth_hex(options[:data]),
       from: eth_account(options[:from] || Ethereum::NULL_ACCOUNT),
-      gas: to_eth_hex(options[:gas] || 1_000_000_000),
+      gas: to_eth_hex(options[:gas] || 1_000_000),
       gasPrice: hex_gas_price(options[:gas_price]),
       to: eth_account(options[:to]),
       value: to_eth_hex(options[:value] || 0),
