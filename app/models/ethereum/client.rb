@@ -14,8 +14,8 @@ class Ethereum::Client
     (data[0..1] == '0x') ? data : "0x#{data}"
   end
 
-  def account_balance(account)
-    hex_to_int epost('eth_getBalance', [to_eth_hex(account), 'latest']).result
+  def account_balance(account, tag = 'latest')
+    hex_to_int epost('eth_getBalance', [to_eth_hex(account), tag]).result
   end
 
   def client_version
@@ -66,8 +66,8 @@ class Ethereum::Client
     epost('eth_getTransactionReceipt', txid).result
   end
 
-  def get_transaction_count(account)
-    hex_to_int epost('eth_getTransactionCount', [account, 'pending']).result
+  def get_transaction_count(account, tag = 'pending')
+    hex_to_int epost('eth_getTransactionCount', [account, tag]).result
   end
 
   def utf8_to_hex(string)
