@@ -16,7 +16,6 @@ module Ethereum
     validates :update_address, format: { with: /\A(?:0x)?[0-9a-f]*\z/, allow_nil: true }
 
     before_validation :set_up_from_body, on: :create
-    after_create :delay_initial_status_check
 
 
     def get_status(assignment_snapshot, params = {})
@@ -30,7 +29,7 @@ module Ethereum
     end
 
     def contract_address
-      address || ethereum_contract.address
+      address || ethereum_contract.try(:address)
     end
 
     def contract_write_address
@@ -38,7 +37,11 @@ module Ethereum
     end
 
     def ready?
-      ethereum_contract.try(:address).present?
+      contract_address.present?
+    end
+
+    def contract_confirmed(address)
+      subtask.mark_ready if address.present?
     end
 
 
@@ -59,14 +62,6 @@ module Ethereum
 
     def updater
       Ethereum::OracleUpdater.new(self)
-    end
-
-    def delay_initial_status_check
-      self.delay.check_initial_status
-    end
-
-    def check_initial_status
-      reload.check_status if assignment.present? && ethereum_contract.blank?
     end
 
   end

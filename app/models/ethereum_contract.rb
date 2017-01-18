@@ -19,8 +19,8 @@ class EthereumContract < ActiveRecord::Base
       address: confirmed_address
     })
 
-    owner.delay.check_status
     coordinator.oracle_instructions id
+    owner.contract_confirmed confirmed_address
   end
 
   def write_address

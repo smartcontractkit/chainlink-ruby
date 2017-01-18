@@ -62,6 +62,10 @@ class EthereumOracle < ActiveRecord::Base
     ethereum_contract.try(:address).present?
   end
 
+  def contract_confirmed(address)
+    subtask.mark_ready if address.present?
+  end
+
 
   private
 

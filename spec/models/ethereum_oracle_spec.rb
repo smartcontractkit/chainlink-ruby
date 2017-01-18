@@ -61,4 +61,15 @@ describe EthereumOracle, type: :model do
       it { is_expected.to be false }
     end
   end
+
+  describe "#contract_confirmed" do
+    let(:subtask) { factory_build :subtask, adapter: nil }
+    let(:oracle) { factory_create :ethereum_oracle, subtask: subtask }
+
+    it "calls mark ready on the subtask" do
+      expect(subtask).to receive(:mark_ready)
+
+      oracle.contract_confirmed(ethereum_address)
+    end
+  end
 end

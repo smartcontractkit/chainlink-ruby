@@ -52,8 +52,9 @@ describe EthereumContract, type: :model do
       }.from(nil).to(address)
     end
 
-    it "triggers an update for the related oracle" do
-      expect(contract.owner).to receive_message_chain(:delay, :check_status)
+    it "informs the owner that the contract was confirmed" do
+      expect(contract.owner).to receive(:contract_confirmed)
+        .with(address)
 
       contract.confirmed address
     end

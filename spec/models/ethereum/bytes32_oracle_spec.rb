@@ -40,15 +40,6 @@ describe Ethereum::Bytes32Oracle do
           oracle.ethereum_account
         }.from(nil).to(Ethereum::Account.default)
       end
-
-      it "does create a write record" do
-        expect_any_instance_of(Assignment).to receive(:check_status) do |receiver|
-          expect(receiver).to eq(assignment)
-        end
-
-        subtask.save # saves the oracle indirectly
-        Delayed::Job.last.invoke_job
-      end
     end
 
     context "when the address does not exist in the body" do
@@ -136,4 +127,14 @@ describe Ethereum::Bytes32Oracle do
     end
   end
 
+  describe "#contract_confirmed" do
+    let(:subtask) { factory_build :subtask, adapter: nil }
+    let(:oracle) { factory_create :ethereum_bytes32_oracle, subtask: subtask }
+
+    it "calls mark ready on the subtask" do
+      expect(subtask).to receive(:mark_ready)
+
+      oracle.contract_confirmed(ethereum_address)
+    end
+  end
 end

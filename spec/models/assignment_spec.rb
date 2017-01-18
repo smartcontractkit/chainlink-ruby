@@ -73,13 +73,19 @@ describe Assignment, type: :model do
 
       it "creates a schedule" do
         expect {
-          assignment.tap(&:save).reload
+          assignment.save
         }.to change {
           AssignmentSchedule.count
         }
 
         expect(assignment.schedule).to eq(AssignmentSchedule.last)
       end
+    end
+
+    it "tries to create a snapshot" do
+      expect(assignment).to receive(:check_status)
+
+      assignment.save
     end
   end
 

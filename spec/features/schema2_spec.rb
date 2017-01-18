@@ -44,17 +44,17 @@ describe "assignment with a schema version 1.0.0", type: :request do
       genesis_txid = contract.genesis_transaction.txid
       wait_for_ethereum_confirmation genesis_txid
 
+      expect(CoordinatorClient).to receive(:post)
+        .with("#{coordinator_url}/oracles", instance_of(Hash))
+        .and_return(acknowledged_response)
+
       expect {
         run_ethereum_contract_confirmer
       }.to change {
         contract.reload.address
       }.from(nil)
 
-      expect(CoordinatorClient).to receive(:post)
-        .with("#{coordinator_url}/oracles", instance_of(Hash))
-        .and_return(acknowledged_response)
       expect {
-        run_delayed_jobs
         wait_for_ethereum_confirmation oracle.writes.last.txid
       }.to change {
         get_oracle_value oracle
@@ -78,7 +78,14 @@ describe "assignment with a schema version 1.0.0", type: :request do
       }
     end
 
+    before do
+      allow_any_instance_of(Ethereum::Client).to receive(:send_raw_transaction)
+    end
+
     it "does not create a new contract" do
+      expect(CoordinatorClient).not_to receive(:post)
+        .with("#{coordinator_url}/oracles", instance_of(Hash))
+
       expect {
         post '/assignments/', assignment_params, headers
       }.to change {
@@ -88,8 +95,6 @@ describe "assignment with a schema version 1.0.0", type: :request do
       oracle = assignment.adapters.last
       expect(oracle.ethereum_contract).to be_nil
 
-      expect(CoordinatorClient).not_to receive(:post)
-        .with("#{coordinator_url}/oracles", instance_of(Hash))
       expect_any_instance_of(Ethereum::Client).to receive(:send_raw_transaction) do |client, hex|
         tx = Eth::Tx.decode hex
         hex_data = bin_to_hex tx.data
@@ -97,13 +102,12 @@ describe "assignment with a schema version 1.0.0", type: :request do
         hex_payload = hex_data.gsub(/\A#{oracle_method}/, '')
         expect(ethereum.hex_to_utf8 hex_payload).to eq(oracle_value)
       end
-
-      run_delayed_jobs
-      wait_for_ethereum_confirmation oracle.writes.last.txid
-
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))
         .and_return(acknowledged_response)
+
+      wait_for_ethereum_confirmation oracle.writes.last.txid
+      run_ethereum_confirmation_watcher
       run_delayed_jobs
     end
   end

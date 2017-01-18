@@ -21,6 +21,7 @@ class Assignment < ActiveRecord::Base
   validate :finished_status_remains
 
   before_validation :set_up, on: :create
+  after_create :check_status
 
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
