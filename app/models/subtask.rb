@@ -1,7 +1,7 @@
-class AdapterAssignment < ActiveRecord::Base
+class Subtask < ActiveRecord::Base
 
   belongs_to :adapter, polymorphic: true
-  belongs_to :assignment, inverse_of: :adapter_assignments
+  belongs_to :assignment, inverse_of: :subtasks
   has_many :adapter_snapshots
 
   validates :adapter, presence: true

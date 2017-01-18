@@ -8,10 +8,10 @@ class Assignment < ActiveRecord::Base
   has_one :term, as: :expectation, inverse_of: :expectation
   has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
   has_one :schedule, class_name: 'AssignmentSchedule', inverse_of: :assignment
-  has_many :adapter_assignments, inverse_of: :assignment
+  has_many :subtasks, inverse_of: :assignment
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 
-  validates :adapter_assignments, presence: true
+  validates :subtasks, presence: true
   validates :coordinator, presence: true
   validates :end_at, presence: true
   validates :start_at, presence: true
@@ -26,7 +26,7 @@ class Assignment < ActiveRecord::Base
   accepts_nested_attributes_for :schedule
 
   def adapters
-    adapter_assignments.map(&:adapter)
+    subtasks.map(&:adapter)
   end
 
   def term_status
@@ -64,7 +64,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def adapter_types
-    adapter_assignments.pluck(:adapter_type)
+    subtasks.pluck(:adapter_type)
   end
 
 
@@ -100,7 +100,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def associations_including_errors
-    adapter_assignments.each do |associated|
+    subtasks.each do |associated|
       associated.errors.full_messages.each do |message|
         errors[:base] << message
       end unless associated.valid?

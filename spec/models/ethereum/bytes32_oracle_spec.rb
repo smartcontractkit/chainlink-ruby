@@ -10,7 +10,7 @@ describe Ethereum::Bytes32Oracle do
 
   describe "on create" do
     let(:assignment) { factory_create :assignment }
-    let(:adapter_assignment) { factory_build :adapter_assignment, adapter: oracle, assignment: assignment }
+    let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
 
     context "when the address exists in the body" do
       let(:oracle) { factory_build :external_bytes32_oracle }
@@ -46,7 +46,7 @@ describe Ethereum::Bytes32Oracle do
           expect(receiver).to eq(assignment)
         end
 
-        adapter_assignment.save # saves the oracle indirectly
+        subtask.save # saves the oracle indirectly
         Delayed::Job.last.invoke_job
       end
     end
@@ -88,8 +88,8 @@ describe Ethereum::Bytes32Oracle do
 
   describe "#get_status" do
     let!(:adapter) { factory_create :ethereum_bytes32_oracle }
-    let(:adapter_assignment) { factory_create :adapter_assignment, adapter: adapter }
-    let(:snapshot) { factory_create :adapter_snapshot, adapter_assignment: adapter_assignment }
+    let(:subtask) { factory_create :subtask, adapter: adapter }
+    let(:snapshot) { factory_create :adapter_snapshot, subtask: subtask }
     let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
     let(:truncated_value) { value[0..31] }
     let(:params) { {value: value} }

@@ -25,8 +25,8 @@ describe JsonAdapter do
 
   describe "#get_status" do
     let(:adapter) { factory_create :json_adapter }
-    let(:adapter_assignment) { factory_create :adapter_assignment, adapter: adapter }
-    let(:snapshot) { factory_create :adapter_snapshot, adapter_assignment: adapter_assignment }
+    let(:subtask) { factory_create :subtask, adapter: adapter }
+    let(:snapshot) { factory_create :adapter_snapshot, subtask: subtask }
     let(:_params) { {dont: 'matter'} }
     let(:response) { double }
     let(:value) { '22,the-moon' }

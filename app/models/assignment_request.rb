@@ -37,7 +37,7 @@ class AssignmentRequest < ActiveRecord::Base
     return unless body.present?
 
     self.assignment ||= build_assignment({
-      adapter_assignments: adapter_assignments,
+      subtasks: subtasks,
       coordinator: coordinator,
       end_at: parse_time(schedule[:endAt]),
       schedule_attributes: schedule_params,
@@ -113,9 +113,9 @@ class AssignmentRequest < ActiveRecord::Base
     assignment_params[:pipeline] || [assignment_params]
   end
 
-  def adapter_assignments
-    @adapter_assignments ||= pipeline_params.map.with_index do |adapter_params, index|
-      AdapterAssignment.new({
+  def subtasks
+    @subtasks ||= pipeline_params.map.with_index do |adapter_params, index|
+      Subtask.new({
         adapter: build_adapter(adapter_params),
         index: index,
         parameters: adapter_params[:adapterParams],

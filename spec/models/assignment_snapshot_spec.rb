@@ -54,9 +54,9 @@ describe AssignmentSnapshot, type: :model do
 
     context "with adapters" do
       before do
-        factory_create :adapter_assignment, assignment: assignment
-        factory_create :adapter_assignment, assignment: assignment
-        factory_create :adapter_assignment, assignment: assignment
+        factory_create :subtask, assignment: assignment
+        factory_create :subtask, assignment: assignment
+        factory_create :subtask, assignment: assignment
         assignment.reload
 
         allow_any_instance_of(AdapterSnapshot).to receive(:start)
@@ -75,7 +75,7 @@ describe AssignmentSnapshot, type: :model do
           snapshot.save
         }.to change {
           snapshot.adapter_index
-        }.from(nil).to(assignment.adapter_assignments.first.index)
+        }.from(nil).to(assignment.subtasks.first.index)
       end
 
       it "starts the adapter snapshot pipeline process" do

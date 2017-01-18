@@ -1,6 +1,6 @@
 describe ExternalAdapterClient, type: :model do
-  let(:assignment) { factory_create :assignment, adapter_assignments: [adapter_assignment] }
-  let(:adapter_assignment) { factory_build :adapter_assignment, adapter: validator, assignment: nil }
+  let(:assignment) { factory_create :assignment, subtasks: [subtask] }
+  let(:subtask) { factory_build :subtask, adapter: validator, assignment: nil }
   let(:validator) { factory_create :external_adapter }
   let(:client) { ExternalAdapterClient.new(validator) }
 
@@ -13,14 +13,14 @@ describe ExternalAdapterClient, type: :model do
             username: validator.username,
           },
           body: {
-            data: adapter_assignment.parameters,
+            data: subtask.parameters,
             end_at: assignment.end_at.to_i.to_s,
-            xid: adapter_assignment.xid,
+            xid: subtask.xid,
           },
           headers: {}
         }).and_return(http_response body: {}.to_json)
 
-      client.start_assignment adapter_assignment
+      client.start_assignment subtask
     end
   end
 

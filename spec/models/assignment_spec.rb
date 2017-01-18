@@ -1,8 +1,8 @@
 describe Assignment, type: :model do
 
   describe "validations" do
-    it { is_expected.to have_valid(:adapter_assignments).when([factory_build(:adapter_assignment, assignment: nil)]) }
-    it { is_expected.not_to have_valid(:adapter_assignments).when([]) }
+    it { is_expected.to have_valid(:subtasks).when([factory_build(:subtask, assignment: nil)]) }
+    it { is_expected.not_to have_valid(:subtasks).when([]) }
 
     it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
     it { is_expected.not_to have_valid(:coordinator).when(nil) }
@@ -14,17 +14,17 @@ describe Assignment, type: :model do
 
     context "when the adapter gets an error" do
       let(:assignment) { factory_build :assignment }
-      let(:adapter_assignment) { assignment.adapter_assignments.first }
+      let(:subtask) { assignment.subtasks.first }
       let(:remote_error_message) { 'big errors. great job.' }
 
       it "includes the adapter error" do
-        allow(adapter_assignment.adapter).to receive(:start)
-          .with(adapter_assignment)
+        allow(subtask.adapter).to receive(:start)
+          .with(subtask)
           .and_return(create_assignment_response errors: [remote_error_message])
 
         assignment.save
 
-        expect(assignment.errors.full_messages).to include("Adapter##{adapter_assignment.index} Error: #{remote_error_message}")
+        expect(assignment.errors.full_messages).to include("Adapter##{subtask.index} Error: #{remote_error_message}")
       end
     end
 

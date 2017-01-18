@@ -7,8 +7,8 @@ module Ethereum
     include AdapterBase
 
     belongs_to :ethereum_account, class_name: 'Ethereum::Account'
-    has_one :adapter_assignment, as: :adapter
-    has_one :assignment, through: :adapter_assignment
+    has_one :subtask, as: :adapter
+    has_one :assignment, through: :subtask
     has_one :ethereum_contract, as: :owner
     has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
 

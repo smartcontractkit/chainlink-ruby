@@ -5,7 +5,7 @@ class AssignmentSnapshot < ActiveRecord::Base
 
   belongs_to :assignment, inverse_of: :snapshots
   has_many :adapter_snapshots, -> {
-    includes(:adapter_assignment).order("adapter_assignments.index")
+    includes(:subtask).order("subtasks.index")
   }
 
   validates :assignment, presence: true
@@ -105,18 +105,18 @@ class AssignmentSnapshot < ActiveRecord::Base
   end
 
   def build_adapter_snapshots
-    adapter_assignments.each do |adapter_assignment|
-      adapter_snapshots.build(adapter_assignment: adapter_assignment)
+    subtasks.each do |subtask|
+      adapter_snapshots.build(subtask: subtask)
     end
-    self.adapter_index ||= adapter_assignments.collect(&:index).min
+    self.adapter_index ||= subtasks.collect(&:index).min
   end
 
   def handler
     @handler ||= AssignmentSnapshotHandler.new(self)
   end
 
-  def adapter_assignments
-    assignment.adapter_assignments
+  def subtasks
+    assignment.subtasks
   end
 
   def start_adapter_pipeline

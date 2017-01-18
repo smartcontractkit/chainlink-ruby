@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :adapter_snapshot do
-    adapter_assignment
+    subtask
     assignment_snapshot
   end
 

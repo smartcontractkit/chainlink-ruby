@@ -4,12 +4,12 @@ describe AdapterSnapshot do
     it { is_expected.to have_valid(:assignment_snapshot).when(factory_create(:assignment_snapshot)) }
     it { is_expected.not_to have_valid(:assignment_snapshot).when(nil) }
 
-    it { is_expected.to have_valid(:adapter_assignment).when(factory_create(:adapter_assignment)) }
-    it { is_expected.not_to have_valid(:adapter_assignment).when(nil) }
+    it { is_expected.to have_valid(:subtask).when(factory_create(:subtask)) }
+    it { is_expected.not_to have_valid(:subtask).when(nil) }
     context "when a similar adapter assignment already exists" do
       let(:old) { factory_create :adapter_snapshot }
       subject { AdapterSnapshot.new assignment_snapshot: old.assignment_snapshot }
-      it { is_expected.not_to have_valid(:adapter_assignment).when(old.adapter_assignment) }
+      it { is_expected.not_to have_valid(:subtask).when(old.subtask) }
     end
 
     it { is_expected.to have_valid(:description).when(nil, '', Faker::Lorem.sentence) }
@@ -28,16 +28,16 @@ describe AdapterSnapshot do
   describe "#xid" do
     let(:adapter_snapshot) { factory_create :adapter_snapshot }
     let(:assignment_snapshot) { adapter_snapshot.assignment_snapshot }
-    let(:adapter_assignment) { adapter_snapshot.adapter_assignment }
+    let(:subtask) { adapter_snapshot.subtask }
 
     it "equals the assignment snapshot ID and adapter index" do
-      expect(adapter_snapshot.xid).to eq("#{assignment_snapshot.xid}=#{adapter_assignment.index}")
+      expect(adapter_snapshot.xid).to eq("#{assignment_snapshot.xid}=#{subtask.index}")
     end
   end
 
   describe "#start" do
     let(:adapter_snapshot) { factory_create :adapter_snapshot }
-    let(:adapter_assignment) { adapter_snapshot.adapter_assignment }
+    let(:subtask) { adapter_snapshot.subtask }
 
     context "when parameters are passed in" do
       let(:params) { { SecureRandom.hex => SecureRandom.hex } }
@@ -45,7 +45,7 @@ describe AdapterSnapshot do
       it "merges them with the adapter's parameters" do
         expect_any_instance_of(AdapterSnapshotHandler).to receive(:perform)
           .with(params.merge({
-            config: adapter_assignment.parameters
+            config: subtask.parameters
           }))
 
         adapter_snapshot.start(params)
@@ -56,7 +56,7 @@ describe AdapterSnapshot do
       it "merges them with the adapter's parameters" do
         expect_any_instance_of(AdapterSnapshotHandler).to receive(:perform)
           .with({
-            config: adapter_assignment.parameters
+            config: subtask.parameters
           })
 
         adapter_snapshot.start

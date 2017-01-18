@@ -1,9 +1,9 @@
 class AdapterSnapshot < ActiveRecord::Base
 
-  belongs_to :adapter_assignment
+  belongs_to :subtask
   belongs_to :assignment_snapshot
 
-  validates :adapter_assignment, presence: true, uniqueness: { scope: [:assignment_snapshot] }
+  validates :subtask, presence: true, uniqueness: { scope: [:assignment_snapshot] }
   validates :assignment_snapshot, presence: true
 
 
@@ -21,15 +21,15 @@ class AdapterSnapshot < ActiveRecord::Base
   end
 
   def index
-    adapter_assignment.index
+    subtask.index
   end
 
   def adapter
-    adapter_assignment.adapter
+    subtask.adapter
   end
 
   def assignment
-    adapter_assignment.assignment
+    subtask.assignment
   end
 
   def response_errors
@@ -41,7 +41,7 @@ class AdapterSnapshot < ActiveRecord::Base
   end
 
   def start(params = {})
-    handler.perform params.merge config: adapter_assignment.parameters
+    handler.perform params.merge config: subtask.parameters
   end
 
 

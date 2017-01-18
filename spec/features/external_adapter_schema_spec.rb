@@ -1,7 +1,7 @@
 describe "assignment validating its type" do
   let(:external_adapter) { factory_create :external_adapter, assignment_type: type }
-  let(:adapter_assignment) { factory_build :adapter_assignment, adapter: external_adapter, parameters: data }
-  let(:assignment) { factory_build :assignment, adapter_assignments: [adapter_assignment] }
+  let(:subtask) { factory_build :subtask, adapter: external_adapter, parameters: data }
+  let(:assignment) { factory_build :assignment, subtasks: [subtask] }
 
   context "when validating an SEO schema" do
     let(:type) { assignment_types(:seo) }

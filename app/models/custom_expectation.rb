@@ -4,7 +4,7 @@ class CustomExpectation < ActiveRecord::Base
 
   include AdapterBase
 
-  has_one :adapter_assignment, as: :adapter
+  has_one :subtask, as: :adapter
   has_one :assignment, as: :adapter
   has_one :term, as: :expectation, inverse_of: :expectation
   has_many :api_results, inverse_of: :custom_expectation
@@ -19,7 +19,7 @@ class CustomExpectation < ActiveRecord::Base
 
 
   def assignment
-    adapter_assignment.try(:assignment) || super
+    subtask.try(:assignment) || super
   end
 
   def check_rankings

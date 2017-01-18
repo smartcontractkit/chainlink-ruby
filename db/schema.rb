@@ -11,21 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170111233218) do
-
-  create_table "adapter_assignments", force: :cascade do |t|
-    t.string   "adapter_type"
-    t.integer  "adapter_id"
-    t.integer  "assignment_id"
-    t.integer  "index"
-    t.text     "adapter_params_json"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(version: 20170118191051) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
-    t.integer  "adapter_assignment_id"
+    t.integer  "subtask_id"
     t.text     "description"
     t.text     "description_url"
     t.text     "details_json"
@@ -243,6 +233,16 @@ ActiveRecord::Schema.define(version: 20170111233218) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "private_key"
+  end
+
+  create_table "subtasks", force: :cascade do |t|
+    t.string   "adapter_type"
+    t.integer  "adapter_id"
+    t.integer  "assignment_id"
+    t.integer  "index"
+    t.text     "adapter_params_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "terms", force: :cascade do |t|

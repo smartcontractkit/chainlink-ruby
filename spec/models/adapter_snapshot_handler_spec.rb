@@ -4,8 +4,8 @@ describe AdapterSnapshotHandler do
   describe "#perform" do
     let!(:snapshot) { factory_create :adapter_snapshot, assignment_snapshot: assignment_snapshot }
     let(:assignment_snapshot) { factory_create :assignment_snapshot }
-    let(:assignment) { snapshot.adapter_assignment.assignment }
-    let(:adapter) { snapshot.adapter_assignment.adapter }
+    let(:assignment) { snapshot.subtask.assignment }
+    let(:adapter) { snapshot.subtask.adapter }
     let(:params) { Hash.new }
     let(:adapter_response) do
       {

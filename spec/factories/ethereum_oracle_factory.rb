@@ -14,7 +14,7 @@ FactoryGirl.define do
   end
 
   factory :assigned_ethereum_oracle, parent: :ethereum_oracle do
-    adapter_assignment
+    subtask
   end
 
 end

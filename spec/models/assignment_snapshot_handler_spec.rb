@@ -1,10 +1,10 @@
 describe AssignmentSnapshotHandler do
-  let!(:adapter_assignment1) { factory_build :adapter_assignment, assignment: nil }
-  let!(:adapter_assignment2) { factory_build :adapter_assignment, assignment: nil }
-  let!(:adapter_assignment3) { factory_build :adapter_assignment, assignment: nil }
+  let!(:subtask1) { factory_build :subtask, assignment: nil }
+  let!(:subtask2) { factory_build :subtask, assignment: nil }
+  let!(:subtask3) { factory_build :subtask, assignment: nil }
   let(:snapshot) { factory_create(:assignment_snapshot, assignment: assignment) }
   let(:handler) { AssignmentSnapshotHandler.new snapshot }
-  let(:assignment) { factory_create :assignment, adapter_assignments: [adapter_assignment1, adapter_assignment2, adapter_assignment3] }
+  let(:assignment) { factory_create :assignment, subtasks: [subtask1, subtask2, subtask3] }
   let(:adapter_snapshot1) { snapshot.adapter_snapshots[0] }
   let(:adapter_snapshot2) { snapshot.adapter_snapshots[1] }
   let(:adapter_snapshot3) { snapshot.adapter_snapshots[2] }

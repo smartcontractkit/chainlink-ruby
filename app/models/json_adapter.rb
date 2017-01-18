@@ -3,8 +3,8 @@ class JsonAdapter < ActiveRecord::Base
 
   include AdapterBase
 
-  has_one :adapter_assignment, as: :adapter
-  has_one :assignment, through: :adapter_assignment
+  has_one :subtask, as: :adapter
+  has_one :assignment, through: :subtask
 
   validates :fields, presence: true
   validates :request_type, inclusion: { in: ['GET'] }

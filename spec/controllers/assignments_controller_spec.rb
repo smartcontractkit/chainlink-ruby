@@ -94,8 +94,8 @@ describe AssignmentsController, type: :controller do
 
   describe "#update" do
     let(:adapter) { factory_create :external_adapter }
-    let(:adapter_assignment) { factory_build :adapter_assignment, adapter: adapter, assignment: nil }
-    let(:assignment) { factory_create :assignment, adapter_assignments: [adapter_assignment] }
+    let(:subtask) { factory_build :subtask, adapter: adapter, assignment: nil }
+    let(:assignment) { factory_create :assignment, subtasks: [subtask] }
     let(:new_status) { Term::COMPLETED }
     let(:assignment_params) do
       {

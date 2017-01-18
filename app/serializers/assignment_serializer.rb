@@ -23,7 +23,7 @@ class AssignmentSerializer < ActiveModel::Serializer
   end
 
   def parameters
-    object.adapter_assignments.first.parameters
+    object.subtasks.first.parameters
   end
 
 end
