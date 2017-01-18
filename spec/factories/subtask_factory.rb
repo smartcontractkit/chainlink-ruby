@@ -8,4 +8,10 @@ FactoryGirl.define do
     index { generate(:subtask_index) }
   end
 
+  factory :uninitialized_subtask, parent: :subtask do
+    after(:create) do |subtask|
+      subtask.update_attributes ready: false
+    end
+  end
+
 end

@@ -49,4 +49,43 @@ describe Subtask, type: :model do
     end
   end
 
+  describe "#mark_ready" do
+    context "when the adapter has not been marked ready" do
+      let(:subtask) { factory_create :uninitialized_subtask }
+
+      it "notifies the assignment" do
+        expect(subtask.assignment).to receive(:subtask_ready)
+          .with(subtask)
+
+        subtask.mark_ready
+      end
+
+      it "marks the subtask as ready" do
+        expect {
+          subtask.mark_ready
+        }.to change {
+          subtask.ready?
+        }.from(false).to(true)
+      end
+    end
+
+    context "when the adapter has already been marked ready" do
+      let(:subtask) { factory_create :subtask }
+
+      it "does not notify the assignment" do
+        expect(subtask.assignment).not_to receive(:subtask_ready)
+
+        subtask.mark_ready
+      end
+
+      it "does not change the subtask's ready flag" do
+        expect {
+          subtask.mark_ready
+        }.not_to change {
+          subtask.ready?
+        }.from(true)
+      end
+    end
+  end
+
 end

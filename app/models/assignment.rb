@@ -34,7 +34,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def check_status
-    snapshots.create
+    snapshots.create if subtasks.all?(&:ready?)
   end
 
   def close_out!(status = COMPLETED)
@@ -65,6 +65,10 @@ class Assignment < ActiveRecord::Base
 
   def adapter_types
     subtasks.pluck(:adapter_type)
+  end
+
+  def subtask_ready(subtask)
+    check_status if subtasks.include? subtask
   end
 
 

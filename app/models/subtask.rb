@@ -30,6 +30,13 @@ class Subtask < ActiveRecord::Base
     "#{assignment.xid}##{index}"
   end
 
+  def mark_ready
+    return if ready?
+    assignment.subtask_ready(self) if update_attributes({
+      ready: adapter.ready?
+    })
+  end
+
 
   private
 

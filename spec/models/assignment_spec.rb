@@ -93,6 +93,21 @@ describe Assignment, type: :model do
         assignment.snapshots.count
       }.by(+1)
     end
+
+    context "when not all of the substasks are ready" do
+      before do
+        factory_create :uninitialized_subtask, assignment: assignment
+        assignment.reload
+      end
+
+      it "does not create a new snapshot" do
+        expect {
+          assignment.check_status
+        }.not_to change {
+          assignment.reload.snapshots.count
+        }
+      end
+    end
   end
 
   describe "#close_out!" do
@@ -215,4 +230,38 @@ describe Assignment, type: :model do
     end
   end
 
+  describe "#subtask_ready" do
+    let(:assignment) { factory_create :assignment }
+    let(:subtask) { assignment.subtasks.first }
+
+    context "when all of the substasks are ready" do
+      before do
+        subtask.update_attributes(ready: true)
+        assignment.reload
+      end
+
+      it "creates a new assignment snapshot" do
+        expect {
+          assignment.subtask_ready(subtask)
+        }.to change {
+          assignment.reload.snapshots.count
+        }.by(+1)
+      end
+    end
+
+    context "when not all of the substasks are ready" do
+      before do
+        factory_create :uninitialized_subtask, assignment: assignment
+        assignment.reload
+      end
+
+      it "does not create a new snapshot" do
+        expect {
+          assignment.subtask_ready(subtask)
+        }.not_to change {
+          assignment.reload.snapshots.count
+        }
+      end
+    end
+  end
 end
