@@ -37,4 +37,16 @@ describe Subtask, type: :model do
     end
   end
 
+  describe "on create" do
+    let(:subtask) { factory_build :subtask }
+
+    it "changes marks itself initialized based on the adapter" do
+      expect {
+        subtask.save
+      }.to change {
+        subtask.ready?
+      }.from(false).to(true)
+    end
+  end
+
 end

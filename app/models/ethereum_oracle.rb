@@ -58,6 +58,10 @@ class EthereumOracle < ActiveRecord::Base
     ethereum_contract.write_address
   end
 
+  def ready?
+    ethereum_contract.try(:address).present?
+  end
+
 
   private
 

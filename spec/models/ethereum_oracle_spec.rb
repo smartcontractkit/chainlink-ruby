@@ -47,4 +47,18 @@ describe EthereumOracle, type: :model do
       end
     end
   end
+
+  describe "#ready?" do
+    subject { factory_build(:ethereum_oracle, ethereum_contract: contract).ready? }
+
+    context "when the contract has an address" do
+      let(:contract) { factory_build :ethereum_contract, address: ethereum_address }
+      it { is_expected.to be true }
+    end
+
+    context "when the contract does not have an address" do
+      let(:contract) { factory_build :ethereum_contract, address: nil }
+      it { is_expected.to be false }
+    end
+  end
 end

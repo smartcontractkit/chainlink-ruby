@@ -10,7 +10,7 @@ class Subtask < ActiveRecord::Base
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :parameters_against_schema
 
-  before_validation :start_tracking, on: :create
+  before_validation :set_up, on: :create
 
 
   def parameters
@@ -33,7 +33,7 @@ class Subtask < ActiveRecord::Base
 
   private
 
-  def start_tracking
+  def set_up
     return if assignment.blank? || adapter.blank?
     response = adapter.start self
 
@@ -42,6 +42,8 @@ class Subtask < ActiveRecord::Base
         errors.add(:base, "Adapter##{index} Error: #{error_message}")
       end
     end
+    self.ready = adapter.ready?
+    true
   end
 
   def parameters_against_schema

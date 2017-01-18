@@ -39,4 +39,8 @@ module AdapterBase
     []
   end
 
+  def ready?
+    true
+  end
+
 end
