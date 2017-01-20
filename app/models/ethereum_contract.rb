@@ -19,7 +19,6 @@ class EthereumContract < ActiveRecord::Base
       address: confirmed_address
     })
 
-    coordinator.oracle_instructions id
     owner.contract_confirmed confirmed_address
   end
 

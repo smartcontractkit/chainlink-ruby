@@ -18,22 +18,6 @@ class CoordinatorClient
     })
   end
 
-  def oracle_instructions(contract_id)
-    return unless url?
-    contract = EthereumContract.find(contract_id)
-    oracle = contract.owner
-    template = contract.template
-
-    check_acknowledged coordinator_post('/oracles', {
-      oracle: params_for(oracle.related_term, {
-        address: contract.address,
-        jsonABI: template.json_abi,
-        readAddress: template.read_address,
-        solidityABI: template.solidity_abi,
-      })
-    })
-  end
-
   def snapshot(snapshot_id)
     return unless url?
     snapshot = AssignmentSnapshot.find snapshot_id

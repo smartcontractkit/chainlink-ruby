@@ -47,9 +47,6 @@ describe "assignment with a schema version 1.0.0", type: :request do
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/assignments/#{assignment.xid}", instance_of(Hash))
         .and_return(acknowledged_response)
-      expect(CoordinatorClient).to receive(:post)
-        .with("#{coordinator_url}/oracles", instance_of(Hash))
-        .and_return(acknowledged_response)
 
       expect {
         run_ethereum_contract_confirmer

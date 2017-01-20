@@ -70,66 +70,6 @@ describe CoordinatorClient, type: :model do
     end
   end
 
-  describe "#oracle_instructions" do
-    let(:oracle) { factory_create :ethereum_oracle }
-    let(:ethereum_contract) { oracle.ethereum_contract }
-    let(:template) { ethereum_contract.template }
-    let(:term) { factory_create :term, expectation: oracle }
-    let(:contract) { term.contract }
-    let(:response) { http_response body: {acknowledged_at: 1}.to_json }
-
-    context "when the coordinator has a URL" do
-      before do
-        expect(CoordinatorClient).to receive(:post)
-          .with("#{coordinator.url}/oracles", {
-            basic_auth: instance_of(Hash),
-            body: {
-              oracle: {
-                address: ethereum_contract.address,
-                contract: contract.xid,
-                jsonABI: template.json_abi,
-                nodeID: ENV['NODE_NAME'],
-                readAddress: template.read_address,
-                solidityABI: template.solidity_abi,
-                term: term.name,
-              }
-            },
-            headers: {}
-          }).and_return(response)
-      end
-
-      context "when the response comes back acknowledged" do
-        let(:response) { http_response body: {acknowledged_at: 1}.to_json }
-
-        it "does not raise an error" do
-          expect {
-            client.oracle_instructions ethereum_contract.id
-          }.not_to raise_error
-        end
-      end
-
-      context "when the response comes back unacknowledged" do
-        let(:response) { http_response body: {}.to_json }
-
-        it "raise an error" do
-          expect {
-            client.oracle_instructions ethereum_contract.id
-          }.to raise_error "Not acknowledged, try again. Errors: "
-        end
-      end
-    end
-
-    context "when the coordinator URL does NOT have a URL" do
-      let(:url) { nil }
-
-      it "does NOT post" do
-        expect(CoordinatorClient).not_to receive(:post)
-
-        client.oracle_instructions ethereum_contract.id
-      end
-    end
-  end
-
   describe "#snapshot" do
     let(:snapshot) { factory_create :assignment_snapshot, assignment: assignment }
     let(:assignment) { factory_create :assignment }

@@ -48,9 +48,6 @@ describe "assignment creation and performance", type: :request do
       .with("#{coordinator_url}/assignments/#{assignment.xid}", instance_of(Hash))
       .and_return(acknowledged_response)
     expect(CoordinatorClient).to receive(:post)
-      .with("#{coordinator_url}/oracles", instance_of(Hash))
-      .and_return(acknowledged_response)
-    expect(CoordinatorClient).to receive(:post)
       .with("#{coordinator_url}/snapshots", instance_of(Hash))
       .and_return(acknowledged_response)
 
