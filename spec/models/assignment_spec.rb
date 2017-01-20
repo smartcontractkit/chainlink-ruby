@@ -82,10 +82,12 @@ describe Assignment, type: :model do
       end
     end
 
-    it "tries to create a snapshot" do
-      expect(assignment).to receive(:check_status)
+    it "creates a snapshot" do
+      expect_any_instance_of(Assignment).to receive(:check_status) do |receiver|
+        expect(receiver).to eq(assignment)
+      end
 
-      assignment.save
+      run_generated_jobs { assignment.save }
     end
   end
 

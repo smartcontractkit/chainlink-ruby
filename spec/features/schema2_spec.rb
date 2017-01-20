@@ -91,6 +91,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
       }.to change {
         coordinator.assignments.count
       }.by(+1)
+      run_delayed_jobs
       assignment = Assignment.find_by xid: response_json['xid']
       oracle = assignment.adapters.last
       expect(oracle.ethereum_contract).to be_nil

@@ -21,7 +21,7 @@ class Assignment < ActiveRecord::Base
   validate :finished_status_remains
 
   before_validation :set_up, on: :create
-  after_create :check_status
+  after_create :set_initial_value, if: :ready?
 
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
@@ -121,6 +121,10 @@ class Assignment < ActiveRecord::Base
 
   def ready?
     subtasks.all?(&:ready?)
+  end
+
+  def set_initial_value
+    delay.check_status
   end
 
 end
