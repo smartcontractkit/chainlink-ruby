@@ -10,6 +10,7 @@ module Ethereum
     has_one :subtask, as: :adapter
     has_one :assignment, through: :subtask
     has_one :ethereum_contract, as: :owner
+    has_one :template, through: :ethereum_contract
     has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
 
     validates :address, format: { with: /\A0x[0-9a-f]{40}\z/, allow_nil: true }
@@ -44,6 +45,14 @@ module Ethereum
       subtask.mark_ready if address.present?
     end
 
+    def initialization_details
+      if ethereum_contract.present?
+        full_contract_details
+      else
+        external_contract_details
+      end
+    end
+
 
     private
 
@@ -62,6 +71,21 @@ module Ethereum
 
     def updater
       Ethereum::OracleUpdater.new(self)
+    end
+
+    def full_contract_details
+      external_contract_details.merge({
+        jsonABI: template.json_abi,
+        readAddress: template.read_address,
+        solidityABI: template.solidity_abi,
+      })
+    end
+
+    def external_contract_details
+      {
+        address: contract_address,
+        writeAddress: contract_write_address
+      }
     end
 
   end

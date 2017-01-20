@@ -7,6 +7,7 @@ class EthereumOracle < ActiveRecord::Base
   has_one :subtask, as: :adapter
   has_one :assignment, through: :subtask
   has_one :ethereum_contract, as: :owner
+  has_one :template, through: :ethereum_contract
   has_one :term, as: :expectation
   has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
 
@@ -64,6 +65,16 @@ class EthereumOracle < ActiveRecord::Base
 
   def contract_confirmed(address)
     subtask.mark_ready if address.present?
+  end
+
+  def initialization_details
+    {
+      address: ethereum_contract.address,
+      jsonABI: template.json_abi,
+      readAddress: template.read_address,
+      writeAddress: template.write_address,
+      solidityABI: template.solidity_abi,
+    }
   end
 
 

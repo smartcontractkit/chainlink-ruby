@@ -137,4 +137,36 @@ describe Ethereum::Bytes32Oracle do
       oracle.contract_confirmed(ethereum_address)
     end
   end
+
+  describe "#initialization_details" do
+    context "when the oracle has a contract" do
+      let(:contract) { factory_create :ethereum_contract, address: ethereum_address }
+      let(:oracle) do
+        factory_create(:ethereum_bytes32_oracle).tap do |oracle|
+          oracle.update_attributes(ethereum_contract: contract)
+        end
+      end
+
+      it "pulls information from the ethereum contract and template" do
+        expect(oracle.initialization_details).to eq({
+          address: contract.address,
+          jsonABI: contract.template.json_abi,
+          readAddress: contract.template.read_address,
+          solidityABI: contract.template.solidity_abi,
+          writeAddress: contract.template.write_address,
+        })
+      end
+    end
+
+    context "when the oracle has a contract" do
+      let(:oracle) { factory_create :external_bytes32_oracle }
+
+      it "pulls information from the ethereum contract and template" do
+        expect(oracle.initialization_details).to eq({
+          address: oracle.address,
+          writeAddress: oracle.update_address,
+        })
+      end
+    end
+  end
 end
