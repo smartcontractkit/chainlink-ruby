@@ -43,4 +43,8 @@ module AdapterBase
     true
   end
 
+  def initialization_details
+    nil
+  end
+
 end

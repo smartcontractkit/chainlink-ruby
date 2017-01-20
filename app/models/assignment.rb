@@ -72,6 +72,10 @@ class Assignment < ActiveRecord::Base
     check_status if subtasks.include? subtask
   end
 
+  def initialization_details
+    subtasks.map(&:initialization_details)
+  end
+
 
   private
 

@@ -37,6 +37,10 @@ class Subtask < ActiveRecord::Base
     })
   end
 
+  def initialization_details
+    adapter.initialization_details
+  end
+
 
   private
 
