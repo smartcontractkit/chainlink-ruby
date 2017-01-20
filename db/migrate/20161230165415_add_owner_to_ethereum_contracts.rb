@@ -6,8 +6,9 @@ class AddOwnerToEthereumContracts < ActiveRecord::Migration
 
     EthereumOracle.pluck(:id).each do |id|
       oracle = EthereumOracle.find(id)
-      contract = EthereumContract.find(oracle.ethereum_contract_id)
-      contract.update_attributes! owner_id: oracle, owner_type: 'EthereumOracle'
+      if contract = EthereumContract.find_by(id: oracle.ethereum_contract_id)
+        contract.update_attributes! owner_id: oracle, owner_type: 'EthereumOracle'
+      end
     end
 
     remove_column :ethereum_oracles, :ethereum_contract_id, :integer
