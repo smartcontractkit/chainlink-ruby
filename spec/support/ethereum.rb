@@ -54,6 +54,7 @@ module SpecHelpers
   end
 
   def wait_for_ethereum_confirmation(txid)
+    raise "No TXID to wait for!" if txid.blank?
     average_block_time = 17
     try_rate = 4.0
     buffer = 6
