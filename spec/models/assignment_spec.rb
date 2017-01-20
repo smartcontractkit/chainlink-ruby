@@ -18,7 +18,7 @@ describe Assignment, type: :model do
       let(:remote_error_message) { 'big errors. great job.' }
 
       it "includes the adapter error" do
-        allow(subtask.adapter).to receive(:start)
+        expect(subtask.adapter).to receive(:start)
           .with(subtask)
           .and_return(create_assignment_response errors: [remote_error_message])
 

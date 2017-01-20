@@ -46,13 +46,9 @@ class Subtask < ActiveRecord::Base
 
   def set_up
     return if assignment.blank? || adapter.blank?
-    response = adapter.start self
-
-    if response.errors.present?
-      response.errors.each do |error_message|
-        errors.add(:base, "Adapter##{index} Error: #{error_message}")
-      end
-    end
+    start_response.errors.each do |error_message|
+      errors.add(:base, "Adapter##{index} Error: #{error_message}")
+    end if start_response.errors.present?
     self.ready = adapter.ready?
     true
   end
@@ -63,6 +59,10 @@ class Subtask < ActiveRecord::Base
     adapter.schema_errors_for(parameters).each do |error|
       errors.add(:base, error)
     end
+  end
+
+  def start_response
+    @start_response ||= adapter.start self
   end
 
 end
