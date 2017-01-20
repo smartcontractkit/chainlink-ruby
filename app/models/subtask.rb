@@ -27,7 +27,7 @@ class Subtask < ActiveRecord::Base
   end
 
   def xid
-    "#{assignment.xid}##{index}"
+    "#{assignment.xid}=#{index}"
   end
 
   def mark_ready

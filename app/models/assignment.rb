@@ -86,7 +86,7 @@ class Assignment < ActiveRecord::Base
     self.end_at ||= term.try(:end_at)
     self.start_at ||= Time.now
     self.status ||= IN_PROGRESS
-    self.xid = SecureRandom.uuid
+    self.xid ||= SecureRandom.uuid
   end
 
   def start_at_before_end_at

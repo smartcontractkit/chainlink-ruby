@@ -15,8 +15,8 @@ class ExternalAdapterClient
   end
 
   def assignment_snapshot(snapshot, details = {})
-    assignment = snapshot.assignment
-    hashie_post(validator_url("/assignments/#{assignment.xid}/snapshots"), {
+    subtask = snapshot.subtask
+    hashie_post(validator_url("/assignments/#{subtask.xid}/snapshots"), {
       details: details,
       xid: snapshot.xid,
     })
