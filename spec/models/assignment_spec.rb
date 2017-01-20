@@ -253,6 +253,13 @@ describe Assignment, type: :model do
           assignment.reload.snapshots.count
         }.by(+1)
       end
+
+      it "sends integration instructions to the coordinator" do
+        expect(assignment.coordinator).to receive(:assignment_initialized)
+          .with(assignment.id)
+
+        assignment.subtask_ready(subtask)
+      end
     end
 
     context "when not all of the substasks are ready" do

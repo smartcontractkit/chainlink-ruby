@@ -35,7 +35,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def check_status
-    snapshots.create if subtasks.all?(&:ready?)
+    snapshots.create if ready?
   end
 
   def close_out!(status = COMPLETED)
@@ -69,7 +69,10 @@ class Assignment < ActiveRecord::Base
   end
 
   def subtask_ready(subtask)
-    check_status if subtasks.include? subtask
+    if ready? && subtasks.include?(subtask)
+      check_status
+      coordinator.assignment_initialized id
+    end
   end
 
   def initialization_details
@@ -114,6 +117,10 @@ class Assignment < ActiveRecord::Base
         errors[:base] << message
       end unless associated.valid?
     end
+  end
+
+  def ready?
+    subtasks.all?(&:ready?)
   end
 
 end
