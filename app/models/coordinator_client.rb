@@ -44,6 +44,18 @@ class CoordinatorClient
     coordinator_post path, params_for(term, attributes)
   end
 
+  def assignment_initialized(assignment_id)
+    return unless url?
+    assignment = Assignment.find(assignment_id)
+    term = assignment.term
+
+    path = "/assignments/#{assignment.xid}"
+    check_acknowledged coordinator_post(path, params_for(term, {
+      initializationDetails: assignment.initialization_details,
+      xid: assignment.xid,
+    }))
+  end
+
 
   private
 

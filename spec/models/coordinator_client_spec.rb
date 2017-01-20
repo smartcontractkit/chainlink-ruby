@@ -237,4 +237,45 @@ describe CoordinatorClient, type: :model do
       end
     end
   end
+
+  describe "#assignment_initialized" do
+    let!(:term) { factory_create :term, expectation: assignment }
+    let(:assignment) { factory_create :assignment }
+    let(:response) { http_response body: {acknowledged_at: 1}.to_json }
+
+    before do
+      expect(CoordinatorClient).to receive(:post)
+        .with("#{coordinator.url}/assignments/#{assignment.xid}", {
+          basic_auth: instance_of(Hash),
+          body: {
+            contract: term.contract.xid,
+            initializationDetails: assignment.initialization_details,
+            nodeID: ENV['NODE_NAME'],
+            term: term.name,
+            xid: assignment.xid,
+          },
+          headers: {}
+        }).and_return(response)
+    end
+
+    context "when the response comes back acknowledged" do
+      let(:response) { http_response body: {acknowledged_at: 1}.to_json }
+
+      it "does not raise an error" do
+        expect {
+          client.assignment_initialized assignment.id
+        }.not_to raise_error
+      end
+    end
+
+    context "when the response comes back unacknowledged" do
+      let(:response) { http_response body: {}.to_json }
+
+      it "raise an error" do
+        expect {
+          client.assignment_initialized assignment.id
+        }.to raise_error "Not acknowledged, try again. Errors: "
+      end
+    end
+  end
 end

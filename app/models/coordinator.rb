@@ -26,6 +26,10 @@ class Coordinator < ActiveRecord::Base
     client.delay.snapshot snapshot_id if url?
   end
 
+  def assignment_initialized(assignment_id)
+    client.delay.assignment_initialized assignment_id if url?
+  end
+
 
   private
 
