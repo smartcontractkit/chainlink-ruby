@@ -44,7 +44,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
       genesis_txid = contract.genesis_transaction.txid
       wait_for_ethereum_confirmation genesis_txid
 
-      expect(CoordinatorClient).to receive(:post)
+      expect(CoordinatorClient).to receive(:patch)
         .with("#{coordinator_url}/assignments/#{assignment.xid}", instance_of(Hash))
         .and_return(acknowledged_response)
 

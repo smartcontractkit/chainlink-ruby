@@ -34,7 +34,7 @@ class CoordinatorClient
     term = assignment.term
 
     path = "/assignments/#{assignment.xid}"
-    check_acknowledged coordinator_post(path, params_for(term, {
+    check_acknowledged coordinator_patch(path, params_for(term, {
       initializationDetails: assignment.initialization_details,
       xid: assignment.xid,
     }))
@@ -71,6 +71,11 @@ class CoordinatorClient
   def coordinator_post(path, params)
     url = coordinator.url + path
     hashie_post(url, params)
+  end
+
+  def coordinator_patch(path, params)
+    url = coordinator.url + path
+    hashie_patch(url, params)
   end
 
   def url?

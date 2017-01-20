@@ -44,7 +44,7 @@ describe "assignment creation and performance", type: :request do
       contract.reload.address
     }.from(nil)
 
-    expect(CoordinatorClient).to receive(:post)
+    expect(CoordinatorClient).to receive(:patch)
       .with("#{coordinator_url}/assignments/#{assignment.xid}", instance_of(Hash))
       .and_return(acknowledged_response)
     expect(CoordinatorClient).to receive(:post)

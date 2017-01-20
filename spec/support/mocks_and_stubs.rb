@@ -19,6 +19,8 @@ module MockAndStubHelpers
         .and_return(http_response body: {}.to_json)
       allow(CoordinatorClient).to receive(:post)
         .and_return(http_response body: {}.to_json)
+      allow(CoordinatorClient).to receive(:patch)
+        .and_return(http_response body: {}.to_json)
 
       allow(Ethereum::Client).to receive(:post)
         .with("/", instance_of(Hash))

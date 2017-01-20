@@ -184,7 +184,7 @@ describe CoordinatorClient, type: :model do
     let(:response) { http_response body: {acknowledged_at: 1}.to_json }
 
     before do
-      expect(CoordinatorClient).to receive(:post)
+      expect(CoordinatorClient).to receive(:patch)
         .with("#{coordinator.url}/assignments/#{assignment.xid}", {
           basic_auth: instance_of(Hash),
           body: {
