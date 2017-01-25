@@ -35,7 +35,7 @@ class CoordinatorClient
 
     path = "/assignments/#{assignment.xid}"
     check_acknowledged coordinator_patch(path, params_for(term, {
-      initializationDetails: assignment.initialization_details,
+      subtasks: assignment.initialization_details,
       xid: assignment.xid,
     }))
   end

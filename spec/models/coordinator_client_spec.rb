@@ -189,7 +189,7 @@ describe CoordinatorClient, type: :model do
           basic_auth: instance_of(Hash),
           body: {
             contract: term.contract.xid,
-            initializationDetails: assignment.initialization_details,
+            subtasks: assignment.initialization_details,
             nodeID: ENV['NODE_NAME'],
             term: term.name,
             xid: assignment.xid,
