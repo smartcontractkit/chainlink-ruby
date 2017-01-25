@@ -2,7 +2,10 @@ class CustomExpectation < ActiveRecord::Base
   SCHEMA_NAME = 'bitcoinComparisonJSON'
   URL_REGEXP = File.read 'lib/assets/custom_uri_regexp.txt'
 
-  has_one :assignment, as: :adapter
+  include AdapterBase
+
+  has_one :subtask, as: :adapter
+  has_one :assignment, through: :subtask
   has_one :term, as: :expectation, inverse_of: :expectation
   has_many :api_results, inverse_of: :custom_expectation
 
@@ -14,7 +17,10 @@ class CustomExpectation < ActiveRecord::Base
   before_validation :set_up_from_body, on: :create
   after_create :check_api
 
-  attr_writer :body
+
+  def assignment
+    subtask.try(:assignment) || super
+  end
 
   def check_rankings
     if completed_rankings.any?
@@ -38,19 +44,6 @@ class CustomExpectation < ActiveRecord::Base
     end
   end
 
-  def start(assignment)
-    # see Assignment#start_tracking
-    Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
-  end
-
-  def stop(assignment)
-    # see Assignment#close_out!
-  end
-
-  def close_out!
-    # see Term#update_status
-  end
-
   def assignment_type
     'custom'
   end
@@ -59,20 +52,12 @@ class CustomExpectation < ActiveRecord::Base
     term || assignment.term
   end
 
-  def get_status(assignment_snapshot)
+  def get_status(assignment_snapshot, _details = {})
     updater.perform.snapshot_decorator
-  end
-
-  def check_status
-    assignment.check_status
   end
 
   def schema_errors_for(parameters)
     []
-  end
-
-  def type_name
-    SCHEMA_NAME
   end
 
 

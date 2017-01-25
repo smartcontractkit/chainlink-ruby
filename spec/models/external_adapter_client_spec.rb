@@ -1,41 +1,43 @@
-describe InputAdapterClient, type: :model do
-  let(:assignment) { factory_create :assignment }
-  let(:validator) { assignment.adapter }
-  let(:client) { InputAdapterClient.new(validator) }
+describe ExternalAdapterClient, type: :model do
+  let(:assignment) { factory_create :assignment, subtasks: [subtask] }
+  let(:subtask) { factory_build :subtask, adapter: validator, assignment: nil }
+  let(:validator) { factory_create :external_adapter }
+  let(:client) { ExternalAdapterClient.new(validator) }
 
   describe "#create_assignment" do
     it "sends a post message to the validator client" do
-      expect(InputAdapterClient).to receive(:post)
+      expect(ExternalAdapterClient).to receive(:post)
         .with("#{validator.url}/assignments", {
           basic_auth: {
             password: validator.password,
             username: validator.username,
           },
           body: {
-            data: assignment.parameters,
+            data: subtask.parameters,
             end_at: assignment.end_at.to_i.to_s,
-            xid: assignment.xid,
+            xid: subtask.xid,
           },
           headers: {}
         }).and_return(http_response body: {}.to_json)
 
-      client.start_assignment assignment
+      client.start_assignment subtask
     end
   end
 
   describe "#assignment_snapshot" do
-    let(:snapshot) { factory_create :assignment_snapshot }
-    let(:assignment) { snapshot.assignment }
+    let(:snapshot) { factory_create :adapter_snapshot }
+    let(:subtask) { snapshot.subtask }
     let(:expected_response) { hashie({a: 1}) }
 
     it "sends a post message to the validator client" do
-      expect(InputAdapterClient).to receive(:post)
-        .with("#{validator.url}/assignments/#{assignment.xid}/snapshots", {
+      expect(ExternalAdapterClient).to receive(:post)
+        .with("#{validator.url}/assignments/#{subtask.xid}/snapshots", {
           basic_auth: {
             password: validator.password,
             username: validator.username,
           },
           body: {
+            details: {},
             xid: snapshot.xid,
           },
           headers: {}
@@ -51,7 +53,7 @@ describe InputAdapterClient, type: :model do
     let(:expected_response) { hashie({a: 1}) }
 
     it "sends a post message to the validator client" do
-      expect(InputAdapterClient).to receive(:delete)
+      expect(ExternalAdapterClient).to receive(:delete)
         .with("#{validator.url}/assignments/#{assignment.xid}", {
           basic_auth: {
             password: validator.password,

@@ -1,4 +1,4 @@
-class AssignmentsController < InputAdapterController
+class AssignmentsController < ExternalAdapterController
 
   skip_before_filter :set_adapter, only: [:create, :show]
   before_filter :set_coordinator, only: [:create, :show]

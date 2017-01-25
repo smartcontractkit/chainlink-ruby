@@ -1,6 +1,6 @@
 class AssignmentType < ActiveRecord::Base
 
-  has_one :input_adapter
+  has_one :external_adapter
 
   validates :json_schema, presence: true
   validates :name, presence: true, uniqueness: true

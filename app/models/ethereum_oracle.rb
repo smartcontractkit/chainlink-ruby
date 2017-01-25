@@ -1,22 +1,25 @@
 class EthereumOracle < ActiveRecord::Base
   SCHEMA_NAME = 'ethereumBytes32JSON'
 
-  belongs_to :ethereum_contract
-  has_one :assignment, as: :adapter
+  include AdapterBase
+
+  has_one :account, through: :ethereum_contract
+  has_one :subtask, as: :adapter
+  has_one :assignment, through: :subtask
+  has_one :ethereum_contract, as: :owner
+  has_one :template, through: :ethereum_contract
   has_one :term, as: :expectation
-  has_many :writes, class_name: 'EthereumOracleWrite', foreign_key: :oracle_id
+  has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
 
   validates :endpoint, format: { with: /\A#{CustomExpectation::URL_REGEXP}\z/x }
   validates :ethereum_contract, presence: true
-  validates :field_list, presence: true
+  validates :fields, presence: true
 
   before_validation :set_up_from_body, on: :create
 
-  attr_accessor :body
-
 
   def fields=(fields)
-    self.field_list = Array.wrap(fields).to_json
+    self.field_list = Array.wrap(fields).to_json if fields.present?
     self.fields
   end
 
@@ -31,19 +34,6 @@ class EthereumOracle < ActiveRecord::Base
     @current_value = JsonTraverser.parse endpoint_response, fields
   end
 
-  def start(assignment)
-    # see Assignment#start_tracking
-    Hashie::Mash.new errors: tap(&:valid?).errors.full_messages
-  end
-
-  def stop(assignment)
-    # see Assignment#close_out!
-  end
-
-  def close_out!
-    # see Term#update_status
-  end
-
   def assignment_type
     'ethereum'
   end
@@ -52,22 +42,39 @@ class EthereumOracle < ActiveRecord::Base
     term || assignment.term
   end
 
-  def get_status(assignment_snapshot)
-    write = updater.perform
-    assignment_snapshot.xid = write.txid if write.success?
+  def get_status(assignment_snapshot, _details = {})
+    write = updater.perform(current_value)
     write.snapshot_decorator
-  end
-
-  def check_status
-    assignment.check_status
   end
 
   def schema_errors_for(parameters)
     []
   end
 
-  def type_name
-    SCHEMA_NAME
+  def contract_address
+    ethereum_contract.address
+  end
+
+  def contract_write_address
+    ethereum_contract.write_address
+  end
+
+  def ready?
+    ethereum_contract.try(:address).present?
+  end
+
+  def contract_confirmed(address)
+    subtask.mark_ready if address.present?
+  end
+
+  def initialization_details
+    {
+      address: ethereum_contract.address,
+      jsonABI: template.json_abi,
+      readAddress: template.read_address,
+      writeAddress: template.write_address,
+      solidityABI: template.solidity_abi,
+    }
   end
 
 

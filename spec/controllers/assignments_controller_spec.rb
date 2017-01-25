@@ -2,7 +2,7 @@ describe AssignmentsController, type: :controller do
 
   describe "#create" do
     let(:coordinator) { factory_create :coordinator }
-    let(:assignment_params) { assignment_hash }
+    let(:assignment_params) { assignment_0_1_0_hash }
 
     before { coordinator_log_in coordinator }
 
@@ -32,7 +32,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment params are NOT valid" do
-      let(:assignment_params) { assignment_hash assignmentHash: nil }
+      let(:assignment_params) { assignment_0_1_0_hash assignmentHash: nil }
 
       it "returns an unsuccessful status" do
         post :create, assignment_params
@@ -93,7 +93,9 @@ describe AssignmentsController, type: :controller do
   end
 
   describe "#update" do
-    let(:assignment) { factory_create :assignment }
+    let(:adapter) { factory_create :external_adapter }
+    let(:subtask) { factory_build :subtask, adapter: adapter, assignment: nil }
+    let(:assignment) { factory_create :assignment, subtasks: [subtask] }
     let(:new_status) { Term::COMPLETED }
     let(:assignment_params) do
       {
@@ -104,7 +106,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment is in progress and authenticated" do
-      before { input_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in adapter }
 
       it "updates the assignment" do
         expect {
@@ -129,7 +131,7 @@ describe AssignmentsController, type: :controller do
 
     context "when the assignment is NOT in progress" do
       before do
-        input_adapter_log_in assignment.adapter
+        external_adapter_log_in adapter
         assignment.update_attributes status: Assignment::FAILED
       end
 
@@ -146,7 +148,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the requester is not authorized" do
-      before { input_adapter_log_in }
+      before { external_adapter_log_in }
 
       it "responds with an error" do
         expect {

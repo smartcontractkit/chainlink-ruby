@@ -18,22 +18,6 @@ class CoordinatorClient
     })
   end
 
-  def oracle_instructions(oracle_id)
-    return unless url?
-    oracle = EthereumOracle.find(oracle_id)
-    contract = oracle.ethereum_contract
-    template = contract.template
-
-    check_acknowledged coordinator_post('/oracles', {
-      oracle: params_for(oracle.related_term, {
-        address: contract.address,
-        jsonABI: template.json_abi,
-        readAddress: template.read_address,
-        solidityABI: template.solidity_abi,
-      })
-    })
-  end
-
   def snapshot(snapshot_id)
     return unless url?
     snapshot = AssignmentSnapshot.find snapshot_id
@@ -42,6 +26,18 @@ class CoordinatorClient
     path = "/snapshots"
 
     coordinator_post path, params_for(term, attributes)
+  end
+
+  def assignment_initialized(assignment_id)
+    return unless url?
+    assignment = Assignment.find(assignment_id)
+    term = assignment.term
+
+    path = "/assignments/#{assignment.xid}"
+    check_acknowledged coordinator_patch(path, params_for(term, {
+      subtasks: assignment.initialization_details,
+      xid: assignment.xid,
+    }))
   end
 
 
@@ -75,6 +71,11 @@ class CoordinatorClient
   def coordinator_post(path, params)
     url = coordinator.url + path
     hashie_post(url, params)
+  end
+
+  def coordinator_patch(path, params)
+    url = coordinator.url + path
+    hashie_patch(url, params)
   end
 
   def url?

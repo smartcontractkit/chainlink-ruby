@@ -5,6 +5,7 @@ describe "assignment creation and performance", type: :request do
   let(:coordinator) { factory_create :coordinator, url: coordinator_url }
   let(:headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
   let(:endpoint) { "https://example.com/api/data" }
+  let(:oracle_value) { "790.28" }
   let(:adapter_params) do
     {
       endpoint: endpoint,
@@ -13,12 +14,11 @@ describe "assignment creation and performance", type: :request do
   end
   let(:adapter_type) { EthereumOracle::SCHEMA_NAME }
   let(:assignment_params) do
-    assignment_json({
+    assignment_0_1_0_json({
       adapterParams: adapter_params,
       adapterType: adapter_type
     })
   end
-  let(:oracle_value) { "790.28" }
 
   before do
     allow(HttpRetriever).to receive(:get)
@@ -33,7 +33,7 @@ describe "assignment creation and performance", type: :request do
       coordinator.assignments.count
     }.by(+1)
     assignment = Assignment.find_by xid: response_json['xid']
-    oracle = assignment.adapter
+    oracle = assignment.adapters.first
     contract = oracle.ethereum_contract
     genesis_txid = contract.genesis_transaction.txid
     wait_for_ethereum_confirmation genesis_txid
@@ -44,19 +44,18 @@ describe "assignment creation and performance", type: :request do
       contract.reload.address
     }.from(nil)
 
-    expect(CoordinatorClient).to receive(:post)
-      .with("#{coordinator_url}/oracles", instance_of(Hash))
+    expect(CoordinatorClient).to receive(:patch)
+      .with("#{coordinator_url}/assignments/#{assignment.xid}", instance_of(Hash))
       .and_return(acknowledged_response)
+    expect(CoordinatorClient).to receive(:post)
+      .with("#{coordinator_url}/snapshots", instance_of(Hash))
+      .and_return(acknowledged_response)
+
     expect {
       run_delayed_jobs
       wait_for_ethereum_confirmation oracle.writes.last.txid
     }.to change {
-      get_contract_value contract
+      get_oracle_value oracle
     }.from('').to(oracle_value)
-
-    expect(CoordinatorClient).to receive(:post)
-      .with("#{coordinator_url}/snapshots", instance_of(Hash))
-      .and_return(acknowledged_response)
-    run_delayed_jobs
   end
 end

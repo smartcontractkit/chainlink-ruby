@@ -1,9 +1,9 @@
 class EthereumContract < ActiveRecord::Base
 
   belongs_to :account, class_name: 'Ethereum::Account'
+  belongs_to :owner, polymorphic: true
   belongs_to :template, class_name: 'EthereumContractTemplate'
   belongs_to :genesis_transaction, class_name: 'EthereumTransaction'
-  has_one :ethereum_oracle
 
   validates :account, presence: true
   validates :address, format: { with: /\A0x[0-9a-f]{40}\z/, allow_nil: true }
@@ -19,8 +19,7 @@ class EthereumContract < ActiveRecord::Base
       address: confirmed_address
     })
 
-    ethereum_oracle.delay.check_status
-    coordinator.oracle_instructions ethereum_oracle.id
+    owner.contract_confirmed confirmed_address
   end
 
   def write_address
@@ -45,7 +44,7 @@ class EthereumContract < ActiveRecord::Base
   end
 
   def coordinator
-    ethereum_oracle.assignment.coordinator
+    owner.coordinator
   end
 
 end

@@ -54,6 +54,7 @@ module SpecHelpers
   end
 
   def wait_for_ethereum_confirmation(txid)
+    raise "No TXID to wait for!" if txid.blank?
     average_block_time = 17
     try_rate = 4.0
     buffer = 6
@@ -71,9 +72,10 @@ module SpecHelpers
     end
   end
 
-  def get_contract_value(contract)
+  def get_oracle_value(oracle)
+    contract = oracle.ethereum_contract
     result_hex = ethereum.call({
-      to: contract.address,
+      to: oracle.contract_address,
       data: contract.template.read_address,
       gas: 2000000,
     }).result

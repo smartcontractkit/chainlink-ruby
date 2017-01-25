@@ -18,11 +18,8 @@ class AssignmentRequest < ActiveRecord::Base
   attr_writer :coordinator
 
   def body
-    if @body.present?
-      @body
-    elsif body_json.present?
-      @body = JSON.parse(body_json).with_indifferent_access
-    end
+    return @body if @body.present?
+    @body = JSON.parse(body_json).with_indifferent_access if body_json.present?
   end
 
   def coordinator
@@ -40,10 +37,9 @@ class AssignmentRequest < ActiveRecord::Base
     return unless body.present?
 
     self.assignment ||= build_assignment({
-      adapter: create_adapter,
+      subtasks: subtasks,
       coordinator: coordinator,
       end_at: parse_time(schedule[:endAt]),
-      parameters: assignment_body,
       schedule_attributes: schedule_params,
       start_at: parse_time(schedule[:startAt] || Time.now),
     })
@@ -61,15 +57,17 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def matches_assignment_schema
-    unless schema.validate body_json
-      schema.errors.each {|error| errors.add :body_json, error }
-    end if body_json.present?
+    if schema.present?
+      unless schema.validate body_json
+        schema.errors.each {|error| errors.add :body_json, error }
+      end
+    else
+      errors.add :body_json, "invalid assignment version"
+    end
   end
 
   def schema
-    return @schema if @schema.present?
-    json = File.read 'lib/assets/schemas/assignment_schema.json'
-    @schema = SchemaValidator.new(json)
+    @schema ||= SchemaValidator.version(body['version']) if body_json.present?
   end
 
   def assignment_body
@@ -88,15 +86,20 @@ class AssignmentRequest < ActiveRecord::Base
     Time.at time.to_i
   end
 
-  def create_adapter
-    return unless assignment_params && type = assignment_params[:adapterType]
+  def build_adapter(params)
+    return unless params && type = params[:adapterType]
 
-    if adapter = InputAdapter.for_type(type)
+    adapter_params = params[:adapterParams] || assignment_body
+    if adapter = ExternalAdapter.for_type(type)
       adapter
     elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
-      CustomExpectation.create(body: assignment_body)
+      CustomExpectation.new(body: adapter_params)
     elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
-      EthereumOracle.create(body: assignment_body)
+      EthereumOracle.new(body: adapter_params)
+    elsif [JsonAdapter::SCHEMA_NAME].include? type
+      JsonAdapter.new(body: adapter_params)
+    elsif [Ethereum::Bytes32Oracle::SCHEMA_NAME].include? type
+      Ethereum::Bytes32Oracle.new(body: adapter_params)
     else
       raise "no adapter type found for #{type}"
     end
@@ -104,6 +107,20 @@ class AssignmentRequest < ActiveRecord::Base
 
   def schedule_params
     @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
+  end
+
+  def pipeline_params
+    assignment_params[:pipeline] || [assignment_params]
+  end
+
+  def subtasks
+    @subtasks ||= pipeline_params.map.with_index do |adapter_params, index|
+      Subtask.new({
+        adapter: build_adapter(adapter_params),
+        index: index,
+        parameters: adapter_params[:adapterParams],
+      })
+    end
   end
 
 end

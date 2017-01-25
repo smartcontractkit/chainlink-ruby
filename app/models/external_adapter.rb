@@ -1,7 +1,10 @@
-class InputAdapter < ActiveRecord::Base
+class ExternalAdapter < ActiveRecord::Base
+
+  include AdapterBase
 
   belongs_to :assignment_type
-  has_many :assignments, as: :adapter
+  has_many :subtasks, as: :adapter
+  has_many :assignments, through: :subtasks
 
   validates :assignment_type, presence: true
   validates :url, presence: true
@@ -20,8 +23,8 @@ class InputAdapter < ActiveRecord::Base
     client.start_assignment assignment
   end
 
-  def get_status(status_record)
-    client.assignment_snapshot status_record
+  def get_status(status_record, details = {})
+    client.assignment_snapshot status_record, details
   end
 
   def stop(assignment)
@@ -44,7 +47,7 @@ class InputAdapter < ActiveRecord::Base
   private
 
   def client
-    @client ||= InputAdapterClient.new(self)
+    @client ||= ExternalAdapterClient.new(self)
   end
 
   def set_up

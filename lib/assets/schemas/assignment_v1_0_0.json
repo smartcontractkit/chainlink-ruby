@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "assignment",
+  "description": "specification for work purchased from an oracle",
+  "type": "object",
+  "properties": {
+    "assignment": { "$ref": "#/definitions/assignment" },
+    "assignmentHash": {
+      "description": "hash used for signature of a contract SHA2-256",
+      "type": "string"
+    },
+    "name": {
+      "description": "human readable name",
+      "type": "string"
+    },
+    "signatures": {
+      "description": "signatures of participants",
+      "type": "array",
+      "items": { "$ref": "#/definitions/signature" }
+    },
+    "supportingInformation": {
+      "description": "extra information provided beyond the protocol",
+      "type": "object"
+    },
+    "version": {
+      "description": "version of the oracle protocol being used",
+      "type": "string"
+    }
+  },
+  "required": [
+    "assignment",
+    "assignmentHash",
+    "signatures",
+    "version"
+  ],
+  "definitions": {
+    "adapter": {
+      "description": "adapter that processes inputs and returns a new set of outputs",
+      "properties": {
+        "adapterParams": {
+          "description": "list of parameters required for the adapter's presets",
+          "type": "object"
+        },
+        "adapterType": {
+          "description": "type of custom parameters provided",
+          "type": "string"
+        }
+      },
+      "required": [
+        "adapterType"
+      ]
+    },
+    "assignment": {
+      "description": "specification of the work to be done",
+      "properties": {
+        "description": {
+          "description": "human readable description defined by contract creators",
+          "type": "string"
+        },
+        "fees": { "$ref": "#/definitions/fees" },
+        "pipeline": {
+          "description": "series of adapters that feed into each other",
+          "type": "array",
+          "items": { "$ref": "#/definitions/adapter" }
+        },
+        "schedule": { "$ref": "#/definitions/schedule" }
+      },
+      "required": [
+        "pipeline",
+        "schedule"
+      ]
+    },
+    "fees": {
+      "description": "fee rates for possible costs of the oracle",
+      "properties": {
+        "currency": {
+          "description": "currency payment is expected in, using lowest divisible amount",
+          "type": "string"
+        },
+        "perDay": {
+          "description": "fees for time keeping the contract up",
+          "type": "string"
+        },
+        "perRequest": {
+          "description": "fees expected per request from a contract",
+          "type": "string"
+        }
+      },
+      "required": [
+        "currency"
+      ]
+    },
+    "schedule": {
+      "description": "a cron like schedule",
+      "properties": {
+        "endAt": {
+          "description": "end time for term tracking",
+          "type": "string"
+        },
+        "hour": {
+          "description": "what hours to run on",
+          "type": "string"
+        },
+        "minute": {
+          "description": "what minutes to run on",
+          "type": "string"
+        },
+        "dayOfMonth": {
+          "description": "what days of the month to run on",
+          "type": "string"
+        },
+        "monthOfYear": {
+          "description": "what month of the year to run on",
+          "type": "string"
+        },
+        "dayOfWeek": {
+          "description": "what day of the week to run on",
+          "type": "string"
+        },
+        "startAt": {
+          "description": "time to start assignment, defaults to time received if not otherwise noted",
+          "type": "string"
+        }
+      },
+      "required": [
+        "endAt"
+      ]
+    },
+    "signature": {
+      "description": "signature",
+      "properties": {
+        "identifier": {
+          "description": "to attach to another identity",
+          "type": "string"
+        },
+        "r": {
+          "description": "r value of an Ethereum style signature",
+          "type": "string"
+        },
+        "s": {
+          "description": "s value of an Ethereum style signature",
+          "type": "string"
+        },
+        "v": {
+          "description": "V value of an Ethereum style signature",
+          "type": "string"
+        }
+      },
+      "required": [
+        "r",
+        "s",
+        "v"
+      ]
+    }
+  }
+}

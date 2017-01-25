@@ -3,6 +3,8 @@ describe EthereumContract, type: :model do
   describe "validations" do
     it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
     it { is_expected.not_to have_valid(:address).when('', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
+
+    it { is_expected.to have_valid(:owner).when(factory_create(:ethereum_oracle), factory_create(:ethereum_bytes32_oracle), nil) }
   end
 
   describe "on create" do
@@ -39,8 +41,8 @@ describe EthereumContract, type: :model do
 
   describe "#confirmed" do
     let(:address) { ethereum_address }
-    let(:contract) { factory_create :ethereum_contract }
-    let!(:oracle) { factory_create :assigned_ethereum_oracle, ethereum_contract: contract }
+    let(:contract) { factory_create :ethereum_contract, owner: oracle }
+    let(:oracle) { factory_create :assigned_ethereum_oracle }
 
     it "sets the contract's address" do
       expect {
@@ -50,15 +52,9 @@ describe EthereumContract, type: :model do
       }.from(nil).to(address)
     end
 
-    it "triggers an update for the related oracle" do
-      expect(contract.ethereum_oracle).to receive_message_chain(:delay, :check_status)
-
-      contract.confirmed address
-    end
-
-    it "sends instructions to the frontend" do
-      expect(oracle.assignment.coordinator).to receive(:oracle_instructions)
-        .with(oracle.id)
+    it "informs the owner that the contract was confirmed" do
+      expect(contract.owner).to receive(:contract_confirmed)
+        .with(address)
 
       contract.confirmed address
     end

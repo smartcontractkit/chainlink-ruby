@@ -1,4 +1,4 @@
-class SnapshotsController < InputAdapterController
+class SnapshotsController < ExternalAdapterController
 
   ASSIGNMENT_NAME = "%%!ASSIGNMENT_NAME!%%"
 

@@ -4,37 +4,30 @@ class Assignment < ActiveRecord::Base
   FAILED = 'failed'
   IN_PROGRESS = 'in progress'
 
-  belongs_to :adapter, polymorphic: true
   belongs_to :coordinator
   has_one :term, as: :expectation, inverse_of: :expectation
   has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
   has_one :schedule, class_name: 'AssignmentSchedule', inverse_of: :assignment
+  has_many :subtasks, inverse_of: :assignment
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 
-  validates :adapter, presence: true
+  validates :subtasks, presence: true
   validates :coordinator, presence: true
   validates :end_at, presence: true
   validates :start_at, presence: true
   validates :status, inclusion: { in: [COMPLETED, FAILED, IN_PROGRESS] }
+  validate :associations_including_errors
   validate :start_at_before_end_at
   validate :finished_status_remains
-  validate :valid_schema_parameters
 
   before_validation :set_up, on: :create
-  before_validation :start_tracking, on: :create, if: :adapter
+  after_create :set_initial_value, if: :ready?
 
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
 
-  def parameters
-    JSON.parse(json_parameters) if json_parameters.present?
-  end
-
-  def parameters=(new_parameters)
-    return if new_parameters.nil?
-
-    self.json_parameters = new_parameters.to_json
-    self.parameters
+  def adapters
+    subtasks.map(&:adapter)
   end
 
   def term_status
@@ -42,11 +35,14 @@ class Assignment < ActiveRecord::Base
   end
 
   def check_status
-    snapshots.create
+    snapshots.create if ready?
   end
 
   def close_out!(status = COMPLETED)
-    adapter.stop self
+    adapters.each do |adapter|
+      adapter.stop self
+    end
+
     update_status status
   end
 
@@ -68,45 +64,29 @@ class Assignment < ActiveRecord::Base
     term
   end
 
+  def adapter_types
+    subtasks.pluck(:adapter_type)
+  end
+
+  def subtask_ready(subtask)
+    if ready? && subtasks.include?(subtask)
+      check_status
+      coordinator.assignment_initialized id
+    end
+  end
+
+  def initialization_details
+    subtasks.map(&:initialization_details)
+  end
+
 
   private
-
-  def type
-    adapter.assignment_type
-  end
 
   def set_up
     self.end_at ||= term.try(:end_at)
     self.start_at ||= Time.now
     self.status ||= IN_PROGRESS
-    self.xid = SecureRandom.uuid
-  end
-
-  def start_tracking
-    response = adapter.start self
-
-    if response.errors.present?
-      response.errors.each do |error_message|
-        errors.add(:base, "Adapter: #{error_message}")
-      end
-    end
-  end
-
-  def valid_schema_parameters
-    return unless valid_json_parameters?
-
-    adapter.schema_errors_for(parameters).each do |error|
-      errors.add(:base, error)
-    end if adapter.present?
-  end
-
-  def valid_json_parameters?
-    begin
-      parameters
-    rescue JSON::ParserError
-      errors.add(:json_parameters, "are not valid JSON")
-      false
-    end
+    self.xid ||= SecureRandom.uuid
   end
 
   def start_at_before_end_at
@@ -129,6 +109,22 @@ class Assignment < ActiveRecord::Base
     if changed.include?('status') && changed_attributes[:status] != IN_PROGRESS
       errors.add(:status, 'is no longer in progress')
     end
+  end
+
+  def associations_including_errors
+    subtasks.each do |associated|
+      associated.errors.full_messages.each do |message|
+        errors[:base] << message
+      end unless associated.valid?
+    end
+  end
+
+  def ready?
+    subtasks.all?(&:ready?)
+  end
+
+  def set_initial_value
+    delay.check_status
   end
 
 end

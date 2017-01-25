@@ -1,4 +1,4 @@
-describe InputAdapter, type: :model do
+describe ExternalAdapter, type: :model do
 
   describe "validations" do
     it { is_expected.to have_valid(:assignment_type).when(factory_create(:assignment_type)) }
@@ -9,7 +9,7 @@ describe InputAdapter, type: :model do
   end
 
   describe "on create" do
-    let(:adapter) { factory_build :input_adapter }
+    let(:adapter) { factory_build :external_adapter }
 
     it "assigns username and password for authentication" do
       expect {
@@ -23,16 +23,16 @@ describe InputAdapter, type: :model do
   end
 
   describe ".for_type" do
-    let!(:adapter1) { factory_create :input_adapter }
-    let!(:adapter2) { factory_create :input_adapter }
-    let!(:adapter3) { factory_create :input_adapter }
+    let!(:adapter1) { factory_create :external_adapter }
+    let!(:adapter2) { factory_create :external_adapter }
+    let!(:adapter3) { factory_create :external_adapter }
 
     it "returns the adapter matching that type" do
-      expect(InputAdapter.for_type adapter1.type).to eq(adapter1)
-      expect(InputAdapter.for_type adapter2.type).to eq(adapter2)
-      expect(InputAdapter.for_type adapter3.type).to eq(adapter3)
+      expect(ExternalAdapter.for_type adapter1.type).to eq(adapter1)
+      expect(ExternalAdapter.for_type adapter2.type).to eq(adapter2)
+      expect(ExternalAdapter.for_type adapter3.type).to eq(adapter3)
 
-      expect(InputAdapter.for_type (adapter3.type + '1')).to be_nil
+      expect(ExternalAdapter.for_type (adapter3.type + '1')).to be_nil
     end
   end
 

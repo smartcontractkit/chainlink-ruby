@@ -1,4 +1,4 @@
-class InputAdapterClient
+class ExternalAdapterClient
 
   include HttpClient
 
@@ -14,10 +14,11 @@ class InputAdapterClient
     })
   end
 
-  def assignment_snapshot(snapshot)
-    assignment = snapshot.assignment
-    hashie_post(validator_url("/assignments/#{assignment.xid}/snapshots"), {
-      xid: snapshot.xid
+  def assignment_snapshot(snapshot, details = {})
+    subtask = snapshot.subtask
+    hashie_post(validator_url("/assignments/#{subtask.xid}/snapshots"), {
+      details: details,
+      xid: snapshot.xid,
     })
   end
 
