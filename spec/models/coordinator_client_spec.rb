@@ -28,7 +28,6 @@ describe CoordinatorClient, type: :model do
             body: {
               statusUpdate: {
                 contract: xid,
-                nodeID: ENV['NODE_NAME'],
                 signatures: outcome_signatures.flatten,
                 status: term_status,
                 term: term_name
@@ -91,7 +90,6 @@ describe CoordinatorClient, type: :model do
                 description: snapshot.description,
                 descriptionURL: snapshot.description_url,
                 details: snapshot.details,
-                nodeID: ENV['NODE_NAME'],
                 status: snapshot.status,
                 summary: snapshot.summary,
                 term: term.name,
@@ -135,7 +133,6 @@ describe CoordinatorClient, type: :model do
                 description: snapshot.description,
                 descriptionURL: snapshot.description_url,
                 details: snapshot.details,
-                nodeID: ENV['NODE_NAME'],
                 status: snapshot.status,
                 summary: snapshot.summary,
                 value: snapshot.value,
@@ -190,7 +187,6 @@ describe CoordinatorClient, type: :model do
           body: {
             contract: term.contract.xid,
             subtasks: assignment.initialization_details,
-            nodeID: ENV['NODE_NAME'],
             term: term.name,
             xid: assignment.xid,
           },

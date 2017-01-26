@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     render json: {
       bitcoinPublicKey: @bitcoin_pub,
       name: @name,
-    }
+    }.compact
   end
 
 

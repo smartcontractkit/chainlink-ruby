@@ -15,14 +15,14 @@ class Notification < ActionMailer::Base
     @assignment = assignment
     @errors = errors
 
-    mail subject: "#{node_name}: snapshot failure"
+    mail subject: "#{node_name}snapshot failure"
   end
 
 
   private
 
   def node_name
-    ENV['NODE_NAME']
+    "#{ENV['NODE_NAME']}: " if ENV['NODE_NAME'].present?
   end
 
 end
