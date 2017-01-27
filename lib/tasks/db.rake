@@ -1,7 +1,7 @@
 namespace :db do
   task :pull do |task, args|
     raise "only in development" unless Rails.env.development?
-    remote_environment = ENV['remote'] || 'testnet'
+    remote_environment = ENV['remote'] || 'staging'
     backup_id = nil
 
     puts "Creating remote backup..."
