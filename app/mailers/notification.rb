@@ -18,6 +18,13 @@ class Notification < ActionMailer::Base
     mail subject: "#{node_name}snapshot failure"
   end
 
+  def health_check
+    @check = HealthCheck.new
+    subject = "Health Check: #{@check.status} #{Date.today.to_s}(#{Rails.env})"
+
+    mail subject: subject
+  end
+
 
   private
 
