@@ -99,9 +99,9 @@ describe AssignmentsController, type: :controller do
     let(:new_status) { Term::COMPLETED }
     let(:assignment_params) do
       {
-        id: assignment.xid,
+        id: "#{assignment.xid}=asdfa",
         status: new_status,
-        xid: assignment.xid,
+        xid: "#{assignment.xid}=12142",
       }
     end
 

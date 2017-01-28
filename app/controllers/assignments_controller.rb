@@ -36,9 +36,11 @@ class AssignmentsController < ExternalAdapterController
   private
 
   def assignment
-    @assignmnet ||= adapter.assignments.find_by({
-      xid: (params[:xid] || params[:id])
-    })
+    return @assignment if @assignment.present?
+    axid = (params[:xid] || params[:id])
+    @assignment = adapter.assignments.find_by({
+      xid: axid.gsub(/=.*/, '')
+    }) if axid
   end
 
   def check_adapter_permissions

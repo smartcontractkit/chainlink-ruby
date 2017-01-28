@@ -6,7 +6,7 @@ describe SnapshotsController, type: :controller do
     let(:xid) { SecureRandom.uuid }
     let(:snapshot_params) do
       {
-        assignment_xid: assignment.xid,
+        assignment_xid: "#{assignment.xid}=9321",
         details: details_hash,
         status: Term::IN_PROGRESS,
         summary: '%%!ASSIGNMENT_NAME!%% is termendous.',
