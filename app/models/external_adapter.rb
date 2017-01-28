@@ -19,16 +19,16 @@ class ExternalAdapter < ActiveRecord::Base
     assignment_type.name
   end
 
-  def start(assignment)
-    client.start_assignment assignment
+  def start(subtask)
+    client.start_assignment subtask
   end
 
   def get_status(status_record, details = {})
     client.assignment_snapshot status_record, details
   end
 
-  def stop(assignment)
-    client.stop_assignment assignment
+  def stop(subtask)
+    client.stop_assignment subtask
   end
 
   def create_assignment(options = {})

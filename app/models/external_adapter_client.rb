@@ -22,8 +22,8 @@ class ExternalAdapterClient
     })
   end
 
-  def stop_assignment(assignment)
-    hashie_delete(validator_url("/assignments/#{assignment.xid}"))
+  def stop_assignment(subtask)
+    hashie_delete(validator_url("/assignments/#{subtask.xid}"))
   end
 
 

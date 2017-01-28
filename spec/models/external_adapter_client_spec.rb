@@ -50,11 +50,12 @@ describe ExternalAdapterClient, type: :model do
   end
 
   describe "#stop_assignment" do
+    let(:subtask) { factory_create :subtask }
     let(:expected_response) { hashie({a: 1}) }
 
     it "sends a post message to the validator client" do
       expect(ExternalAdapterClient).to receive(:delete)
-        .with("#{validator.url}/assignments/#{assignment.xid}", {
+        .with("#{validator.url}/assignments/#{subtask.xid}", {
           basic_auth: {
             password: validator.password,
             username: validator.username,
@@ -63,7 +64,7 @@ describe ExternalAdapterClient, type: :model do
           headers: {}
         }).and_return(http_response body: expected_response.to_json)
 
-      response = client.stop_assignment assignment
+      response = client.stop_assignment subtask
 
       expect(response).to eq(expected_response)
     end

@@ -1,8 +1,10 @@
 describe CustomApiChecker, type: :model do
   describe "#perform" do
     let(:checker) { CustomApiChecker.new(expectation) }
-    let(:term) { factory_build :term }
-    let(:expectation) { factory_create :custom_expectation, comparison: '===', term: term }
+    let!(:term) { factory_create :term, expectation: assignment }
+    let(:assignment) { factory_create :assignment, subtasks: [subtask] }
+    let(:subtask) { factory_build :subtask, adapter: expectation, assignment: nil }
+    let(:expectation) { factory_create :custom_expectation, comparison: '===' }
     let(:response) { {a: SecureRandom.hex}.to_json }
 
     before do

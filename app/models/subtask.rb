@@ -41,6 +41,10 @@ class Subtask < ActiveRecord::Base
     adapter.initialization_details
   end
 
+  def close_out!
+    adapter.stop self
+  end
+
 
   private
 

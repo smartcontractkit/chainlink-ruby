@@ -88,4 +88,15 @@ describe Subtask, type: :model do
     end
   end
 
+  describe "#close_out!" do
+    let(:subtask) { factory_create :subtask }
+
+    it "tells the adapter to stop tracking it" do
+      expect(subtask.adapter).to receive(:stop)
+        .with(subtask)
+
+      subtask.close_out!
+    end
+  end
+
 end

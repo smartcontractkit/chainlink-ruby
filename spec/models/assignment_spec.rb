@@ -121,12 +121,11 @@ describe Assignment, type: :model do
   describe "#close_out!" do
     let(:term) { factory_build :term }
     let(:assignment) { factory_create :assignment, term: term }
-    let(:adapter) { assignment.adapters.first }
+    let(:subtask) { assignment.subtasks.first }
     let(:status) { Assignment::COMPLETED }
 
-    it "closes out via the adapter" do
-      expect(adapter).to receive(:stop)
-        .with(assignment)
+    it "closes out via each subtask" do
+      expect(subtask).to receive(:close_out!)
 
       assignment.close_out!
     end

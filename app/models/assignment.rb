@@ -39,9 +39,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def close_out!(status = COMPLETED)
-    adapters.each do |adapter|
-      adapter.stop self
-    end
+    subtasks.each(&:close_out!)
 
     update_status status
   end

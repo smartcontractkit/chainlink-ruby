@@ -23,10 +23,6 @@ module AdapterBase
     # see Assignment#close_out!
   end
 
-  def close_out!
-    # see Term#update_status
-  end
-
   def get_status(assignment_snapshot, params = {})
     raise "Adapter#get_status must be defined by the adapter class."
   end
