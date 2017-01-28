@@ -16,7 +16,7 @@ class AssignmentSnapshot < ActiveRecord::Base
 
   before_validation :set_up, on: :create
   before_validation :check_fulfillment
-  before_create :build_adapter_snapshots
+  before_create :build_adapter_snapshots, if: :unfulfilled?
   after_create :start_adapter_pipeline
   after_save :report_snapshot, if: :report_to_coordinator
 
@@ -120,7 +120,7 @@ class AssignmentSnapshot < ActiveRecord::Base
   end
 
   def start_adapter_pipeline
-    handler.start if adapters.any?
+    handler.start if adapter_snapshots.any?
   end
 
 end

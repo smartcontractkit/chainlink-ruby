@@ -64,6 +64,8 @@ class AssignmentSnapshotHandler
       summary: adapter_snapshot.summary,
       value: adapter_snapshot.value,
     })
+
+    update_assignment_status adapter_snapshot.status
   end
 
   def move_to_next_adapter(adapter_snapshot)
@@ -72,6 +74,10 @@ class AssignmentSnapshotHandler
       adapter_index: next_adapter_snapshot.index,
     })
     next_adapter_snapshot.start adapter_snapshot.details
+  end
+
+  def update_assignment_status(new_status)
+    assignment.update_status(new_status) if new_status.present?
   end
 
 end

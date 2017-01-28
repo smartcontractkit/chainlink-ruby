@@ -116,6 +116,27 @@ describe AssignmentSnapshotHandler do
 
         handler.adapter_response(adapter_snapshot)
       end
+
+      it "does not update the status of the assignment" do
+        expect_any_instance_of(Assignment).not_to receive(:update_status)
+
+        handler.adapter_response(adapter_snapshot)
+      end
+
+      context "and the adapter has a status" do
+        before do
+          adapter_snapshot.update_attributes status: Assignment::COMPLETED
+        end
+
+        it "does not update the status of the assignment" do
+          expect_any_instance_of(Assignment).to receive(:update_status) do |assignment, status|
+            expect(assignment).to eq(snapshot.assignment)
+            expect(status).to eq(Assignment::COMPLETED)
+          end
+
+          handler.adapter_response(adapter_snapshot)
+        end
+      end
     end
 
     context "when the there are subsequent adapters in the assignment" do

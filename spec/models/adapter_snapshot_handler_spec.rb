@@ -47,11 +47,13 @@ describe AdapterSnapshotHandler do
     context "when the adapter responds with more information" do
       let(:value) { SecureRandom.hex }
       let(:details) { {key: SecureRandom.hex} }
+      let(:status) { 'uh huh' }
       let(:adapter_response) do
         {
           fulfilled: true,
           details: details,
           value: value,
+          status: status,
           xid: snapshot.xid,
         }
       end
@@ -71,7 +73,9 @@ describe AdapterSnapshotHandler do
           snapshot.value
         }.from(nil).to(value).and change {
           snapshot.details_json
-        }.from(nil).to(details.to_json)
+        }.from(nil).to(details.to_json).and change {
+          snapshot.status
+        }.from(nil).to(status)
       end
 
       it "passes the response up to the assignment snapshot" do

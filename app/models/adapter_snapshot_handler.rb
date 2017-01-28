@@ -36,6 +36,7 @@ class AdapterSnapshotHandler
     snapshot.description = response.description
     snapshot.description_url = response.description_url
     snapshot.details = response.details
+    snapshot.status = response.status
     snapshot.summary ||= response.summary
     snapshot.value = response.value
   end

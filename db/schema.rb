@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118203301) do
+ActiveRecord::Schema.define(version: 20170128000545) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20170118203301) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "progress"
+    t.string   "status"
   end
 
   create_table "api_results", force: :cascade do |t|
