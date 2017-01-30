@@ -13,7 +13,7 @@ describe EthereumOracle, type: :model do
   describe "#current_value" do
     let(:oracle) { EthereumOracle.new }
     let(:response_body) { {a: 1}.to_json }
-    let(:rando) { SecureRandom.hex }
+    let(:rando) { SecureRandom.base64(256) }
 
     it "reaches out to the web and parses the json" do
       expect(HttpRetriever).to receive(:get)
@@ -24,7 +24,7 @@ describe EthereumOracle, type: :model do
         .with(response_body, oracle.fields)
         .and_return(rando)
 
-      expect(oracle.current_value).to eq(rando)
+      expect(oracle.current_value).to eq(rando[0..31])
     end
   end
 
@@ -89,6 +89,28 @@ describe EthereumOracle, type: :model do
         writeAddress: contract.template.write_address,
         solidityABI: contract.template.solidity_abi,
       })
+    end
+  end
+
+  describe "#get_status" do
+    let!(:adapter) { factory_create :ethereum_oracle }
+    let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
+    let(:truncated_value) { "some string that is longer than " }
+    let(:hex_truncated_value) { "736f6d6520737472696e672074686174206973206c6f6e676572207468616e20" }
+    let(:assignment) { adapter.assignment }
+    let(:txid) { ethereum_txid }
+
+    before do
+      expect(JsonTraverser).to receive(:parse)
+        .and_return(value)
+    end
+
+    it "passes the current value and its equivalent hex to the updater" do
+      expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
+        .with(hex_truncated_value, truncated_value)
+        .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
+
+      adapter.get_status(double, {params: "don't matter here"})
     end
   end
 end

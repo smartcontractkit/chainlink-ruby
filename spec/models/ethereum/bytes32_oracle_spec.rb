@@ -79,10 +79,10 @@ describe Ethereum::Bytes32Oracle do
 
   describe "#get_status" do
     let!(:adapter) { factory_create :ethereum_bytes32_oracle }
-    let(:subtask) { factory_create :subtask, adapter: adapter }
-    let(:snapshot) { factory_create :adapter_snapshot, subtask: subtask }
+    let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
-    let(:truncated_value) { value[0..31] }
+    let(:truncated_value) { "some string that is longer than " }
+    let(:hex_truncated_value) { "736f6d6520737472696e672074686174206973206c6f6e676572207468616e20" }
     let(:params) { {value: value} }
     let(:assignment) { adapter.assignment }
     let(:txid) { ethereum_txid }
@@ -110,6 +110,14 @@ describe Ethereum::Bytes32Oracle do
       }.by(+1)
 
       expect(adapter.writes.last).to eq(EthereumOracleWrite.last)
+    end
+
+    it "passes the current value and its equivalent hex to the updater" do
+      expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
+        .with(hex_truncated_value, truncated_value)
+        .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
+
+      adapter.get_status(snapshot, params)
     end
   end
 

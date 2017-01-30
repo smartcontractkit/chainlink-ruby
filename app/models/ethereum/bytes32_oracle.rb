@@ -20,8 +20,9 @@ module Ethereum
 
 
     def get_status(assignment_snapshot, params = {})
-      current_value = params && params.with_indifferent_access['value']
-      write = updater.perform(current_value)
+      value = params && params.with_indifferent_access['value'].to_s[0..31]
+
+      write = updater.perform format_hex_value(value), value
       write.snapshot_decorator
     end
 
@@ -86,6 +87,10 @@ module Ethereum
         address: contract_address,
         writeAddress: contract_write_address
       }
+    end
+
+    def format_hex_value(value)
+      Ethereum::Client.new.format_bytes32_hex value
     end
 
   end

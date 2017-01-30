@@ -10,7 +10,7 @@ describe "Ethereum oracle contract integration" do
   let(:oracle_value) { SecureRandom.base64 }
 
   before do
-    expect_any_instance_of(EthereumOracle).to receive(:current_value)
+    allow_any_instance_of(EthereumOracle).to receive(:current_value)
       .and_return(oracle_value)
   end
 
