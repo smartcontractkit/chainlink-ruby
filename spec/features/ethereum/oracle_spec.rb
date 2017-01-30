@@ -1,8 +1,9 @@
 describe "Ethereum oracle contract integration" do
   before { unstub_ethereum_calls }
 
-  let!(:assignment) { factory_create :assignment, adapter: oracle }
   let(:oracle) { factory_create :ethereum_oracle }
+  let(:subtask) { factory_build :subtask, adapter: oracle }
+  let!(:assignment) { factory_create(:assignment, subtasks: [subtask]) }
   let(:template) { EthereumContractTemplate.default }
   let(:contract) { oracle.ethereum_contract }
   let(:genesis_tx) { contract.genesis_transaction }
@@ -18,13 +19,11 @@ describe "Ethereum oracle contract integration" do
     expect(genesis_tx).to be_persisted
 
     wait_for_ethereum_confirmation genesis_tx.txid
-    Ethereum::ContractConfirmer.new(contract).perform
-    expect(contract).to be_confirmed
-
-    oracle_updater = Delayed::Job.first
     expect {
-      oracle_updater.invoke_job
+      Ethereum::ContractConfirmer.new(contract).perform
     }.to change {
+      contract.confirmed?
+    }.to(true).and change {
       oracle.reload.writes.count
     }.by(+1)
 
@@ -45,14 +44,13 @@ describe "Ethereum oracle contract integration" do
     it "accepts updates which can be read after confirmation" do
       wait_for_ethereum_confirmation genesis_tx.txid
       Ethereum::ContractConfirmer.new(contract).perform
-      oracle_updater = Delayed::Job.first
-      oracle_updater.invoke_job
       wait_for_ethereum_confirmation oracle.writes.last.txid
 
       template = ERB.new(File.read('spec/fixtures/ethereum/solidity/uptime.sol.erb'))
       address_binding = OpenStruct.new(oracle_address: contract.address).instance_eval { binding }
       solidity = template.result(address_binding)
-      compiled = ethereum.solidity.compile(solidity)['contracts']['Uptime']
+      compiler_response = ethereum.solidity.compile("Uptime.sol" => solidity)
+      compiled = compiler_response['contracts']['Uptime']
       uptime_txid = account.send_transaction({
         data: compiled['bytecode'],
         gas_limit: (compiled['gasEstimates']['creation'].last * 10),

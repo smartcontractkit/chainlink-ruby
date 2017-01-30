@@ -6,9 +6,7 @@ describe SolidityClient, type: :model do
       expect(SolidityClient).to receive(:post)
         .with('/compile', {
           basic_auth: nil,
-          body: {
-            solidity: body
-          },
+          body: body,
           headers: {},
         })
         .and_return(http_response body: {a: 1}.to_json)

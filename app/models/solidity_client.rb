@@ -11,8 +11,8 @@ class SolidityClient
     new.sol_abi name, json_abi
   end
 
-  def compile(code)
-    json_post '/compile', solidity: code
+  def compile(body)
+    json_post '/compile', body
   end
 
   def sol_abi(name, json_abi)

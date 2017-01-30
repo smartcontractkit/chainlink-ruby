@@ -41,17 +41,11 @@ describe CustomExpectation, type: :model do
     end
   end
 
-  describe "#close_out!" do
-    let(:expectation) { factory_create :custom_expectation }
-
-    it "does not blow up" do
-      expectation.close_out!
-    end
-  end
-
   describe "#mark_completed!" do
-    let(:term) { factory_create :term }
-    let(:expectation) { factory_create :custom_expectation, term: term }
+    let!(:term) { factory_create :term, expectation: assignment }
+    let(:assignment) { factory_create :assignment, subtasks: [subtask] }
+    let(:subtask) { factory_build :subtask, adapter: expectation, assignment: nil }
+    let(:expectation) { factory_create :custom_expectation }
 
     context "when there are successful API results" do
       before do
@@ -59,8 +53,10 @@ describe CustomExpectation, type: :model do
       end
 
       it "updates the term" do
-        expect(term).to receive(:update_status)
-          .with(Term::COMPLETED)
+        expect_any_instance_of(Term).to receive(:update_status) do |receiver, status|
+          expect(receiver).to eq(term)
+          expect(status).to eq(Term::COMPLETED)
+        end
 
         expectation.mark_completed!
       end

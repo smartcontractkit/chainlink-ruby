@@ -1,0 +1,22 @@
+<h1>Status: <%= @check.status %></h1>
+
+<% if @check.errors.any? %>
+  <h3>Errors:</h3>
+  <ul>
+    <% @check.errors.each do |key, value| %>
+      <li>
+        <%= key %>: <%= value %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<ul>
+  <li>Background Job Depth: <%= @check.delayed_job_count %></li>
+  <li>Ethereum Unconfirmed TXs: <%= @check.eth_unconfirmed_tx_count %></li>
+  <li>Ethereum Block Height Difference: <%= @check.eth_block_height_difference %></li>
+  <% if @check.eth_block_height_difference.to_i > 0 %>
+    <li>Ethereum Internal Block Height: <%= @check.eth_internal_block_height %></li>
+    <li>Ethereum External Block Height: <%= @check.eth_external_block_height %></li>
+  <% end %>
+</ul>

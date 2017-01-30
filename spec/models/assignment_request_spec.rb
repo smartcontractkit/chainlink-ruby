@@ -7,7 +7,8 @@ describe AssignmentRequest, type: :model do
     it { is_expected.to have_valid(:body_hash).when(SecureRandom.hex) }
     it { is_expected.not_to have_valid(:body_hash).when(nil, '') }
 
-    it { is_expected.to have_valid(:body_json).when(assignment_json) }
+    it { is_expected.to have_valid(:body_json).when(assignment_0_1_0_json) }
+    it { is_expected.to have_valid(:body_json).when(assignment_1_0_0_json) }
     it { is_expected.not_to have_valid(:body_json).when(nil, '', {}.to_json) }
 
     it { is_expected.to have_valid(:signature).when(SecureRandom.hex) }
@@ -16,7 +17,8 @@ describe AssignmentRequest, type: :model do
 
   describe "on creation" do
     let(:coordinator) { factory_create :coordinator }
-    let(:request) { factory_build :assignment_request, coordinator: coordinator }
+    let(:body_json) { assignment_0_1_0_json }
+    let(:request) { factory_build :assignment_request, coordinator: coordinator, body_json: body_json }
 
     it "signs the body hash" do
       expect {
@@ -32,8 +34,6 @@ describe AssignmentRequest, type: :model do
       }.to change {
         request.assignment
       }.from(nil)
-
-      expect(request.assignment.parameters).to eq(request.body[:assignmentParams])
     end
 
     it "associates the coordinator with the assignment" do
@@ -50,6 +50,26 @@ describe AssignmentRequest, type: :model do
       }.to change {
         AssignmentSchedule.count
       }.by(+1)
+    end
+
+    context "when the assingment is pre-version 1.0" do
+      let(:body_json) { assignment_0_1_0_json }
+
+      before { request.save }
+
+      it "creates a list of assignments" do
+        expect(request.reload.assignment.adapters.size).to eq(1)
+      end
+    end
+
+    context "when the assignment is version 1.0 or greater" do
+      let(:body_json) { assignment_1_0_0_json }
+
+      before { request.save }
+
+      it "creates a list of assignments" do
+        expect(request.reload.assignment.adapters.size).to eq 2
+      end
     end
   end
 

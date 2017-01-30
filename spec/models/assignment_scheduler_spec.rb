@@ -48,7 +48,7 @@ describe AssignmentScheduler, type: :model do
   end
 
   describe "#check_status" do
-    let(:assignment) { factory_create :assignment }
+    let!(:assignment) { factory_create :assignment }
 
     it "checks the status of the instance provided" do
       expect_any_instance_of(Assignment).to receive(:check_status) do |receiver|

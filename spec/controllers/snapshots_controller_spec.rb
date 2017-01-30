@@ -6,7 +6,7 @@ describe SnapshotsController, type: :controller do
     let(:xid) { SecureRandom.uuid }
     let(:snapshot_params) do
       {
-        assignment_xid: assignment.xid,
+        assignment_xid: "#{assignment.xid}=9321",
         details: details_hash,
         status: Term::IN_PROGRESS,
         summary: '%%!ASSIGNMENT_NAME!%% is termendous.',
@@ -16,7 +16,7 @@ describe SnapshotsController, type: :controller do
     end
 
     context "when the adapter is authorized" do
-      before { input_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in assignment.adapters.first }
 
       it "creates a snapshot for the assignment" do
         expect {
@@ -77,7 +77,7 @@ describe SnapshotsController, type: :controller do
     end
 
     context "when the adapter is authorized" do
-      before { input_adapter_log_in assignment.adapter }
+      before { external_adapter_log_in assignment.adapters.first }
 
       it "does NOT create a new record" do
         expect {

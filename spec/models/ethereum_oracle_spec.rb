@@ -6,8 +6,8 @@ describe EthereumOracle, type: :model do
     it { is_expected.to have_valid(:ethereum_contract).when(EthereumContract.new) }
     it { is_expected.not_to have_valid(:ethereum_contract).when(nil) }
 
-    it { is_expected.to have_valid(:field_list).when('recent', 'recent?!?0?!?high') }
-    it { is_expected.not_to have_valid(:field_list).when(nil, '') }
+    it { is_expected.to have_valid(:fields).when('recent', ['recent', 'high']) }
+    it { is_expected.not_to have_valid(:fields).when(nil, '', []) }
   end
 
   describe "#current_value" do
@@ -45,6 +45,50 @@ describe EthereumOracle, type: :model do
       it "uses the initial array" do
         expect(oracle.fields).to eq(fields)
       end
+    end
+  end
+
+  describe "#ready?" do
+    subject { factory_build(:ethereum_oracle, ethereum_contract: contract).ready? }
+
+    context "when the contract has an address" do
+      let(:contract) { factory_build :ethereum_contract, address: ethereum_address }
+      it { is_expected.to be true }
+    end
+
+    context "when the contract does not have an address" do
+      let(:contract) { factory_build :ethereum_contract, address: nil }
+      it { is_expected.to be false }
+    end
+  end
+
+  describe "#contract_confirmed" do
+    let(:subtask) { factory_build :subtask, adapter: nil }
+    let(:oracle) { factory_create :ethereum_oracle, subtask: subtask }
+
+    it "calls mark ready on the subtask" do
+      expect(subtask).to receive(:mark_ready)
+
+      oracle.contract_confirmed(ethereum_address)
+    end
+  end
+
+  describe "#initialization_details" do
+    let(:contract) { factory_create :ethereum_contract, address: ethereum_address }
+      let(:oracle) do
+        factory_create(:ethereum_oracle).tap do |oracle|
+          oracle.update_attributes(ethereum_contract: contract)
+        end
+      end
+
+    it "pulls information from the ethereum contract and template" do
+      expect(oracle.initialization_details).to eq({
+        address: contract.address,
+        jsonABI: contract.template.json_abi,
+        readAddress: contract.template.read_address,
+        writeAddress: contract.template.write_address,
+        solidityABI: contract.template.solidity_abi,
+      })
     end
   end
 end

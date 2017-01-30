@@ -14,8 +14,8 @@ class Ethereum::Client
     (data[0..1] == '0x') ? data : "0x#{data}"
   end
 
-  def account_balance(account)
-    hex_to_int epost('eth_getBalance', [to_eth_hex(account), 'latest']).result
+  def account_balance(account, tag = 'latest')
+    hex_to_int epost('eth_getBalance', [to_eth_hex(account), tag]).result
   end
 
   def client_version
@@ -51,7 +51,7 @@ class Ethereum::Client
     epost('eth_call', [{
       data: to_eth_hex(options[:data]),
       from: eth_account(options[:from] || Ethereum::NULL_ACCOUNT),
-      gas: to_eth_hex(options[:gas] || 1_000_000_000),
+      gas: to_eth_hex(options[:gas] || 1_000_000),
       gasPrice: hex_gas_price(options[:gas_price]),
       to: eth_account(options[:to]),
       value: to_eth_hex(options[:value] || 0),
@@ -66,8 +66,8 @@ class Ethereum::Client
     epost('eth_getTransactionReceipt', txid).result
   end
 
-  def get_transaction_count(account)
-    hex_to_int epost('eth_getTransactionCount', [account, 'pending']).result
+  def get_transaction_count(account, tag = 'pending')
+    hex_to_int epost('eth_getTransactionCount', [account, tag]).result
   end
 
   def utf8_to_hex(string)
@@ -96,7 +96,7 @@ class Ethereum::Client
 
   def format_bytes32_hex(input)
     string = input.dup.to_s.force_encoding 'ASCII'
-    utf8_to_hex(string[0...32])
+    utf8_to_hex(string[0...32]).ljust(64, '0')
   end
 
   def hex_to_int(hex)
@@ -109,6 +109,22 @@ class Ethereum::Client
 
   def to_eth_hex(data)
     self.class.hex data
+  end
+
+  def format_address_hex(address)
+    address.to_s.gsub(/^0x/,'').rjust(64, "0")
+  end
+
+  def format_hex_array(array_of_hex)
+    format_int_to_hex(array_of_hex.size) + array_of_hex.join
+  end
+
+  def format_int_to_hex(integer, bytes = 32)
+    integer.to_s(16).rjust(2 * bytes, '0')
+  end
+
+  def get_code(address, tag = 'pending')
+    epost('eth_getCode', [address, tag]).result
   end
 
 

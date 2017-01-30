@@ -1,4 +1,4 @@
-class SnapshotsController < InputAdapterController
+class SnapshotsController < ExternalAdapterController
 
   ASSIGNMENT_NAME = "%%!ASSIGNMENT_NAME!%%"
 
@@ -50,7 +50,8 @@ class SnapshotsController < InputAdapterController
   end
 
   def assignment_xid
-    params[:assignment_xid] || params[:assignmentXID]
+    axid = params[:assignment_xid] || params[:assignmentXID]
+    axid.gsub(/=.*/, '') if axid
   end
 
 end

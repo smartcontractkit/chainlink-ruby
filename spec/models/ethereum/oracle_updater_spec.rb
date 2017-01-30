@@ -1,22 +1,18 @@
 describe Ethereum::OracleUpdater, type: :model do
   let(:oracle_updater) { Ethereum::OracleUpdater.new(oracle) }
 
-  before do
-    allow_any_instance_of(EthereumOracle).to receive(:current_value)
-      .and_return("Hi Mom!")
-  end
-
   describe "#perform" do
-    let(:account) { contract.account }
+    let(:account) { oracle.account }
     let(:contract) { oracle.ethereum_contract }
     let(:code_template) { contract.template }
     let!(:oracle) { factory_create :ethereum_oracle }
     let(:tx) { factory_create :ethereum_transaction }
+    let(:current_value) { "Hi Mom!" }
 
     before do
       expect(account).to receive(:send_transaction)
         .with({
-          data: "#{code_template.write_address}4869204d6f6d21",
+          data: "#{code_template.write_address}4869204d6f6d2100000000000000000000000000000000000000000000000000",
           gas_limit: 100_000,
           to: contract.address,
         })
@@ -25,14 +21,14 @@ describe Ethereum::OracleUpdater, type: :model do
 
     it "creates an oracle update record" do
       expect {
-        oracle_updater.perform
+        oracle_updater.perform current_value
       }.to change {
         oracle.writes.count
       }.by(+1)
     end
 
     it "returns the new oracle write" do
-      result = oracle_updater.perform
+      result = oracle_updater.perform current_value
       expect(result).to be_an EthereumOracleWrite
       expect(result).to be_persisted
     end
@@ -42,14 +38,14 @@ describe Ethereum::OracleUpdater, type: :model do
 
       it "does NOT create a new oracle write" do
         expect {
-          oracle_updater.perform
+          oracle_updater.perform current_value
         }.not_to change {
           oracle.writes.count
         }
       end
 
       it "returns the new oracle write" do
-        result = oracle_updater.perform
+        result = oracle_updater.perform current_value
         expect(result).to be_an EthereumOracleWrite
         expect(result).not_to be_persisted
       end

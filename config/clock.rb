@@ -20,4 +20,7 @@ module Clockwork
 
   every(1.hour, 'Ethereum::BalanceWatcher.perform')
 
+  if time = ENV['HEALTH_CHECK_TIME']
+    every(1.day, 'HealthCheck.perform', at: time)
+  end
 end

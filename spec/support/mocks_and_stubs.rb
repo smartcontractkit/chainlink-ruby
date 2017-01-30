@@ -19,6 +19,8 @@ module MockAndStubHelpers
         .and_return(http_response body: {}.to_json)
       allow(CoordinatorClient).to receive(:post)
         .and_return(http_response body: {}.to_json)
+      allow(CoordinatorClient).to receive(:patch)
+        .and_return(http_response body: {}.to_json)
 
       allow(Ethereum::Client).to receive(:post)
         .with("/", instance_of(Hash))
@@ -31,11 +33,11 @@ module MockAndStubHelpers
       allow(HttpRetriever).to receive(:get)
         .and_return(stubbed_response)
 
-      allow(InputAdapterClient).to receive(:post)
+      allow(ExternalAdapterClient).to receive(:post)
         .and_return(http_response body: stubbed_response)
-      allow(InputAdapterClient).to receive(:get)
+      allow(ExternalAdapterClient).to receive(:get)
         .and_return(http_response body: stubbed_response)
-      allow(InputAdapterClient).to receive(:delete)
+      allow(ExternalAdapterClient).to receive(:delete)
         .and_return(http_response body: stubbed_response)
     end
 

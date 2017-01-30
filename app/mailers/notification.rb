@@ -8,7 +8,7 @@ class Notification < ActionMailer::Base
     @account = account
     @balance = balance
 
-    mail subject: "(#{Rails.env}) Low Ethereum balance alert!"
+    mail subject: "#{node_name}: Low Ethereum balance alert!"
   end
 
   def snapshot_failure(assignment, errors)
@@ -18,11 +18,18 @@ class Notification < ActionMailer::Base
     mail subject: "#{node_name}: snapshot failure"
   end
 
+  def health_check
+    @check = HealthCheck.new
+    subject = "Health Check: #{@check.status} #{Date.today.to_s}(#{node_name})"
+
+    mail subject: subject
+  end
+
 
   private
 
   def node_name
-    ENV['NODE_NAME']
+    ENV['NODE_NAME'] || Rails.env
   end
 
 end

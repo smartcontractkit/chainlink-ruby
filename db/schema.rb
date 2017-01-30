@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025183628) do
+ActiveRecord::Schema.define(version: 20170128000545) do
+
+  create_table "adapter_snapshots", force: :cascade do |t|
+    t.integer  "assignment_snapshot_id"
+    t.integer  "subtask_id"
+    t.text     "description"
+    t.text     "description_url"
+    t.text     "details_json"
+    t.boolean  "fulfilled",              default: false
+    t.text     "summary"
+    t.text     "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "progress"
+    t.string   "status"
+  end
 
   create_table "api_results", force: :cascade do |t|
     t.text     "parsed_value"
@@ -53,6 +68,8 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.text     "summary"
     t.text     "description"
     t.text     "description_url"
+    t.string   "progress"
+    t.integer  "adapter_index"
   end
 
   create_table "assignment_types", force: :cascade do |t|
@@ -65,14 +82,11 @@ ActiveRecord::Schema.define(version: 20161025183628) do
   end
 
   create_table "assignments", force: :cascade do |t|
-    t.text     "json_parameters"
-    t.integer  "adapter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "xid"
     t.datetime "start_at"
     t.datetime "end_at"
-    t.string   "adapter_type"
     t.string   "status"
     t.integer  "coordinator_id"
   end
@@ -134,6 +148,14 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.integer  "nonce",      default: 0
   end
 
+  create_table "ethereum_bytes32_oracles", force: :cascade do |t|
+    t.string   "address"
+    t.string   "update_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ethereum_account_id"
+  end
+
   create_table "ethereum_contract_templates", force: :cascade do |t|
     t.text     "code"
     t.text     "evm_hex"
@@ -153,6 +175,8 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "genesis_transaction_id"
+    t.integer  "owner_id"
+    t.string   "owner_type"
   end
 
   create_table "ethereum_oracle_writes", force: :cascade do |t|
@@ -161,12 +185,12 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.text     "value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "oracle_type"
   end
 
   create_table "ethereum_oracles", force: :cascade do |t|
     t.text     "endpoint"
     t.text     "field_list"
-    t.integer  "ethereum_contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -186,13 +210,21 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.integer  "gas_limit"
   end
 
-  create_table "input_adapters", force: :cascade do |t|
+  create_table "external_adapters", force: :cascade do |t|
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "assignment_type_id"
     t.string   "username"
     t.string   "password"
+  end
+
+  create_table "json_adapters", force: :cascade do |t|
+    t.text     "url"
+    t.text     "field_list"
+    t.string   "request_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "key_pairs", force: :cascade do |t|
@@ -202,6 +234,17 @@ ActiveRecord::Schema.define(version: 20161025183628) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "private_key"
+  end
+
+  create_table "subtasks", force: :cascade do |t|
+    t.string   "adapter_type"
+    t.integer  "adapter_id"
+    t.integer  "assignment_id"
+    t.integer  "index"
+    t.text     "adapter_params_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "ready"
   end
 
   create_table "terms", force: :cascade do |t|

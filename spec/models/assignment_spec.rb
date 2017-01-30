@@ -1,14 +1,11 @@
 describe Assignment, type: :model do
 
   describe "validations" do
-    it { is_expected.to have_valid(:adapter).when(factory_create(:input_adapter)) }
-    it { is_expected.not_to have_valid(:adapter).when(nil) }
+    it { is_expected.to have_valid(:subtasks).when([factory_build(:subtask, assignment: nil)]) }
+    it { is_expected.not_to have_valid(:subtasks).when([]) }
 
     it { is_expected.to have_valid(:coordinator).when(factory_create(:coordinator)) }
     it { is_expected.not_to have_valid(:coordinator).when(nil) }
-
-    it { is_expected.to have_valid(:json_parameters).when({a: 1}.to_json, nil) }
-    it { is_expected.not_to have_valid(:json_parameters).when('blah') }
 
     it { is_expected.to have_valid(:status).when('completed', 'failed', 'in progress') }
     it { is_expected.not_to have_valid(:status).when('other') }
@@ -17,18 +14,19 @@ describe Assignment, type: :model do
 
     context "when the adapter gets an error" do
       let(:assignment) { factory_build :assignment }
+      let(:subtask) { assignment.subtasks.first }
       let(:remote_error_message) { 'big errors. great job.' }
 
       it "includes the adapter error" do
-        expect(assignment.adapter).to receive(:start)
-          .with(assignment)
+        expect(subtask.adapter).to receive(:start)
+          .with(subtask)
           .and_return(create_assignment_response errors: [remote_error_message])
 
         assignment.save
 
-        expect(assignment.errors.full_messages).to include("Adapter: #{remote_error_message}")
+        expect(assignment.errors.full_messages).to include("Adapter##{subtask.index} Error: #{remote_error_message}")
       end
-   end
+    end
 
     context "when the term start date is before the end date" do
       it "is not valid" do
@@ -61,14 +59,6 @@ describe Assignment, type: :model do
       }.from(nil)
     end
 
-    it "sends the work over to the adapter" do
-      expect(assignment.adapter).to receive(:start)
-        .with(assignment)
-        .and_return(create_assignment_response)
-
-      assignment.save
-    end
-
     it "does NOT create a schedule" do
       expect {
         assignment.tap(&:save).reload
@@ -83,13 +73,21 @@ describe Assignment, type: :model do
 
       it "creates a schedule" do
         expect {
-          assignment.tap(&:save).reload
+          assignment.save
         }.to change {
           AssignmentSchedule.count
         }
 
         expect(assignment.schedule).to eq(AssignmentSchedule.last)
       end
+    end
+
+    it "creates a snapshot" do
+      expect_any_instance_of(Assignment).to receive(:check_status) do |receiver|
+        expect(receiver).to eq(assignment)
+      end
+
+      run_generated_jobs { assignment.save }
     end
   end
 
@@ -103,17 +101,31 @@ describe Assignment, type: :model do
         assignment.snapshots.count
       }.by(+1)
     end
+
+    context "when not all of the substasks are ready" do
+      before do
+        factory_create :uninitialized_subtask, assignment: assignment
+        assignment.reload
+      end
+
+      it "does not create a new snapshot" do
+        expect {
+          assignment.check_status
+        }.not_to change {
+          assignment.reload.snapshots.count
+        }
+      end
+    end
   end
 
   describe "#close_out!" do
     let(:term) { factory_build :term }
     let(:assignment) { factory_create :assignment, term: term }
-    let(:adapter) { assignment.adapter }
+    let(:subtask) { assignment.subtasks.first }
     let(:status) { Assignment::COMPLETED }
 
-    it "closes out via the adapter" do
-      expect(adapter).to receive(:stop)
-        .with(assignment)
+    it "closes out via each subtask" do
+      expect(subtask).to receive(:close_out!)
 
       assignment.close_out!
     end
@@ -225,4 +237,45 @@ describe Assignment, type: :model do
     end
   end
 
+  describe "#subtask_ready" do
+    let(:assignment) { factory_create :assignment }
+    let(:subtask) { assignment.subtasks.first }
+
+    context "when all of the substasks are ready" do
+      before do
+        subtask.update_attributes(ready: true)
+        assignment.reload
+      end
+
+      it "creates a new assignment snapshot" do
+        expect {
+          assignment.subtask_ready(subtask)
+        }.to change {
+          assignment.reload.snapshots.count
+        }.by(+1)
+      end
+
+      it "sends integration instructions to the coordinator" do
+        expect(assignment.coordinator).to receive(:assignment_initialized)
+          .with(assignment.id)
+
+        assignment.subtask_ready(subtask)
+      end
+    end
+
+    context "when not all of the substasks are ready" do
+      before do
+        factory_create :uninitialized_subtask, assignment: assignment
+        assignment.reload
+      end
+
+      it "does not create a new snapshot" do
+        expect {
+          assignment.subtask_ready(subtask)
+        }.not_to change {
+          assignment.reload.snapshots.count
+        }
+      end
+    end
+  end
 end
