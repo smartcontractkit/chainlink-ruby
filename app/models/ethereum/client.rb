@@ -70,6 +70,10 @@ class Ethereum::Client
     hex_to_int epost('eth_getTransactionCount', [account, tag]).result
   end
 
+  def get_block(hash, full = false)
+    epost('eth_getBlockByHash', [hash, full])
+  end
+
   def utf8_to_hex(string)
     string.force_encoding('ASCII').bytes.map{|byte| byte.to_s(16) }.join
   end
