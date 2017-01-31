@@ -9,10 +9,6 @@ class EthereumContractTemplate < ActiveRecord::Base
   validates :solidity_abi, presence: true
   validates :write_address, presence: true
 
-  def self.default
-    order(:created_at).last
-  end
-
   def self.for(type)
     find_by adapter_name: type
   end

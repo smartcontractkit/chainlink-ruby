@@ -1,7 +1,7 @@
 describe "Ethereum oracle initialized with a value" do
   before { unstub_ethereum_calls }
 
-  let(:template) { EthereumContractTemplate.default }
+  let(:template) { EthereumContractTemplate.for(EthereumOracle::SCHEMA_NAME) }
   let(:account) { Ethereum::Account.default }
   let(:initial_value) { ethereum.format_bytes32_hex 'Hi Mom!' }
 

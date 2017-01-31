@@ -64,7 +64,7 @@ module Ethereum
       end
 
       if address.nil?
-        build_ethereum_contract
+        build_ethereum_contract adapter_type: SCHEMA_NAME
       else
         self.ethereum_account = Account.default
       end

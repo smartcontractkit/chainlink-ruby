@@ -1,6 +1,8 @@
 describe EthereumContract, type: :model do
 
   describe "validations" do
+    subject { EthereumContract.new adapter_type: EthereumOracle::SCHEMA_NAME }
+
     it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
     it { is_expected.not_to have_valid(:address).when('', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
 
@@ -8,7 +10,7 @@ describe EthereumContract, type: :model do
   end
 
   describe "on create" do
-    let(:contract) { EthereumContract.new }
+    let(:contract) { EthereumContract.new adapter_type: EthereumOracle::SCHEMA_NAME }
 
     it "assigns an account and code template" do
       expect {

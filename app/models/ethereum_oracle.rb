@@ -85,7 +85,7 @@ class EthereumOracle < ActiveRecord::Base
 
     self.endpoint = body['endpoint']
     self.fields = body['fields']
-    build_ethereum_contract
+    build_ethereum_contract adapter_type: SCHEMA_NAME
   end
 
   def updater

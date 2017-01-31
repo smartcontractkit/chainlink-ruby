@@ -29,7 +29,10 @@ describe EthereumContractTemplate, type: :model do
   describe ".create_template_contract" do
     it "creates a new contract template" do
       expect {
-        EthereumContractTemplate.create_contract_template
+        EthereumContractTemplate.create_contract_template(
+          'Bytes32Oracle',
+          Ethereum::Bytes32Oracle::SCHEMA_NAME,
+        )
       }.to change {
         EthereumContractTemplate.count
       }.by(+1)

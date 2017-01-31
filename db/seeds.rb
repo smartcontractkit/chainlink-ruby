@@ -14,6 +14,10 @@ unless KeyPair.bitcoin_default.present?
   KeyPair.create!
 end
 
-unless EthereumContractTemplate.any?
-  EthereumContractTemplate.create_contract_template
+unless EthereumContractTemplate.for('ethereumBytes32')
+  EthereumContractTemplate.create_contract_template 'Bytes32Oracle', Ethereum::Bytes32Oracle::SCHEMA_NAME
+end
+
+unless EthereumContractTemplate.for('ethereumUint256')
+  EthereumContractTemplate.create_contract_template 'Uint256Oracle', Ethereum::Uint256Oracle::SCHEMA_NAME
 end

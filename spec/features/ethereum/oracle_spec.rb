@@ -4,7 +4,7 @@ describe "Ethereum oracle contract integration" do
   let(:oracle) { factory_create :ethereum_oracle }
   let(:subtask) { factory_build :subtask, adapter: oracle }
   let!(:assignment) { factory_create(:assignment, subtasks: [subtask]) }
-  let(:template) { EthereumContractTemplate.default }
+  let(:template) { EthereumContractTemplate.for(EthereumOracle::SCHEMA_NAME) }
   let(:contract) { oracle.ethereum_contract }
   let(:genesis_tx) { contract.genesis_transaction }
   let(:oracle_value) { SecureRandom.base64 }
