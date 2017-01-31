@@ -70,6 +70,7 @@ module SpecHelpers
       end
       sleep (1 / try_rate)
     end
+    receipt
   end
 
   def get_oracle_value(oracle)
@@ -77,7 +78,7 @@ module SpecHelpers
     result_hex = ethereum.call({
       to: oracle.contract_address,
       data: contract.template.read_address,
-      gas: 2000000,
+      gas: 2_000_000,
     }).result
     ethereum.hex_to_utf8(result_hex)
   end
