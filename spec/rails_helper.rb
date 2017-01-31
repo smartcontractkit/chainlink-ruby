@@ -22,6 +22,10 @@ RSpec.configure do |config|
 
   config.add_setting :geth_pid
 
+  config.before(:all) do
+    self.class.set_fixture_class ethereum_accounts: Ethereum::Account
+  end
+
   config.before(:suite) do |example|
     port = 7434
     geth = "geth --dev --mine --fakepow --etherbase #{ENV['ETHEREUM_ACCOUNT']} --rpc --rpccorsdomain '*' --rpcport #{port} --ipcpath './tmp/geth.ipc' --datadir './tmp' --lightkdf --verbosity 0"
