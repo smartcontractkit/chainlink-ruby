@@ -1,6 +1,9 @@
 describe EthereumContractTemplate, type: :model do
 
   describe "validations" do
+    it { is_expected.to have_valid(:adapter_name).when('a') }
+    it { is_expected.not_to have_valid(:adapter_name).when('', nil) }
+
     it { is_expected.to have_valid(:code).when('a') }
     it { is_expected.not_to have_valid(:code).when('', nil) }
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170130195805) do
+ActiveRecord::Schema.define(version: 20170131000517) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20170130195805) do
     t.integer  "construction_gas"
     t.string   "read_address"
     t.string   "write_address"
+    t.string   "adapter_name"
   end
 
   create_table "ethereum_contracts", force: :cascade do |t|

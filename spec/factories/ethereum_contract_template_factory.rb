@@ -1,6 +1,7 @@
 FactoryGirl.define do
 
   factory :ethereum_contract_template do
+    adapter_name { SecureRandom.base64 }
     code { SecureRandom.hex }
     construction_gas { 1_000_000 }
     evm_hex { SecureRandom.hex }

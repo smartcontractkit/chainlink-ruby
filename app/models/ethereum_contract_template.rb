@@ -1,5 +1,6 @@
 class EthereumContractTemplate < ActiveRecord::Base
 
+  validates :adapter_name, presence: true
   validates :code, presence: true
   validates :construction_gas, numericality: { greater_than: 0 }
   validates :evm_hex, presence: true
@@ -12,12 +13,17 @@ class EthereumContractTemplate < ActiveRecord::Base
     order(:created_at).last
   end
 
-  def self.create_contract_template(contract_name = 'Oracle')
+  def self.for(type)
+    find_by adapter_name: type
+  end
+
+  def self.create_contract_template(contract_name = 'Oracle', adapter_name = nil)
     code = File.read("lib/assets/contracts/#{contract_name}.sol")
     compiled = SolidityClient.compile({contract_name => code})
     oracle = compiled['contracts'][contract_name]
 
     EthereumContractTemplate.create!({
+      adapter_name: (adapter_name || contract_name),
       code: code,
       construction_gas: (oracle['gasEstimates']['creation'].last * 10),
       evm_hex: oracle['bytecode'],
