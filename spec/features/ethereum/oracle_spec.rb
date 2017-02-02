@@ -4,13 +4,13 @@ describe "Ethereum oracle contract integration" do
   let(:oracle) { factory_create :ethereum_oracle }
   let(:subtask) { factory_build :subtask, adapter: oracle }
   let!(:assignment) { factory_create(:assignment, subtasks: [subtask]) }
-  let(:template) { EthereumContractTemplate.default }
+  let(:template) { EthereumContractTemplate.for(EthereumOracle::SCHEMA_NAME) }
   let(:contract) { oracle.ethereum_contract }
   let(:genesis_tx) { contract.genesis_transaction }
   let(:oracle_value) { SecureRandom.base64 }
 
   before do
-    expect_any_instance_of(EthereumOracle).to receive(:current_value)
+    allow_any_instance_of(EthereumOracle).to receive(:current_value)
       .and_return(oracle_value)
   end
 

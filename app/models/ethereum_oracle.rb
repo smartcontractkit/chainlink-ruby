@@ -31,7 +31,7 @@ class EthereumOracle < ActiveRecord::Base
   def current_value
     return @current_value if @current_value.present?
     endpoint_response = HttpRetriever.get(endpoint)
-    @current_value = JsonTraverser.parse endpoint_response, fields
+    @current_value = JsonTraverser.parse(endpoint_response, fields).to_s[0..31]
   end
 
   def assignment_type
@@ -42,8 +42,8 @@ class EthereumOracle < ActiveRecord::Base
     term || assignment.term
   end
 
-  def get_status(assignment_snapshot, _details = {})
-    write = updater.perform(current_value)
+  def get_status(_assignment_snapshot, _details = {})
+    write = updater.perform format_hex_value(current_value), current_value
     write.snapshot_decorator
   end
 
@@ -85,11 +85,15 @@ class EthereumOracle < ActiveRecord::Base
 
     self.endpoint = body['endpoint']
     self.fields = body['fields']
-    build_ethereum_contract
+    build_ethereum_contract adapter_type: SCHEMA_NAME
   end
 
   def updater
     Ethereum::OracleUpdater.new(self)
+  end
+
+  def format_hex_value(value)
+    Ethereum::Client.new.format_bytes32_hex value
   end
 
 end

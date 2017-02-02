@@ -54,7 +54,7 @@ module Ethereum
     end
 
     def generate_key_pair
-      self.key_pair = KeyPair.create
+      self.key_pair = KeyPair.create use_uncompressed_pub: true
       self.address = key_pair.ethereum_address
     end
 

@@ -1,4 +1,4 @@
-describe Ethereum::Bytes32Oracle do
+describe Ethereum::Uint256Oracle do
 
   describe "validations" do
     it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
@@ -13,7 +13,7 @@ describe Ethereum::Bytes32Oracle do
     let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
 
     context "when the address exists in the body" do
-      let(:oracle) { factory_build :external_bytes32_oracle }
+      let(:oracle) { factory_build :external_uint256_oracle }
 
       it "fills in its fields from the given body" do
         expect {
@@ -43,7 +43,7 @@ describe Ethereum::Bytes32Oracle do
     end
 
     context "when the address does not exist in the body" do
-      let(:oracle) { factory_build :ethereum_bytes32_oracle, assignment: assignment }
+      let(:oracle) { factory_build :ethereum_uint256_oracle, assignment: assignment }
 
       it "fills in its fields from the given body" do
         expect {
@@ -77,44 +77,17 @@ describe Ethereum::Bytes32Oracle do
     end
   end
 
+
   describe "#get_status" do
-    let!(:adapter) { factory_create :ethereum_bytes32_oracle }
+    let!(:adapter) { factory_create :ethereum_uint256_oracle }
     let(:snapshot) { factory_create :adapter_snapshot }
-    let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
-    let(:truncated_value) { "some string that is longer than " }
-    let(:hex_truncated_value) { "736f6d6520737472696e672074686174206973206c6f6e676572207468616e20" }
+    let(:value) { 12431235452456 }
+    let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
     let(:params) { {value: value} }
-    let(:assignment) { adapter.assignment }
-    let(:txid) { ethereum_txid }
-
-    it "formats the response of the oracle" do
-      status = adapter.get_status(snapshot, params)
-
-      expect(status.errors).to be_empty
-      expect(status.fulfilled).to be true
-      expect(status.description).to match /Blockchain record: 0x[0-9a-f]{64}/
-      expect(status.description_url).to match /#{ENV['ETHEREUM_EXPLORER_URL']}\/tx\/0x[0-9a-f]{64}/
-      expect(status.details).to eq({
-        txid: EthereumOracleWrite.last.txid,
-        value: truncated_value,
-      })
-
-      expect(status.value).to eq(truncated_value)
-    end
-
-    it "creates a new ethereum oracle write record" do
-      expect {
-        adapter.get_status(snapshot, params)
-      }.to change {
-        EthereumOracleWrite.count
-      }.by(+1)
-
-      expect(adapter.writes.last).to eq(EthereumOracleWrite.last)
-    end
 
     it "passes the current value and its equivalent hex to the updater" do
       expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
-        .with(hex_truncated_value, truncated_value)
+        .with(hex_truncated_value, value)
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
       adapter.get_status(snapshot, params)
@@ -122,7 +95,7 @@ describe Ethereum::Bytes32Oracle do
   end
 
   describe "#ready?" do
-    subject { factory_build(:ethereum_bytes32_oracle, ethereum_contract: contract).ready? }
+    subject { factory_build(:ethereum_uint256_oracle, ethereum_contract: contract).ready? }
 
     context "when the contract has an address" do
       let(:contract) { factory_build :ethereum_contract, address: ethereum_address }
@@ -137,7 +110,7 @@ describe Ethereum::Bytes32Oracle do
 
   describe "#contract_confirmed" do
     let(:subtask) { factory_build :subtask, adapter: nil }
-    let(:oracle) { factory_create :ethereum_bytes32_oracle, subtask: subtask }
+    let(:oracle) { factory_create :ethereum_uint256_oracle, subtask: subtask }
 
     it "calls mark ready on the subtask" do
       expect(subtask).to receive(:mark_ready)
@@ -150,7 +123,7 @@ describe Ethereum::Bytes32Oracle do
     context "when the oracle has a contract" do
       let(:contract) { factory_create :ethereum_contract, address: ethereum_address }
       let(:oracle) do
-        factory_create(:ethereum_bytes32_oracle).tap do |oracle|
+        factory_create(:ethereum_uint256_oracle).tap do |oracle|
           oracle.update_attributes(ethereum_contract: contract)
         end
       end
@@ -167,7 +140,7 @@ describe Ethereum::Bytes32Oracle do
     end
 
     context "when the oracle has a contract" do
-      let(:oracle) { factory_create :external_bytes32_oracle }
+      let(:oracle) { factory_create :external_uint256_oracle }
 
       it "pulls information from the ethereum contract and template" do
         expect(oracle.initialization_details).to eq({

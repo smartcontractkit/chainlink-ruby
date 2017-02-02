@@ -9,6 +9,8 @@ class KeyPair < ActiveRecord::Base
 
   scope :unowned, -> { where owner: nil }
 
+  attr_accessor :use_uncompressed_pub
+
 
   def self.bitcoin_default
     find_by(public_key: ENV['BITCOIN_PUB_KEY']) ||
@@ -64,6 +66,10 @@ class KeyPair < ActiveRecord::Base
     end
 
     self.private_key = key.priv
-    self.public_key = key.pub_compressed
+    if use_uncompressed_pub
+      self.public_key = key.pub_uncompressed
+    else
+      self.public_key = key.pub_compressed
+    end
   end
 end

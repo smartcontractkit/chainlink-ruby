@@ -97,10 +97,18 @@ describe Term, type: :model do
         term.update_status Term::FAILED
       end
 
+      it "returns false if the same status is already set" do
+        expect(term.update_status Term::FAILED).to be_falsey
+      end
+
       it "does not re-notify the contract when the same state is submitted" do
         expect(term.contract).not_to receive(:delay)
 
         term.update_status Term::COMPLETED
+      end
+
+      it "returns true if the same status is already set" do
+        expect(term.update_status Term::COMPLETED).to eq(Term::COMPLETED)
       end
     end
 
@@ -121,10 +129,18 @@ describe Term, type: :model do
         term.update_status Term::COMPLETED
       end
 
+      it "returns false if the same status is already set" do
+        expect(term.update_status Term::COMPLETED).to be_falsey
+      end
+
       it "does not re-notify the contract when the same state is submitted" do
         expect(term.contract).not_to receive(:delay)
 
         term.update_status Term::FAILED
+      end
+
+      it "returns true if the same status is already set" do
+        expect(term.update_status Term::FAILED).to be_truthy
       end
     end
 
@@ -158,6 +174,12 @@ describe Term, type: :model do
           .with(new_status)
 
         term.update_status new_status
+      end
+
+      it "does not close out the term when flagged as not to" do
+        expect(term.expectation).not_to receive(:delay)
+
+        term.update_status new_status, false
       end
     end
   end

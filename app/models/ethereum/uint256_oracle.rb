@@ -1,8 +1,8 @@
 require 'ethereum'
 
 module Ethereum
-  class Bytes32Oracle < ActiveRecord::Base
-    SCHEMA_NAME = 'ethereumBytes32'
+  class Uint256Oracle < ActiveRecord::Base
+    SCHEMA_NAME = 'ethereumUint256'
 
     include AdapterBase
 
@@ -20,8 +20,7 @@ module Ethereum
 
 
     def get_status(assignment_snapshot, params = {})
-      value = params && params.with_indifferent_access['value'].to_s[0..31]
-
+      value = params && params.with_indifferent_access['value'].to_i.abs
       write = updater.perform format_hex_value(value), value
       write.snapshot_decorator
     end
@@ -90,7 +89,7 @@ module Ethereum
     end
 
     def format_hex_value(value)
-      Ethereum::Client.new.format_bytes32_hex value
+      Ethereum::Client.new.format_int_to_hex value
     end
 
   end

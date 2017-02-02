@@ -9,24 +9,24 @@ class Ethereum::OracleUpdater
     @update_address = oracle.contract_write_address
   end
 
-  def perform(value)
-    set_current_value value
+  def perform(hex, value)
+    tx = send_data(hex)
 
-    oracle.writes.create txid: tx.txid, value: current_value
+    oracle.writes.create txid: tx.txid, value: value
   end
 
 
   private
 
-  attr_reader :account, :address, :current_value, :oracle, :update_address
+  attr_reader :account, :address, :oracle, :update_address
 
   def set_current_value(value)
-    @current_value = value.to_s[0..31]
+    @hex_value = value
   end
 
-  def tx
+  def send_data(hex)
     @tx ||= account.send_transaction({
-      data: "#{update_address}#{ethereum.format_bytes32_hex current_value}",
+      data: "#{update_address}#{hex}",
       gas_limit: 100_000,
       to: address,
     })

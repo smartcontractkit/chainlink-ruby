@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170128000545) do
+ActiveRecord::Schema.define(version: 20170131000517) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20170128000545) do
     t.integer  "construction_gas"
     t.string   "read_address"
     t.string   "write_address"
+    t.string   "adapter_name"
   end
 
   create_table "ethereum_contracts", force: :cascade do |t|
@@ -208,6 +209,14 @@ ActiveRecord::Schema.define(version: 20170128000545) do
     t.integer  "value",         limit: 8
     t.integer  "gas_price",     limit: 8
     t.integer  "gas_limit"
+  end
+
+  create_table "ethereum_uint256_oracles", force: :cascade do |t|
+    t.string   "address"
+    t.string   "update_address"
+    t.integer  "ethereum_account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "external_adapters", force: :cascade do |t|

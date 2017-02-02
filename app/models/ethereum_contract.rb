@@ -14,6 +14,8 @@ class EthereumContract < ActiveRecord::Base
 
   scope :unconfirmed,  -> { where address: nil }
 
+  attr_accessor :adapter_type
+
   def confirmed(confirmed_address)
     update_attributes!({
       address: confirmed_address
@@ -35,7 +37,7 @@ class EthereumContract < ActiveRecord::Base
 
   def set_defaults
     self.account ||= Ethereum::Account.default
-    self.template ||= EthereumContractTemplate.default
+    self.template ||= EthereumContractTemplate.for adapter_type
 
     self.genesis_transaction = account.send_transaction({
       data: template.evm_hex,

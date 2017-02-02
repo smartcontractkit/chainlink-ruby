@@ -1,6 +1,9 @@
 describe EthereumContractTemplate, type: :model do
 
   describe "validations" do
+    it { is_expected.to have_valid(:adapter_name).when('a') }
+    it { is_expected.not_to have_valid(:adapter_name).when('', nil) }
+
     it { is_expected.to have_valid(:code).when('a') }
     it { is_expected.not_to have_valid(:code).when('', nil) }
 
@@ -26,7 +29,21 @@ describe EthereumContractTemplate, type: :model do
   describe ".create_template_contract" do
     it "creates a new contract template" do
       expect {
-        EthereumContractTemplate.create_contract_template
+        EthereumContractTemplate.create_contract_template(
+          'Bytes32Oracle',
+          Ethereum::Bytes32Oracle::SCHEMA_NAME,
+        )
+      }.to change {
+        EthereumContractTemplate.count
+      }.by(+1)
+    end
+
+    it "can work with other types of oracles" do
+      expect {
+        EthereumContractTemplate.create_contract_template(
+          'Uint256Oracle',
+          Ethereum::Uint256Oracle::SCHEMA_NAME, 'uint256'
+        )
       }.to change {
         EthereumContractTemplate.count
       }.by(+1)
