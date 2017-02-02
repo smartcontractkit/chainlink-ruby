@@ -37,6 +37,17 @@ describe EthereumContractTemplate, type: :model do
         EthereumContractTemplate.count
       }.by(+1)
     end
+
+    it "can work with other types of oracles" do
+      expect {
+        EthereumContractTemplate.create_contract_template(
+          'Uint256Oracle',
+          Ethereum::Uint256Oracle::SCHEMA_NAME, 'uint256'
+        )
+      }.to change {
+        EthereumContractTemplate.count
+      }.by(+1)
+    end
   end
 
 end

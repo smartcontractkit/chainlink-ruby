@@ -13,7 +13,7 @@ class EthereumContractTemplate < ActiveRecord::Base
     find_by adapter_name: type
   end
 
-  def self.create_contract_template(contract_name = 'Oracle', adapter_name = nil)
+  def self.create_contract_template(contract_name = 'Oracle', adapter_name = nil, type = "bytes32")
     code = File.read("lib/assets/contracts/#{contract_name}.sol")
     compiled = SolidityClient.compile({contract_name => code})
     oracle = compiled['contracts'][contract_name]
@@ -26,7 +26,7 @@ class EthereumContractTemplate < ActiveRecord::Base
       json_abi: oracle['interface'],
       read_address: oracle['functionHashes']['current()'],
       solidity_abi: SolidityClient.sol_abi(contract_name, oracle['interface']),
-      write_address: oracle['functionHashes']['update(bytes32)'],
+      write_address: oracle['functionHashes']["update(#{type})"],
     })
   end
 

@@ -29,7 +29,7 @@ contract Uint256Oracle is Owned {
 
   event Updated(uint256 current);
 
-  function Bytes32Oracle(uint256 newCurrent) {
+  function Uint256Oracle(uint256 newCurrent) {
     if (newCurrent != uint256(0)) {
       current = newCurrent;
       updatedAt = block.number;

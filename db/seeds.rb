@@ -19,5 +19,5 @@ unless EthereumContractTemplate.for('ethereumBytes32')
 end
 
 unless EthereumContractTemplate.for('ethereumUint256')
-  EthereumContractTemplate.create_contract_template 'Uint256Oracle', Ethereum::Uint256Oracle::SCHEMA_NAME
+  EthereumContractTemplate.create_contract_template 'Uint256Oracle', Ethereum::Uint256Oracle::SCHEMA_NAME, 'uint256'
 end
