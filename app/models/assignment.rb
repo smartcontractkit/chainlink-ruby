@@ -44,12 +44,14 @@ class Assignment < ActiveRecord::Base
     update_status status
   end
 
-  def update_status(status)
-    if eligible_to_update?(status) && update_attributes(status: status)
+  def update_status(new_status)
+    updated_status = update_term_status(new_status)
+
+    if updated_status && update_attributes(status: updated_status)
       snapshots.create({
         fulfilled: true,
-        status: status,
-        summary: "#{name} is #{status}.",
+        status: updated_status,
+        summary: "#{name} is #{updated_status}.",
       })
     end
   end
@@ -93,11 +95,11 @@ class Assignment < ActiveRecord::Base
     end
   end
 
-  def eligible_to_update?(status)
+  def update_term_status(new_status)
     if term.present?
-      term.update_status(status)
+      term.update_status new_status, false
     else
-      true
+      new_status
     end
   end
 

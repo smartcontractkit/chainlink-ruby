@@ -143,10 +143,10 @@ describe Assignment, type: :model do
         assignment.term.update_attributes status: status
       end
 
-      it "does not change the assignment's state" do
+      it "does change the assignment's state" do
         expect {
           assignment.close_out! status
-        }.not_to change {
+        }.to change {
           assignment.status
         }
       end
@@ -192,11 +192,11 @@ describe Assignment, type: :model do
 
       before do
         expect(assignment.term).to receive(:update_status)
-          .and_return(updated)
+          .and_return(term_response)
       end
 
       context "when the status successfully updates" do
-        let(:updated) { true }
+        let(:term_response) { status }
 
         it "creates an assignment snapshot" do
           expect {
@@ -216,7 +216,7 @@ describe Assignment, type: :model do
       end
 
       context "when the status successfully does NOT update" do
-        let(:updated) { false }
+        let(:term_response) { nil }
 
         it "does NOT create a snapshot" do
           expect {
