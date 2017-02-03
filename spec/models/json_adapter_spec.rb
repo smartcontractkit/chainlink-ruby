@@ -1,8 +1,14 @@
 describe JsonAdapter do
 
   describe "validations" do
+    it { is_expected.to have_valid(:basic_auth_password).when(nil, '', SecureRandom.base64) }
+
+    it { is_expected.to have_valid(:basic_auth_username).when(nil, '', SecureRandom.base64) }
+
     it { is_expected.to have_valid(:fields).when('recent', ['recent', 'high']) }
     it { is_expected.not_to have_valid(:fields).when(nil, '', []) }
+
+    it { is_expected.to have_valid(:headers).when(nil, {}, {a: 1}) }
 
     it { is_expected.to have_valid(:request_type).when('GET') }
     it { is_expected.not_to have_valid(:request_type).when('POST') }
@@ -33,7 +39,7 @@ describe JsonAdapter do
 
     before do
       allow(HttpRetriever).to receive(:get)
-        .with(adapter.url)
+        .with(adapter.url, {})
         .and_return(response)
 
       allow(JsonTraverser).to receive(:parse)

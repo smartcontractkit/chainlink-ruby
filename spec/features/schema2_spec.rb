@@ -3,14 +3,18 @@ describe "assignment with a schema version 1.0.0", type: :request do
 
   let(:coordinator_url) { "https://example.com/api/coordinator" }
   let(:coordinator) { factory_create :coordinator, url: coordinator_url }
-  let(:headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
+  let(:coordinator_headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
   let(:endpoint) { "https://example.com/api/data" }
   let(:oracle_value) { "790.28" }
   let(:input_type) { 'httpGetJSON' }
+  let(:basic_auth) { {"username" => "steve", "password" => "rules"} }
+  let(:headers) { {"App-Stuff" => "in formats"} }
   let(:input_params) do
     {
+      basicAuth: basic_auth,
+      fields: ['last'],
+      headers: headers,
       url: endpoint,
-      fields: ['last']
     }
   end
   let(:assignment_params) do
@@ -24,7 +28,13 @@ describe "assignment with a schema version 1.0.0", type: :request do
 
   before do
     allow(HttpRetriever).to receive(:get)
-      .with(endpoint)
+      .with(endpoint, {
+        basic_auth: {
+          password: basic_auth['password'],
+          username: basic_auth['username'],
+        },
+        headers: headers,
+      })
       .and_return({last: oracle_value}.to_json)
   end
 
@@ -34,7 +44,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
 
     it "creates an oracle and updates it on schedule until the deadline is passed" do
       expect {
-        post '/assignments/', assignment_params, headers
+        post '/assignments/', assignment_params, coordinator_headers
       }.to change {
         coordinator.assignments.count
       }.by(+1)
@@ -87,7 +97,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         .with("#{coordinator_url}/oracles", instance_of(Hash))
 
       expect {
-        post '/assignments/', assignment_params, headers
+        post '/assignments/', assignment_params, coordinator_headers
       }.to change {
         coordinator.assignments.count
       }.by(+1)

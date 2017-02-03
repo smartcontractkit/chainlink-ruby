@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170131000517) do
+ActiveRecord::Schema.define(version: 20170203050305) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -234,6 +234,9 @@ ActiveRecord::Schema.define(version: 20170131000517) do
     t.string   "request_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "headers_json"
+    t.string   "basic_auth_password"
+    t.string   "basic_auth_username"
   end
 
   create_table "key_pairs", force: :cascade do |t|
