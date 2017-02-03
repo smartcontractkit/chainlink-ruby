@@ -10,7 +10,7 @@ describe HttpRetriever, type: :model do
 
       before do
         expect(HTTParty).to receive(:get)
-          .with(url)
+          .with(url, {})
           .and_return(double body: response_body)
       end
 
@@ -34,7 +34,7 @@ describe HttpRetriever, type: :model do
     context "when the response is unsuccessfully retrieved" do
       before do
         expect(HTTParty).to receive(:get)
-          .with(url)
+          .with(url, {})
           .and_raise
       end
 
