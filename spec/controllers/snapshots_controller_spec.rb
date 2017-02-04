@@ -46,6 +46,37 @@ describe SnapshotsController, type: :controller do
       end
     end
 
+    context "when the coordinator is authorized" do
+      let(:snapshot_params) do
+        {
+          assignment_id: assignment.xid
+        }
+      end
+
+      before { coordinator_log_in assignment.coordinator }
+
+      it "creates a snapshot for the assignment" do
+        expect {
+          post :create, snapshot_params
+        }.to change {
+          assignment.snapshots.count
+        }.by(+1)
+
+        expect(response).to be_success
+      end
+
+      it "saves all the parameters passed in" do
+        expect {
+          post :create, snapshot_params
+        }.to change {
+          AssignmentSnapshot.count
+        }.by(+1)
+
+        snapshot = AssignmentSnapshot.last
+        expect(snapshot).not_to be_fulfilled
+      end
+    end
+
     context "when not authorized" do
       it "does NOT create a new record" do
         expect {
