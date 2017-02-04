@@ -71,6 +71,7 @@ describe AssignmentsController, type: :controller do
         expect(response).to be_success
         expect(response_json.xid).to eq(assignment.xid)
         expect(response_json.snapshots.map(&:xid)).to include(snapshot.xid)
+        expect(response_json.subtasks).to be_present
       end
     end
 
