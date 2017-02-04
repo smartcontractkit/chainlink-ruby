@@ -64,7 +64,6 @@
         "schedule": { "$ref": "#/definitions/schedule" }
       },
       "required": [
-        "subtasks",
         "schedule"
       ]
     },
