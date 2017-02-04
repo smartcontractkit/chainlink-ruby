@@ -12,7 +12,11 @@ class AssignmentSchedule < ActiveRecord::Base
   before_validation :set_up, on: :create
 
   scope :in_progress, -> { joins(:assignment).where("assignments.status = ?", Assignment::IN_PROGRESS) }
-  scope :at, -> (minute, hour) { where("minute = ? AND hour = ?", minute.to_s, hour.to_s) }
+  scope :at, -> (minute, hour) {
+    where("minute IN (?) AND hour IN (?)",
+      [minute.to_s, ('0' + minute.to_s), '*'],
+      [hour.to_s, ('0' + hour.to_s), '*'])
+  }
 
   def dayOfMonth=(dom)
     self.day_of_month = dom

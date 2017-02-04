@@ -32,7 +32,7 @@ describe AssignmentsController, type: :controller do
     end
 
     context "when the assignment params are NOT valid" do
-      let(:assignment_params) { assignment_0_1_0_hash assignmentHash: nil }
+      let(:assignment_params) { assignment_1_0_0_hash endAt: nil }
 
       it "returns an unsuccessful status" do
         post :create, assignment_params
@@ -52,6 +52,7 @@ describe AssignmentsController, type: :controller do
         post :create, assignment_params
 
         expect(response_json['errors']).to be_present
+        expect(response_json.errors).to include('End at must be specified')
       end
     end
   end
@@ -70,6 +71,7 @@ describe AssignmentsController, type: :controller do
         expect(response).to be_success
         expect(response_json.xid).to eq(assignment.xid)
         expect(response_json.snapshots.map(&:xid)).to include(snapshot.xid)
+        expect(response_json.subtasks).to be_present
       end
     end
 

@@ -1,7 +1,7 @@
 class AssignmentSerializer < ActiveModel::Serializer
 
   attributes :adapterType, :adapterTypes, :endAt,
-    :parameters, :startAt, :status, :xid
+    :parameters, :subtasks, :startAt, :status, :xid
 
   has_many :snapshots
 
@@ -24,6 +24,10 @@ class AssignmentSerializer < ActiveModel::Serializer
 
   def parameters
     object.subtasks.first.parameters
+  end
+
+  def subtasks
+    object.initialization_details
   end
 
 end

@@ -31,4 +31,30 @@ describe AssignmentSchedule, type: :model do
       }.from(nil).to('*')
     end
   end
+
+  describe ".at" do
+    let!(:hour) { 17 }
+    let!(:minute) { 8 }
+    let!(:any_time) { factory_create :assignment_schedule, minute: '*', hour: '*' }
+    let!(:any_minute) { factory_create :assignment_schedule, minute: '*', hour: hour }
+    let!(:any_hour) { factory_create :assignment_schedule, minute: minute, hour: '*' }
+    let!(:exact_time) { factory_create :assignment_schedule, minute: minute, hour: hour }
+    let!(:padded_time) { factory_create :assignment_schedule, minute: ('0' + minute.to_s), hour: ('0' + hour.to_s) }
+    let!(:exact_time_off_minute) { factory_create :assignment_schedule, minute: (minute + 1), hour: hour }
+    let!(:exact_time_off_hour) { factory_create :assignment_schedule, minute: minute, hour: (hour + 1) }
+    let!(:off_time) { factory_create :assignment_schedule, minute: (minute - 1), hour: (hour + 1)}
+
+    it "matches each padding and catch-alls" do
+      list = AssignmentSchedule.at(minute, hour)
+
+      expect(list).to include any_time
+      expect(list).to include any_minute
+      expect(list).to include any_hour
+      expect(list).to include exact_time
+      expect(list).to include padded_time
+      expect(list).not_to include exact_time_off_minute
+      expect(list).not_to include exact_time_off_hour
+      expect(list).not_to include off_time
+    end
+  end
 end

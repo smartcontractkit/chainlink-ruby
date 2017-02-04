@@ -109,12 +109,14 @@ class AssignmentRequest < ActiveRecord::Base
     @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
   end
 
-  def pipeline_params
-    assignment_params[:pipeline] || [assignment_params]
+  def subtask_params
+    assignment_params[:subtasks] ||
+      assignment_params[:pipeline] ||
+      [assignment_params]
   end
 
   def subtasks
-    @subtasks ||= pipeline_params.map.with_index do |adapter_params, index|
+    @subtasks ||= subtask_params.map.with_index do |adapter_params, index|
       Subtask.new({
         adapter: build_adapter(adapter_params),
         index: index,

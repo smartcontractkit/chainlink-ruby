@@ -18,7 +18,7 @@
       "type": "array",
       "items": { "$ref": "#/definitions/signature" }
     },
-    "supportingInformation": {
+    "supportingInfo": {
       "description": "extra information provided beyond the protocol",
       "type": "object"
     },
@@ -29,8 +29,6 @@
   },
   "required": [
     "assignment",
-    "assignmentHash",
-    "signatures",
     "version"
   ],
   "definitions": {
@@ -58,7 +56,7 @@
           "type": "string"
         },
         "fees": { "$ref": "#/definitions/fees" },
-        "pipeline": {
+        "subtasks": {
           "description": "series of adapters that feed into each other",
           "type": "array",
           "items": { "$ref": "#/definitions/adapter" }
@@ -66,7 +64,6 @@
         "schedule": { "$ref": "#/definitions/schedule" }
       },
       "required": [
-        "pipeline",
         "schedule"
       ]
     },
