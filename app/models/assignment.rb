@@ -90,6 +90,10 @@ class Assignment < ActiveRecord::Base
   end
 
   def start_at_before_end_at
+    if end_at == Time.at(0)
+      errors.add(:end_at, "must be specified")
+    end
+
     if start_at.to_i >= end_at.to_i
       errors.add(:start_at, "must be before end at")
     end

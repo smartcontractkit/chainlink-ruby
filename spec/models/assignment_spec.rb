@@ -1,6 +1,9 @@
 describe Assignment, type: :model do
 
   describe "validations" do
+    it { is_expected.to have_valid(:end_at).when(Time.at(1), Time.now) }
+    it { is_expected.not_to have_valid(:end_at).when(0, nil, Time.at(0)) }
+
     it { is_expected.to have_valid(:subtasks).when([factory_build(:subtask, assignment: nil)]) }
     it { is_expected.not_to have_valid(:subtasks).when([]) }
 
