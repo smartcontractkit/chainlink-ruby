@@ -2,10 +2,17 @@ class SnapshotsController < ExternalAdapterController
 
   ASSIGNMENT_NAME = "%%!ASSIGNMENT_NAME!%%"
 
+  skip_before_action :set_adapter, only: [:create]
+  before_filter :set_adapter_or_coordinator, only: [:create]
   before_filter :ensure_snapshot, only: [:update]
 
   def create
-    snapshot = assignment.snapshots.create(snapshot_params)
+    if adapter.present?
+      snapshot = assignment.snapshots.create(snapshot_params)
+    elsif coordinator.present?
+      snapshot = assignment.check_status
+    end
+
     success_response snapshot
   end
 
@@ -23,7 +30,7 @@ class SnapshotsController < ExternalAdapterController
   attr_reader :snapshot
 
   def assignment
-    @assignment ||= adapter.assignments.find_by xid: assignment_xid
+    @assignment ||= related.assignments.find_by xid: assignment_xid
   end
 
   def snapshot_params
@@ -50,8 +57,14 @@ class SnapshotsController < ExternalAdapterController
   end
 
   def assignment_xid
-    axid = params[:assignment_xid] || params[:assignmentXID]
+    axid = params[:assignment_xid] ||
+      params[:assignmentXID] ||
+      params[:assignment_id]
     axid.gsub(/=.*/, '') if axid
+  end
+
+  def related
+    @related ||= (adapter || coordinator)
   end
 
 end
