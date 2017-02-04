@@ -10,7 +10,9 @@ class AssignmentsController < ExternalAdapterController
     if req.save
       success_response req
     else
-      error_response req.errors.full_messages
+      errors = req.errors.full_messages
+      errors += req.assignment.errors.full_messages
+      error_response errors
     end
   end
 
