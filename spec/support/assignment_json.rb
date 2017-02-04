@@ -41,7 +41,7 @@ module SpecHelpers
     description = options.fetch(:description, Faker::Lorem.paragraph)
     fees = options.fetch(:fees, nil)
     schedule = schedule_hash(options)
-    pipeline = options.fetch(:pipeline, [
+    subtasks = options.fetch(:subtasks, [
       {
         adapterType: input_type,
         adapterParams: input_params,
@@ -53,7 +53,7 @@ module SpecHelpers
     ])
 
     {
-      pipeline: pipeline,
+      subtasks: subtasks,
       description: description,
       fees: fees,
       schedule: schedule,

@@ -78,7 +78,7 @@ describe AssignmentSnapshot, type: :model do
         }.from(nil).to(assignment.subtasks.first.index)
       end
 
-      it "starts the adapter snapshot pipeline process" do
+      it "starts the adapter snapshot subtask processes" do
         expect_any_instance_of(AdapterSnapshot).to receive(:start) do |adapter_snapshot|
           expect(adapter_snapshot).to eq(snapshot.current_adapter_snapshot)
         end
