@@ -13,7 +13,7 @@ module Ethereum
     has_one :template, through: :ethereum_contract
     has_many :writes, class_name: 'EthereumOracleWrite', as: :oracle
 
-    validates :address, format: { with: /\A0x[0-9a-f]{40}\z/, allow_nil: true }
+    validates :address, format: { with: /\A0x[0-9a-f]{40}\z/i, allow_nil: true }
     validates :update_address, format: { with: /\A(?:0x)?[0-9a-f]*\z/, allow_nil: true }
 
     before_validation :set_up_from_body, on: :create
