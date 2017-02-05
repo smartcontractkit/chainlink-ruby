@@ -1,7 +1,7 @@
 describe Ethereum::Bytes32Oracle do
 
   describe "validations" do
-    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
+    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", "0x#{SecureRandom.hex(20).upcase}", nil) }
     it { is_expected.not_to have_valid(:address).when('', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
 
     it { is_expected.to have_valid(:update_address).when(SecureRandom.hex(20), SecureRandom.hex(1), "0x#{SecureRandom.hex}", '0x', '', nil) }
