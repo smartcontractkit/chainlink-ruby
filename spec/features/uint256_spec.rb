@@ -5,24 +5,20 @@ describe "assignment with a schema version 1.0.0", type: :request do
   let(:coordinator) { factory_create :coordinator, url: coordinator_url }
   let(:coordinator_headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
   let(:endpoint) { "https://example.com/api/data" }
-  let(:oracle_value) { "790.28" }
-  let(:input_type) { 'httpGetJSON' }
+  let(:oracle_value) { "79028.43" }
   let(:basic_auth) { {"username" => "steve", "password" => "rules"} }
   let(:headers) { {"App-Stuff" => "in formats"} }
-  let(:input_params) do
-    {
-      basicAuth: basic_auth,
-      fields: ['last'],
-      headers: headers,
-      url: endpoint,
-    }
-  end
   let(:assignment_params) do
     assignment_1_0_0_json({
-      input_params: input_params,
-      input_type: input_type,
+      input_params: {
+        basicAuth: basic_auth,
+        fields: ['last'],
+        headers: headers,
+        url: endpoint,
+      },
+      input_type: 'httpGetJSON',
       output_params: output_params,
-      output_type: output_type,
+      output_type: Ethereum::Uint256Oracle::SCHEMA_NAME,
     })
   end
 
@@ -39,7 +35,6 @@ describe "assignment with a schema version 1.0.0", type: :request do
   end
 
   context "when the address and method are NOT specified" do
-    let(:output_type) { 'ethereumBytes32' }
     let(:output_params) { {} }
 
     it "creates an oracle and updates it on schedule until the deadline is passed" do
@@ -67,8 +62,8 @@ describe "assignment with a schema version 1.0.0", type: :request do
       expect {
         wait_for_ethereum_confirmation oracle.writes.last.txid
       }.to change {
-        get_oracle_utf8 oracle
-      }.from('').to(oracle_value)
+        get_oracle_uint oracle
+      }.from(0).to(oracle_value.to_i)
 
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))
@@ -78,7 +73,6 @@ describe "assignment with a schema version 1.0.0", type: :request do
   end
 
   context "when the address and method are specified" do
-    let(:output_type) { 'ethereumBytes32' }
     let(:oracle_address) { ethereum_address }
     let(:oracle_method) { SecureRandom.hex(4) }
     let(:output_params) do
@@ -111,7 +105,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         hex_data = bin_to_hex tx.data
         expect(hex_data).to match(/\A#{oracle_method}/)
         hex_payload = hex_data.gsub(/\A#{oracle_method}/, '')
-        expect(ethereum.hex_to_utf8 hex_payload).to eq(oracle_value)
+        expect(ethereum.hex_to_int hex_payload).to eq(oracle_value.to_i)
       end
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))

@@ -75,11 +75,19 @@ module SpecHelpers
 
   def get_oracle_value(oracle)
     contract = oracle.ethereum_contract
-    result_hex = ethereum.call({
+    ethereum.call({
       to: oracle.contract_address,
       data: contract.template.read_address,
       gas: 2_000_000,
     }).result
-    ethereum.hex_to_utf8(result_hex)
   end
+
+  def get_oracle_utf8(oracle)
+    ethereum.hex_to_utf8 get_oracle_value(oracle)
+  end
+
+  def get_oracle_uint(oracle)
+    ethereum.hex_to_int get_oracle_value(oracle)
+  end
+
 end
