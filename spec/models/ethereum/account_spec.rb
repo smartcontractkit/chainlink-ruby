@@ -2,7 +2,7 @@ describe Ethereum::Account, type: :model do
   describe "validations" do
     let(:old_account) { Ethereum::Account.create address: ethereum_address }
 
-    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
+    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", "0x#{SecureRandom.hex(20).upcase}") }
     it { is_expected.not_to have_valid(:address).when(old_account.address, '', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
   end
 
