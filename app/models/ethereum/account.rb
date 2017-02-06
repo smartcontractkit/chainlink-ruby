@@ -8,7 +8,7 @@ module Ethereum
     has_one :key_pair, as: :owner
     has_many :ethereum_transactions, foreign_key: :account_id
 
-    validates :address, format: /\A0x[0-9a-f]{40}\z/, uniqueness: true
+    validates :address, format: /\A0x[0-9a-f]{40}\z/i, uniqueness: true
 
     before_validation :generate_key_pair, on: :create, unless: :address
 

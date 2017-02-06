@@ -55,7 +55,7 @@ describe "assignment creation and performance", type: :request do
       run_delayed_jobs
       wait_for_ethereum_confirmation oracle.writes.last.txid
     }.to change {
-      get_oracle_value oracle
+      get_oracle_utf8 oracle
     }.from('').to(oracle_value)
   end
 end

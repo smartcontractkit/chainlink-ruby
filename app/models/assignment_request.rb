@@ -86,25 +86,6 @@ class AssignmentRequest < ActiveRecord::Base
     Time.at time.to_i
   end
 
-  def build_adapter(params)
-    return unless params && type = params[:adapterType]
-
-    adapter_params = params[:adapterParams] || assignment_body
-    if adapter = ExternalAdapter.for_type(type)
-      adapter
-    elsif [CustomExpectation::SCHEMA_NAME, 'custom'].include? type
-      CustomExpectation.new(body: adapter_params)
-    elsif [EthereumOracle::SCHEMA_NAME, 'oracle'].include? type
-      EthereumOracle.new(body: adapter_params)
-    elsif [JsonAdapter::SCHEMA_NAME].include? type
-      JsonAdapter.new(body: adapter_params)
-    elsif [Ethereum::Bytes32Oracle::SCHEMA_NAME].include? type
-      Ethereum::Bytes32Oracle.new(body: adapter_params)
-    else
-      raise "no adapter type found for #{type}"
-    end
-  end
-
   def schedule_params
     @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
   end
@@ -116,11 +97,14 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def subtasks
-    @subtasks ||= subtask_params.map.with_index do |adapter_params, index|
+    @subtasks ||= subtask_params.map.with_index do |params, index|
+      next unless params && type = params[:adapterType]
+      adapter_params = params[:adapterParams] || assignment_body
+
       Subtask.new({
-        adapter: build_adapter(adapter_params),
+        adapter: AdapterBuilder.perform(type, adapter_params),
         index: index,
-        parameters: adapter_params[:adapterParams],
+        parameters: adapter_params,
       })
     end
   end
