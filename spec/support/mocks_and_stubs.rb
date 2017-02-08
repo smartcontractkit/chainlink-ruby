@@ -30,15 +30,20 @@ module MockAndStubHelpers
       allow_any_instance_of(Ethereum::Client).to receive(:get_transaction_count)
         .and_return(rand 100_000)
 
-      allow(HttpRetriever).to receive(:get)
-        .and_return(stubbed_response)
-
       allow(ExternalAdapterClient).to receive(:post)
         .and_return(http_response body: stubbed_response)
       allow(ExternalAdapterClient).to receive(:get)
         .and_return(http_response body: stubbed_response)
       allow(ExternalAdapterClient).to receive(:delete)
         .and_return(http_response body: stubbed_response)
+
+      allow(HttpRetriever).to receive(:get)
+        .and_return(stubbed_response)
+
+      allow(WeiWatchersClient).to receive(:get)
+        .and_return(stubbed_response)
+      allow(WeiWatchersClient).to receive(:post)
+        .and_return(stubbed_response)
     end
 
     config.around bitcoin_network: :bitcoin do |example|
