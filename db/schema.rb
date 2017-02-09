@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 20170213184959) do
     t.string   "read_address"
     t.string   "write_address"
     t.string   "adapter_name"
+    t.boolean  "use_logs",         default: false
   end
 
   create_table "ethereum_contracts", force: :cascade do |t|
