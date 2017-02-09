@@ -196,6 +196,14 @@ ActiveRecord::Schema.define(version: 20170213184959) do
     t.string   "update_address"
     t.integer  "ethereum_account_id"
     t.integer  "result_multiplier"
+  end
+
+  create_table "ethereum_log_subscriptions", force: :cascade do |t|
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "account"
+    t.string   "xid"
+    t.datetime "end_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

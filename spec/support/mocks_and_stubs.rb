@@ -43,7 +43,7 @@ module MockAndStubHelpers
       allow(WeiWatchersClient).to receive(:get)
         .and_return(stubbed_response)
       allow(WeiWatchersClient).to receive(:post)
-        .and_return(stubbed_response)
+        .and_return(http_response body: {xid: SecureRandom.uuid}.to_json)
     end
 
     config.around bitcoin_network: :bitcoin do |example|
