@@ -114,14 +114,17 @@
           "description": "what day of the week to run on",
           "type": "string"
         },
+        "runAt": {
+          "description": "collection of specifict times to gather snapshots",
+          "type": "array",
+          "items": { "type": "string" }
+        },
         "startAt": {
           "description": "time to start assignment, defaults to time received if not otherwise noted",
           "type": "string"
         }
       },
-      "required": [
-        "endAt"
-      ]
+      "required": []
     },
     "signature": {
       "description": "signature",

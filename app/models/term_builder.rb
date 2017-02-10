@@ -33,7 +33,7 @@ class TermBuilder
     :outcomes, :schedule, :start_time, :type
 
   def end_at
-    Time.at body.expected.deadline.to_i
+    @end_at ||= Time.at body.expected.deadline.to_i
   end
 
   def outcome_for(result, outcome_body)
@@ -76,9 +76,11 @@ class TermBuilder
 
     @schedule = expectation_body.delete(:schedule)
     @schedule ||= {
-      minute: '0',
       hour: ([CustomExpectation::SCHEMA_NAME, 'custom'].include?(type) ? '*' : '0'),
+      minute: '0',
     }
+    @schedule[:endAt] ||= end_at.to_i.to_s
+    @schedule
   end
 
 end

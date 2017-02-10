@@ -41,6 +41,9 @@ class AssignmentSchedule < ActiveRecord::Base
     self.end_at = Time.at time.to_i
   end
 
+  def runAt=(_)
+  end
+
 
   private
 
