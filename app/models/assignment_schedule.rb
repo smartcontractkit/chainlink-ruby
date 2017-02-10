@@ -8,6 +8,9 @@ class AssignmentSchedule < ActiveRecord::Base
   validates :day_of_month, presence: true
   validates :month_of_year, presence: true
   validates :day_of_week, presence: true
+  validates :end_at, presence: true
+  validates :start_at, presence: true
+  validate :start_at_before_end_at
 
   before_validation :set_up, on: :create
 
@@ -30,6 +33,14 @@ class AssignmentSchedule < ActiveRecord::Base
     self.day_of_week = dow
   end
 
+  def startAt=(time)
+    self.start_at = Time.at time.to_i
+  end
+
+  def endAt=(time)
+    self.end_at = Time.at time.to_i
+  end
+
 
   private
 
@@ -37,6 +48,19 @@ class AssignmentSchedule < ActiveRecord::Base
     self.day_of_month ||= '*'
     self.month_of_year ||= '*'
     self.day_of_week ||= '*'
+    self.start_at ||= Time.now
+    self.end_at ||= assignment.try(:end_at)
+  end
+
+
+  def start_at_before_end_at
+    if end_at == Time.at(0)
+      errors.add(:end_at, "must be specified")
+    end
+
+    if start_at.to_i >= end_at.to_i
+      errors.add(:start_at, "must be before end at")
+    end
   end
 
 end

@@ -14,6 +14,18 @@ describe AssignmentSchedule, type: :model do
     it { is_expected.to have_valid(:month_of_year).when('0', '6', '*', nil) }
 
     it { is_expected.to have_valid(:day_of_week).when('0', '6', '*', nil) }
+
+    it { is_expected.to have_valid(:end_at).when(Time.now) }
+    it { is_expected.not_to have_valid(:end_at).when(nil) }
+
+    context "when the start date is before the end date" do
+      it "is not valid" do
+        schedule = AssignmentSchedule.new start_at: 1.day.from_now, end_at: 1.day.ago
+
+        expect(schedule).not_to be_valid
+        expect(schedule.errors.full_messages).to include("Start at must be before end at")
+      end
+    end
   end
 
   describe "on create" do

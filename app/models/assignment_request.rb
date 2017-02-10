@@ -87,7 +87,11 @@ class AssignmentRequest < ActiveRecord::Base
   end
 
   def schedule_params
-    @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
+    return @schedule_params if @scheduled_params.present?
+
+    @schedule_params = @body[:schedule]
+    @schedule_params ||= @body[:assignment] && @body[:assignment][:schedule]
+    @schedule_params ||= {minute: '0', hour: '0'}
   end
 
   def subtask_params

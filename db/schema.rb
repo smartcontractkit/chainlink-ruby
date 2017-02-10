@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203050305) do
+ActiveRecord::Schema.define(version: 20170210180930) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 20170203050305) do
     t.string   "day_of_week"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "start_at"
+    t.datetime "end_at"
   end
 
   create_table "assignment_snapshots", force: :cascade do |t|
