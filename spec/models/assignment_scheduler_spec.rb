@@ -1,9 +1,10 @@
 describe AssignmentScheduler, type: :model do
-  describe "#perform" do
+  describe "#queue_recurring_snapshots" do
     before { Timecop.freeze }
     after { Timecop.return }
 
     let(:now) { Time.now }
+
     let!(:current1) { factory_create :assignment_schedule, minute: now.min, hour: now.hour }
     let!(:current2) { factory_create :assignment_schedule, minute: now.min, hour: '*' }
     let!(:current3) do
@@ -41,7 +42,7 @@ describe AssignmentScheduler, type: :model do
         good_list -= [id]
       end
 
-      AssignmentScheduler.perform
+      AssignmentScheduler.queue_recurring_snapshots now.to_i
 
       expect(good_list.size).to eq(0)
     end
