@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170210180930) do
+ActiveRecord::Schema.define(version: 20170210205524) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -41,6 +41,14 @@ ActiveRecord::Schema.define(version: 20170210180930) do
     t.string   "body_hash"
     t.text     "body_json"
     t.string   "signature"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "assignment_scheduled_updates", force: :cascade do |t|
+    t.integer  "assignment_id"
+    t.datetime "run_at"
+    t.boolean  "scheduled",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
