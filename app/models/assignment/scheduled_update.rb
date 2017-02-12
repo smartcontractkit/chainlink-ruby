@@ -5,4 +5,6 @@ class Assignment::ScheduledUpdate < ActiveRecord::Base
   validates :assignment, presence: true
   validates :run_at, presence: true
 
+  scope :ready, -> (time = Time.now) { where("scheduled = false AND run_at <= ?", time) }
+
 end
