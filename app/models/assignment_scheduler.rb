@@ -20,7 +20,9 @@ class AssignmentScheduler
 
     ids.each do |id|
       update = Assignment::ScheduledUpdate.find(id)
-      AssignmentScheduler.delay.check_status(update.assignment_id)
+
+      AssignmentScheduler.delay(run_at: update.run_at)
+        .check_status(update.assignment_id)
       update.update_attributes scheduled: true
     end
   end

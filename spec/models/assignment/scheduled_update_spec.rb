@@ -14,6 +14,8 @@ describe Assignment::ScheduledUpdate do
 
     subject(:ready) { Assignment::ScheduledUpdate.ready }
     let!(:current) { factory_create :assignment_scheduled_update, run_at: Time.now, scheduled: false }
+    let!(:in_buffer) { factory_create :assignment_scheduled_update, run_at: 60.seconds.from_now, scheduled: false }
+    let!(:out_of_buffer) { factory_create :assignment_scheduled_update, run_at: 61.seconds.from_now, scheduled: false }
     let!(:just_passed) { factory_create :assignment_scheduled_update, run_at: 1.second.ago, scheduled: false }
     let!(:far_passed) { factory_create :assignment_scheduled_update, run_at: 1.day.ago, scheduled: false }
     let!(:future) { factory_create :assignment_scheduled_update, run_at: 1.day.from_now, scheduled: false }
@@ -23,8 +25,11 @@ describe Assignment::ScheduledUpdate do
 
     it "returns unscheduled jobs at or past their deadline" do
       expect(ready).to include(current)
+      expect(ready).to include(in_buffer)
       expect(ready).to include(just_passed)
       expect(ready).to include(far_passed)
+
+      expect(ready).not_to include(out_of_buffer)
       expect(ready).not_to include(completed)
       expect(ready).not_to include(current_completed)
       expect(ready).not_to include(premature)

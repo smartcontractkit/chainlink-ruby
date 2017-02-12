@@ -50,7 +50,8 @@ describe AssignmentScheduler, type: :model do
 
   describe ".queue_scheduled_snapshots" do
     let(:now) { Time.now }
-    let!(:ready) { factory_create :assignment_scheduled_update }
+    let(:ready) { factory_create :assignment_scheduled_update }
+    let(:delayed) { double AssignmentScheduler }
 
     before do
       allow(Assignment::ScheduledUpdate).to receive_message_chain(:ready, :pluck)
@@ -58,7 +59,11 @@ describe AssignmentScheduler, type: :model do
     end
 
     it "only queues jobs currently matching the hour and minute" do
-      allow_any_instance_of(AssignmentScheduler).to receive_message_chain(:delay, :perform)
+      allow(AssignmentScheduler).to receive(:delay)
+        .with(run_at: ready.run_at)
+        .and_return(delayed)
+
+      expect(delayed).to receive(:check_status)
         .with(ready.assignment_id)
 
       AssignmentScheduler.queue_scheduled_snapshots now.to_i
