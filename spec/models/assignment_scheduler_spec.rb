@@ -48,6 +48,31 @@ describe AssignmentScheduler, type: :model do
     end
   end
 
+  describe ".queue_scheduled_snapshots" do
+    let(:now) { Time.now }
+    let!(:ready) { factory_create :assignment_scheduled_update }
+
+    before do
+      allow(Assignment::ScheduledUpdate).to receive_message_chain(:ready, :pluck)
+        .and_return([ready.id])
+    end
+
+    it "only queues jobs currently matching the hour and minute" do
+      allow_any_instance_of(AssignmentScheduler).to receive_message_chain(:delay, :perform)
+        .with(ready.assignment_id)
+
+      AssignmentScheduler.queue_scheduled_snapshots now.to_i
+    end
+
+    it "marks the update as scheduled" do
+      expect {
+        AssignmentScheduler.queue_scheduled_snapshots now.to_i
+      }.to change {
+        ready.reload.scheduled?
+      }.from(false).to(true)
+    end
+  end
+
   describe "#check_status" do
     let!(:assignment) { factory_create :assignment }
 

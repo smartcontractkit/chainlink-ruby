@@ -2,6 +2,7 @@ class AssignmentScheduler
 
   def self.perform
     timestamp = Time.now.to_i
+    delay.queue_scheduled_snapshots timestamp
     delay.queue_recurring_snapshots timestamp
   end
 
@@ -11,6 +12,17 @@ class AssignmentScheduler
     ids += AssignmentSchedule.in_progress.at(time.min, '*').pluck(:assignment_id)
 
     ids.uniq.each {|id| AssignmentScheduler.delay.check_status(id) }
+  end
+
+  def self.queue_scheduled_snapshots(timestamp)
+    time = Time.at(timestamp)
+    ids = Assignment::ScheduledUpdate.ready(time).pluck(:id)
+
+    ids.each do |id|
+      update = Assignment::ScheduledUpdate.find(id)
+      AssignmentScheduler.delay.check_status(update.assignment_id)
+      update.update_attributes scheduled: true
+    end
   end
 
   def self.check_status(assignment_id)
