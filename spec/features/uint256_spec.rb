@@ -147,7 +147,7 @@ describe "Ethereum oracle with an uint256 value", type: :request do
         hex_data = bin_to_hex tx.data
         expect(hex_data).to match(/\A#{oracle_method}/)
         hex_payload = hex_data.gsub(/\A#{oracle_method}/, '')
-        expect(ethereum.hex_to_int hex_payload).to eq(-1 * api_value.to_i)
+        expect(ethereum.hex_to_uint hex_payload).to eq(-1 * api_value.to_i)
       end
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))

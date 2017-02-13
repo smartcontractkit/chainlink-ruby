@@ -12,7 +12,7 @@ class HealthCheck
   def self.eth_external_block_height
     if url = ENV['ETHEREUM_EXTERNAL_HEIGHT_URL']
       json = JSON.parse(HTTParty.get(url).body)
-      Ethereum::Client.new.hex_to_int(json['result'])
+      Ethereum::Client.new.hex_to_uint(json['result'])
     end
   end
 

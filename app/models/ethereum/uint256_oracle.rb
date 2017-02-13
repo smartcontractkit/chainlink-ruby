@@ -92,7 +92,7 @@ module Ethereum
     end
 
     def format_hex_value(value)
-      Ethereum::Client.new.format_int_to_hex value
+      Ethereum::Client.new.format_uint_to_hex value
     end
 
   end

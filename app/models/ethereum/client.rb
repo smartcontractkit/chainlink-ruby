@@ -15,7 +15,7 @@ class Ethereum::Client
   end
 
   def account_balance(account, tag = 'latest')
-    hex_to_int epost('eth_getBalance', [to_eth_hex(account), tag]).result
+    hex_to_uint epost('eth_getBalance', [to_eth_hex(account), tag]).result
   end
 
   def client_version
@@ -23,11 +23,11 @@ class Ethereum::Client
   end
 
   def gas_price
-    hex_to_int epost('eth_gasPrice').result
+    hex_to_uint epost('eth_gasPrice').result
   end
 
   def current_block_height(options = {})
-    hex_to_int epost('eth_blockNumber').result
+    hex_to_uint epost('eth_blockNumber').result
   end
 
   def create_transaction(options)
@@ -67,7 +67,7 @@ class Ethereum::Client
   end
 
   def get_transaction_count(account, tag = 'pending')
-    hex_to_int epost('eth_getTransactionCount', [account, tag]).result
+    hex_to_uint epost('eth_getTransactionCount', [account, tag]).result
   end
 
   def get_block(hash, full = false)
@@ -83,7 +83,7 @@ class Ethereum::Client
   end
 
   def hex_to_bytes32(hex)
-    hex.gsub(/\A0x/,'').scan(/.{2}/).map{|byte| byte.hex}.pack("C*").force_encoding('utf-8')
+    sub_hex_prefix(hex).scan(/.{2}/).map{|byte| byte.hex}.pack("C*").force_encoding('utf-8')
   end
 
   def format_string_hex(input, base_offset = 32)
@@ -103,8 +103,9 @@ class Ethereum::Client
     utf8_to_hex(string[0...32]).ljust(64, '0')
   end
 
-  def hex_to_int(hex)
-    hex.gsub(/\A0x/,'').to_i(16) if hex.present?
+  def hex_to_uint(hex)
+    return if hex.blank?
+    sub_hex_prefix(hex).to_i(16)
   end
 
   def solidity
@@ -116,15 +117,15 @@ class Ethereum::Client
   end
 
   def format_address_hex(address)
-    address.to_s.gsub(/^0x/,'').rjust(64, "0")
+    sub_hex_prefix(address).rjust(64, "0")
   end
 
   def format_hex_array(array_of_hex)
     format_int_to_hex(array_of_hex.size) + array_of_hex.join
   end
 
-  def format_int_to_hex(integer, bytes = 32)
-    integer.to_s(16).rjust(2 * bytes, '0')
+  def format_uint_to_hex(integer, bytes = 32)
+    integer.abs.to_s(16).rjust(2 * bytes, '0')
   end
 
   def get_code(address, tag = 'pending')
@@ -165,6 +166,10 @@ class Ethereum::Client
 
   def hex_gas_price(price)
     to_eth_hex(price || gas_price)
+  end
+
+  def sub_hex_prefix(hex)
+    hex.to_s.gsub(/\A0x/,'')
   end
 
 end
