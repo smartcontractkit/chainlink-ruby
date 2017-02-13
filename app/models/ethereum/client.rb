@@ -108,6 +108,12 @@ class Ethereum::Client
     sub_hex_prefix(hex).to_i(16)
   end
 
+  def hex_to_int(hex, size = 256)
+    return if hex.blank?
+    value = sub_hex_prefix(hex).to_i(16)
+    value >= 2**(size-1) ? (value - 2**size) : value
+  end
+
   def solidity
     @solidity ||= SolidityClient.new
   end
@@ -124,8 +130,13 @@ class Ethereum::Client
     format_int_to_hex(array_of_hex.size) + array_of_hex.join
   end
 
-  def format_uint_to_hex(integer, bytes = 32)
-    integer.abs.to_s(16).rjust(2 * bytes, '0')
+  def format_uint_to_hex(integer, bits = 256)
+    integer.abs.to_s(16).rjust(2 * bits_to_bytes(bits), '0')
+  end
+
+  def format_int_to_hex(integer, bits = 256)
+    value = integer < 0 ? (integer + 2**bits) : integer
+    format_uint_to_hex(value, bits)
   end
 
   def get_code(address, tag = 'pending')
@@ -170,6 +181,11 @@ class Ethereum::Client
 
   def sub_hex_prefix(hex)
     hex.to_s.gsub(/\A0x/,'')
+  end
+
+  def bits_to_bytes(bits)
+    raise "Not a number of bits that can fit with bytes" unless bits % 8 == 0
+    bits / 8
   end
 
 end

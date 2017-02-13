@@ -155,4 +155,24 @@ describe Ethereum::Client, type: :model do
       expect(response.txid).to eq(txid)
     end
   end
+
+  describe "#hex_to_int" do
+    it "returns the correctly signed parsed numbers" do
+      expect(ethereum.hex_to_int '8' + ('0'*63)).to eq((2**255) * -1)
+      expect(ethereum.hex_to_int ('f' * 64)).to eq(-1)
+      expect(ethereum.hex_to_int ('0' * 64)).to eq(0)
+      expect(ethereum.hex_to_int ('0' * 63) + '1').to eq(1)
+      expect(ethereum.hex_to_int '7' + ('f'*63)).to eq((2**255) - 1)
+    end
+  end
+
+  describe "#format_int_to_hex" do
+    it "returns the correctly signed parsed numbers" do
+      expect(ethereum.format_int_to_hex (2**255) * -1).to eq('8' + ('0'*63))
+      expect(ethereum.format_int_to_hex -1).to eq('f' * 64)
+      expect(ethereum.format_int_to_hex 0).to eq('0' * 64)
+      expect(ethereum.format_int_to_hex 1).to eq(('0' * 63) + '1')
+      expect(ethereum.format_int_to_hex (2**255) - 1).to eq('7' + ('f' * 63))
+    end
+  end
 end
