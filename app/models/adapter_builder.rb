@@ -17,6 +17,8 @@ class AdapterBuilder
       Ethereum::Bytes32Oracle.new(body: params)
     elsif [Ethereum::Uint256Oracle::SCHEMA_NAME].include? type
       Ethereum::Uint256Oracle.new(body: params)
+    elsif [Ethereum::Int256Oracle::SCHEMA_NAME].include? type
+      Ethereum::Int256Oracle.new(body: params)
     else
       raise "No adapter type found for \"#{type}\""
     end

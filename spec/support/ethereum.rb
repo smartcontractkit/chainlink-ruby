@@ -90,4 +90,8 @@ module SpecHelpers
     ethereum.hex_to_uint get_oracle_value(oracle)
   end
 
+  def get_oracle_int(oracle)
+    ethereum.hex_to_int get_oracle_value(oracle)
+  end
+
 end
