@@ -1,11 +1,11 @@
-describe "assignment with a schema version 1.0.0", type: :request do
+describe "Ethereum oracle with an uint256 value", type: :request do
   before { unstub_ethereum_calls }
 
   let(:coordinator_url) { "https://example.com/api/coordinator" }
   let(:coordinator) { factory_create :coordinator, url: coordinator_url }
   let(:coordinator_headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
   let(:endpoint) { "https://example.com/api/data" }
-  let(:api_value) { "79028.43" }
+  let(:api_value) { "-79028.43" }
   let(:basic_auth) { {"username" => "steve", "password" => "rules"} }
   let(:headers) { {"App-Stuff" => "in formats"} }
   let(:result_multiplier) { nil }
@@ -64,7 +64,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         wait_for_ethereum_confirmation oracle.writes.last.txid
       }.to change {
         get_oracle_uint oracle
-      }.from(0).to(api_value.to_i)
+      }.from(0).to(-1 * api_value.to_i)
 
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))
@@ -75,7 +75,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
     context "when a multiplier is added" do
       let(:output_params) { { resultMultiplier: result_multiplier, } }
       let(:result_multiplier) { '100' }
-      let(:api_value) { "79028.43" }
+      let(:api_value) { "-79028.43" }
       let(:expected_value) { 7902843 }
 
       it "creates an oracle and updates it on schedule until the deadline is passed" do
@@ -147,7 +147,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         hex_data = bin_to_hex tx.data
         expect(hex_data).to match(/\A#{oracle_method}/)
         hex_payload = hex_data.gsub(/\A#{oracle_method}/, '')
-        expect(ethereum.hex_to_int hex_payload).to eq(api_value.to_i)
+        expect(ethereum.hex_to_int hex_payload).to eq(-1 * api_value.to_i)
       end
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))
