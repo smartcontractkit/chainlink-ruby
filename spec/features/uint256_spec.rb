@@ -5,9 +5,10 @@ describe "assignment with a schema version 1.0.0", type: :request do
   let(:coordinator) { factory_create :coordinator, url: coordinator_url }
   let(:coordinator_headers) { coordinator_log_in(coordinator, {"Content-Type" => "application/json"}) }
   let(:endpoint) { "https://example.com/api/data" }
-  let(:oracle_value) { "79028.43" }
+  let(:api_value) { "79028.43" }
   let(:basic_auth) { {"username" => "steve", "password" => "rules"} }
   let(:headers) { {"App-Stuff" => "in formats"} }
+  let(:result_multiplier) { nil }
   let(:assignment_params) do
     assignment_1_0_0_json({
       input_params: {
@@ -15,7 +16,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         fields: ['last'],
         headers: headers,
         url: endpoint,
-      },
+      }.compact,
       input_type: 'httpGetJSON',
       output_params: output_params,
       output_type: Ethereum::Uint256Oracle::SCHEMA_NAME,
@@ -31,7 +32,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         },
         headers: headers,
       })
-      .and_return({last: oracle_value}.to_json)
+      .and_return({last: api_value}.to_json)
   end
 
   context "when the address and method are NOT specified" do
@@ -63,12 +64,53 @@ describe "assignment with a schema version 1.0.0", type: :request do
         wait_for_ethereum_confirmation oracle.writes.last.txid
       }.to change {
         get_oracle_uint oracle
-      }.from(0).to(oracle_value.to_i)
+      }.from(0).to(api_value.to_i)
 
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))
         .and_return(acknowledged_response)
       run_delayed_jobs
+    end
+
+    context "when a multiplier is added" do
+      let(:output_params) { { resultMultiplier: result_multiplier, } }
+      let(:result_multiplier) { '100' }
+      let(:api_value) { "79028.43" }
+      let(:expected_value) { 7902843 }
+
+      it "creates an oracle and updates it on schedule until the deadline is passed" do
+        expect {
+          post '/assignments/', assignment_params, coordinator_headers
+        }.to change {
+          coordinator.assignments.count
+        }.by(+1)
+        assignment = Assignment.find_by xid: response_json['xid']
+        oracle = assignment.adapters.last
+        contract = oracle.ethereum_contract
+        genesis_txid = contract.genesis_transaction.txid
+        wait_for_ethereum_confirmation genesis_txid
+
+        expect(CoordinatorClient).to receive(:patch)
+          .with("#{coordinator_url}/assignments/#{assignment.xid}", instance_of(Hash))
+          .and_return(acknowledged_response)
+
+        expect {
+          run_ethereum_contract_confirmer
+        }.to change {
+          contract.reload.address
+        }.from(nil)
+
+        expect {
+          wait_for_ethereum_confirmation oracle.writes.last.txid
+        }.to change {
+          get_oracle_uint oracle
+        }.from(0).to(expected_value)
+
+        expect(CoordinatorClient).to receive(:post)
+          .with("#{coordinator_url}/snapshots", instance_of(Hash))
+          .and_return(acknowledged_response)
+        run_delayed_jobs
+      end
     end
   end
 
@@ -105,7 +147,7 @@ describe "assignment with a schema version 1.0.0", type: :request do
         hex_data = bin_to_hex tx.data
         expect(hex_data).to match(/\A#{oracle_method}/)
         hex_payload = hex_data.gsub(/\A#{oracle_method}/, '')
-        expect(ethereum.hex_to_int hex_payload).to eq(oracle_value.to_i)
+        expect(ethereum.hex_to_int hex_payload).to eq(api_value.to_i)
       end
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))

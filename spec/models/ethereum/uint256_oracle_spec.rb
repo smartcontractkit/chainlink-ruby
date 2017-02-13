@@ -9,8 +9,7 @@ describe Ethereum::Uint256Oracle do
   end
 
   describe "on create" do
-    let(:assignment) { factory_create :assignment }
-    let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
+    let(:oracle) { factory_build :external_uint256_oracle }
 
     context "when the address exists in the body" do
       let(:oracle) { factory_build :external_uint256_oracle }
@@ -43,6 +42,8 @@ describe Ethereum::Uint256Oracle do
     end
 
     context "when the address does not exist in the body" do
+      let(:assignment) { factory_create :assignment }
+      let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
       let(:oracle) { factory_build :ethereum_uint256_oracle, assignment: assignment }
 
       it "fills in its fields from the given body" do
@@ -75,6 +76,14 @@ describe Ethereum::Uint256Oracle do
         oracle.save
       end
     end
+
+    it "sets the result multiplier to 1 by default" do
+      expect {
+        oracle.save
+      }.to change {
+        oracle.result_multiplier
+      }.from(nil).to(1)
+    end
   end
 
 
@@ -91,6 +100,22 @@ describe Ethereum::Uint256Oracle do
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
       adapter.get_status(snapshot, params)
+    end
+
+    context "when the contract has a result multiplier" do
+      let(:value) { 124312354524.56 }
+      let(:value_multiplied) { 12431235452456 }
+      let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
+      let(:params) { {value: value} }
+      let!(:adapter) { factory_create :ethereum_uint256_oracle, result_multiplier: 100 }
+
+      it "passes the current value and its equivalent hex to the updater" do
+        expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
+          .with(hex_truncated_value, value_multiplied)
+          .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
+
+        adapter.get_status(snapshot, params)
+      end
     end
   end
 

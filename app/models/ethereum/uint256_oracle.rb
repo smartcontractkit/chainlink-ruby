@@ -20,7 +20,8 @@ module Ethereum
 
 
     def get_status(assignment_snapshot, params = {})
-      value = params && params.with_indifferent_access['value'].to_i.abs
+      base_value = params && params.with_indifferent_access['value']
+      value = (base_value.to_f * result_multiplier).round.abs
       write = updater.perform format_hex_value(value), value
       write.snapshot_decorator
     end
@@ -60,7 +61,9 @@ module Ethereum
       if body.present?
         self.address = body['address']
         self.update_address = body['updateAddress'] || body['method']
+        self.result_multiplier = body['resultMultiplier'].to_i if body['resultMultiplier'].present?
       end
+      self.result_multiplier ||= 1
 
       if address.nil?
         build_ethereum_contract adapter_type: SCHEMA_NAME
