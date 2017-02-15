@@ -32,4 +32,16 @@ describe Ethereum::LogSubscription do
       }.from(nil).to(xid)
     end
   end
+
+  describe "#log" do
+    let(:event) { factory_create :ethereum_event }
+    let(:subscription) { factory_create :ethereum_log_subscription }
+
+    it "sends the event to the subscription owner" do
+      expect(subscription.owner).to receive(:event_logged)
+        .with(event)
+
+      subscription.log event
+    end
+  end
 end

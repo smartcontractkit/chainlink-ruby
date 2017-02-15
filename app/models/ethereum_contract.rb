@@ -34,6 +34,10 @@ class EthereumContract < ActiveRecord::Base
     address.present?
   end
 
+  def event_logged(event)
+    owner.event_logged event
+  end
+
 
   private
 

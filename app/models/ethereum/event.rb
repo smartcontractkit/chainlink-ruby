@@ -14,5 +14,14 @@ module Ethereum
     validates :transaction_hash, format: /\A0x[0-9a-f]{64}\z/
     validates :transaction_index, numericality: { greater_than_or_equal_to: 0 }
 
+    after_create :log_event_with_subscription
+
+
+    private
+
+    def log_event_with_subscription
+      log_subscription.delay.log self
+    end
+
   end
 end

@@ -13,6 +13,9 @@ module Ethereum
 
     before_validation :set_up, on: :create
 
+    def log(event)
+      owner.event_logged event
+    end
 
     private
 

@@ -32,4 +32,17 @@ describe Ethereum::Event do
     end
   end
 
+  describe "on create" do
+    let(:event) { factory_build :ethereum_event }
+
+    it "notifies the event of its creation" do
+      expect_any_instance_of(Ethereum::LogSubscription).to receive(:log) do |subscription, event|
+        expect(subscription).to eq(event.log_subscription)
+        expect(event).to eq(event)
+      end
+
+      run_generated_jobs { event.save }
+    end
+  end
+
 end

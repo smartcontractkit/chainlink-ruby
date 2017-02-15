@@ -51,4 +51,8 @@ module AdapterBase
     assignment.end_at
   end
 
+  def event_logged(event)
+    assignment.check_status
+  end
+
 end
