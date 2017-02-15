@@ -3,7 +3,7 @@ require 'ethereum'
 module Ethereum
   class Event < ActiveRecord::Base
 
-    belongs_to :log_subscription
+    belongs_to :log_subscription, inverse_of: :events
 
     validates :address, format: /\A0x[0-9a-f]{40}\z/i
     validates :block_hash, format: /\A0x[0-9a-f]{64}\z/

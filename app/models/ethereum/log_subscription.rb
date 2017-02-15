@@ -4,6 +4,7 @@ module Ethereum
   class LogSubscription < ActiveRecord::Base
 
     belongs_to :owner, polymorphic: true
+    has_many :events, inverse_of: :log_subscription
 
     validates :account, presence: true
     validates :end_at, presence: true

@@ -10,4 +10,8 @@ Rails.application.routes.draw do
   resources :snapshots, only: [:create, :update]
   post 'api/block_cypher/confirmations/:auth_key' => 'block_cypher#tx_confirmation'
 
+  scope path: '/wei_watchers' do
+    post '/events' => 'wei_watchers/events#create'
+  end
+
 end
