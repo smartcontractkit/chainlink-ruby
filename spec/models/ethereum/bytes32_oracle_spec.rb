@@ -177,4 +177,20 @@ describe Ethereum::Bytes32Oracle do
       end
     end
   end
+
+  describe "#event_logged" do
+    let!(:subtask) { factory_create :subtask, adapter: oracle }
+    let(:oracle) { factory_create :ethereum_bytes32_oracle }
+    let(:event) { factory_create :ethereum_event }
+
+    before { subtask.update_attributes ready: true }
+
+    it "creates a new assignment snapshot" do
+      expect {
+        oracle.event_logged event
+      }.to change {
+        oracle.assignment.snapshots.count
+      }.by(+1)
+    end
+  end
 end

@@ -43,4 +43,16 @@ module AdapterBase
     nil
   end
 
+  def start_at
+    assignment.start_at
+  end
+
+  def end_at
+    assignment.end_at
+  end
+
+  def event_logged(event)
+    assignment.check_status
+  end
+
 end

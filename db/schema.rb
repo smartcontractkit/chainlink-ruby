@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170213184959) do
+ActiveRecord::Schema.define(version: 20170215000403) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 20170213184959) do
     t.string   "read_address"
     t.string   "write_address"
     t.string   "adapter_name"
+    t.boolean  "use_logs",         default: false
   end
 
   create_table "ethereum_contracts", force: :cascade do |t|
@@ -190,11 +191,32 @@ ActiveRecord::Schema.define(version: 20170213184959) do
     t.string   "owner_type"
   end
 
+  create_table "ethereum_events", force: :cascade do |t|
+    t.string  "address"
+    t.string  "block_hash"
+    t.integer "block_number"
+    t.text    "data"
+    t.integer "log_index"
+    t.integer "log_subscription_id"
+    t.string  "transaction_hash"
+    t.integer "transaction_index"
+  end
+
   create_table "ethereum_int256_oracles", force: :cascade do |t|
     t.string   "address"
     t.string   "update_address"
     t.integer  "ethereum_account_id"
     t.integer  "result_multiplier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ethereum_log_subscriptions", force: :cascade do |t|
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "account"
+    t.string   "xid"
+    t.datetime "end_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
