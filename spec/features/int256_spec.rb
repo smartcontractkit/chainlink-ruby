@@ -1,4 +1,4 @@
-describe "Ethereum oracle with an uint256 value", type: :request do
+describe "Ethereum oracle with an int256 value", type: :request do
   before { unstub_ethereum_calls }
 
   let(:coordinator_url) { "https://example.com/api/coordinator" }
@@ -19,7 +19,7 @@ describe "Ethereum oracle with an uint256 value", type: :request do
       }.compact,
       input_type: 'httpGetJSON',
       output_params: output_params,
-      output_type: Ethereum::Uint256Oracle::SCHEMA_NAME,
+      output_type: Ethereum::Int256Oracle::SCHEMA_NAME,
     })
   end
 
@@ -63,8 +63,8 @@ describe "Ethereum oracle with an uint256 value", type: :request do
       expect {
         wait_for_ethereum_confirmation oracle.writes.last.txid
       }.to change {
-        get_oracle_uint oracle
-      }.from(0).to(-1 * api_value.to_i)
+        get_oracle_int oracle
+      }.from(0).to(api_value.to_i)
 
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))
@@ -76,7 +76,7 @@ describe "Ethereum oracle with an uint256 value", type: :request do
       let(:output_params) { { resultMultiplier: result_multiplier, } }
       let(:result_multiplier) { '100' }
       let(:api_value) { "-79028.43" }
-      let(:expected_value) { 7902843 }
+      let(:expected_value) { -7902843 }
 
       it "creates an oracle and updates it on schedule until the deadline is passed" do
         expect {
@@ -103,7 +103,7 @@ describe "Ethereum oracle with an uint256 value", type: :request do
         expect {
           wait_for_ethereum_confirmation oracle.writes.last.txid
         }.to change {
-          get_oracle_uint oracle
+          get_oracle_int oracle
         }.from(0).to(expected_value)
 
         expect(CoordinatorClient).to receive(:post)
@@ -147,7 +147,7 @@ describe "Ethereum oracle with an uint256 value", type: :request do
         hex_data = bin_to_hex tx.data
         expect(hex_data).to match(/\A#{oracle_method}/)
         hex_payload = hex_data.gsub(/\A#{oracle_method}/, '')
-        expect(ethereum.hex_to_uint hex_payload).to eq(-1 * api_value.to_i)
+        expect(ethereum.hex_to_int hex_payload).to eq(api_value.to_i)
       end
       expect(CoordinatorClient).to receive(:post)
         .with("#{coordinator_url}/snapshots", instance_of(Hash))

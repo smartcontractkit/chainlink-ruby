@@ -1,7 +1,7 @@
 module SpecHelpers
 
   def run_delayed_jobs
-    Delayed::Job.pluck(:id).each do |dj_id|
+    Delayed::Job.where("run_at < ?", Time.now).pluck(:id).each do |dj_id|
       dj = Delayed::Job.find(dj_id)
       dj.invoke_job
       dj.destroy

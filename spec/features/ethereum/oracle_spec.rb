@@ -72,7 +72,7 @@ describe "Ethereum oracle contract integration" do
         to: uptime_address,
         gas: 2000000,
       }).result
-      result_integer = ethereum.hex_to_int(uptime_result)
+      result_integer = ethereum.hex_to_uint(uptime_result)
       expect(result_integer).to eq(100)
     end
   end

@@ -8,6 +8,7 @@ class Assignment < ActiveRecord::Base
   has_one :term, as: :expectation, inverse_of: :expectation
   has_one :request, class_name: 'AssignmentRequest', inverse_of: :assignment
   has_one :schedule, class_name: 'AssignmentSchedule', inverse_of: :assignment
+  has_many :scheduled_updates, inverse_of: :assignment
   has_many :subtasks, inverse_of: :assignment
   has_many :snapshots, class_name: 'AssignmentSnapshot', inverse_of: :assignment
 

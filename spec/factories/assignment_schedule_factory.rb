@@ -7,6 +7,7 @@ FactoryGirl.define do
     day_of_month { '*' }
     month_of_year { '*' }
     day_of_week { '*' }
+    end_at { 1.year.from_now }
   end
 
 end

@@ -65,7 +65,7 @@ module SpecHelpers
       receipt ||= ethereum.get_transaction_receipt(txid)
 
       if receipt && receipt.blockNumber
-        tx_block_number ||= ethereum.hex_to_int(receipt.blockNumber)
+        tx_block_number ||= ethereum.hex_to_uint(receipt.blockNumber)
         break if (tx_block_number && (block_height.to_i >= tx_block_number.to_i))
       end
       sleep (1 / try_rate)
@@ -87,6 +87,10 @@ module SpecHelpers
   end
 
   def get_oracle_uint(oracle)
+    ethereum.hex_to_uint get_oracle_value(oracle)
+  end
+
+  def get_oracle_int(oracle)
     ethereum.hex_to_int get_oracle_value(oracle)
   end
 

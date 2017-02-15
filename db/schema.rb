@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203050305) do
+ActiveRecord::Schema.define(version: 20170213184959) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -45,6 +45,14 @@ ActiveRecord::Schema.define(version: 20170203050305) do
     t.datetime "updated_at"
   end
 
+  create_table "assignment_scheduled_updates", force: :cascade do |t|
+    t.integer  "assignment_id"
+    t.datetime "run_at"
+    t.boolean  "scheduled",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "assignment_schedules", force: :cascade do |t|
     t.integer  "assignment_id"
     t.string   "minute"
@@ -54,6 +62,8 @@ ActiveRecord::Schema.define(version: 20170203050305) do
     t.string   "day_of_week"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "start_at"
+    t.datetime "end_at"
   end
 
   create_table "assignment_snapshots", force: :cascade do |t|
@@ -180,6 +190,15 @@ ActiveRecord::Schema.define(version: 20170203050305) do
     t.string   "owner_type"
   end
 
+  create_table "ethereum_int256_oracles", force: :cascade do |t|
+    t.string   "address"
+    t.string   "update_address"
+    t.integer  "ethereum_account_id"
+    t.integer  "result_multiplier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ethereum_oracle_writes", force: :cascade do |t|
     t.integer  "oracle_id"
     t.string   "txid"
@@ -217,6 +236,7 @@ ActiveRecord::Schema.define(version: 20170203050305) do
     t.integer  "ethereum_account_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "result_multiplier"
   end
 
   create_table "external_adapters", force: :cascade do |t|

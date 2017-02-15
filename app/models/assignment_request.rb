@@ -39,10 +39,11 @@ class AssignmentRequest < ActiveRecord::Base
     self.assignment ||= build_assignment({
       subtasks: subtasks,
       coordinator: coordinator,
-      end_at: parse_time(schedule[:endAt]),
-      schedule_attributes: schedule_params,
-      start_at: parse_time(schedule[:startAt] || Time.now),
-    })
+      end_at: parse_time(end_at),
+      schedule_attributes: (schedule_params if schedule_params[:endAt]),
+      scheduled_updates: (scheduled_updates if scheduled_updates.any?),
+      start_at: parse_time(schedule_params[:startAt]),
+    }.compact)
   end
 
   def sign_hash
@@ -78,16 +79,16 @@ class AssignmentRequest < ActiveRecord::Base
     body[:assignment]
   end
 
-  def schedule
-    assignment_params[:schedule] if assignment_params.present?
-  end
-
   def parse_time(time)
-    Time.at time.to_i
+    Time.at time.to_i if time.present?
   end
 
   def schedule_params
-    @schedule_params ||= (@body[:schedule] || {minute: '0', hour: '0'})
+    return @schedule_params if @scheduled_params.present?
+
+    @schedule_params = @body[:schedule]
+    @schedule_params ||= @body[:assignment] && @body[:assignment][:schedule]
+    @schedule_params ||= {minute: '0', hour: '0'}
   end
 
   def subtask_params
@@ -106,6 +107,19 @@ class AssignmentRequest < ActiveRecord::Base
         index: index,
         parameters: adapter_params,
       })
+    end
+  end
+
+  def end_at
+    return @end_at if @end_at.present?
+    times = Array.wrap(schedule_params[:runAt])
+    times += [schedule_params[:endAt]]
+    @end_at = times.compact.map(&:to_i).max
+  end
+
+  def scheduled_updates
+    @scheduled_updates ||= Array.wrap(schedule_params[:runAt]).compact.map do |time|
+      Assignment::ScheduledUpdate.new run_at: parse_time(time)
     end
   end
 

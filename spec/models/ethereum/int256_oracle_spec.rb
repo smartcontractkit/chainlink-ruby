@@ -1,4 +1,4 @@
-describe Ethereum::Uint256Oracle do
+describe Ethereum::Int256Oracle do
 
   describe "validations" do
     it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
@@ -9,10 +9,10 @@ describe Ethereum::Uint256Oracle do
   end
 
   describe "on create" do
-    let(:oracle) { factory_build :external_uint256_oracle }
+    let(:oracle) { factory_build :external_int256_oracle }
 
     context "when the address exists in the body" do
-      let(:oracle) { factory_build :external_uint256_oracle }
+      let(:oracle) { factory_build :external_int256_oracle }
 
       it "fills in its fields from the given body" do
         expect {
@@ -44,7 +44,7 @@ describe Ethereum::Uint256Oracle do
     context "when the address does not exist in the body" do
       let(:assignment) { factory_create :assignment }
       let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
-      let(:oracle) { factory_build :ethereum_uint256_oracle, assignment: assignment }
+      let(:oracle) { factory_build :ethereum_int256_oracle, assignment: assignment }
 
       it "fills in its fields from the given body" do
         expect {
@@ -88,7 +88,7 @@ describe Ethereum::Uint256Oracle do
 
 
   describe "#get_status" do
-    let!(:adapter) { factory_create :ethereum_uint256_oracle }
+    let!(:adapter) { factory_create :ethereum_int256_oracle }
     let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { 12431235452456 }
     let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
@@ -107,7 +107,7 @@ describe Ethereum::Uint256Oracle do
       let(:value_multiplied) { 12431235452456 }
       let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
       let(:params) { {value: value} }
-      let!(:adapter) { factory_create :ethereum_uint256_oracle, result_multiplier: 100 }
+      let!(:adapter) { factory_create :ethereum_int256_oracle, result_multiplier: 100 }
 
       it "passes the current value and its equivalent hex to the updater" do
         expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
@@ -120,7 +120,7 @@ describe Ethereum::Uint256Oracle do
   end
 
   describe "#ready?" do
-    subject { factory_build(:ethereum_uint256_oracle, ethereum_contract: contract).ready? }
+    subject { factory_build(:ethereum_int256_oracle, ethereum_contract: contract).ready? }
 
     context "when the contract has an address" do
       let(:contract) { factory_build :ethereum_contract, address: ethereum_address }
@@ -135,7 +135,7 @@ describe Ethereum::Uint256Oracle do
 
   describe "#contract_confirmed" do
     let(:subtask) { factory_build :subtask, adapter: nil }
-    let(:oracle) { factory_create :ethereum_uint256_oracle, subtask: subtask }
+    let(:oracle) { factory_create :ethereum_int256_oracle, subtask: subtask }
 
     it "calls mark ready on the subtask" do
       expect(subtask).to receive(:mark_ready)
@@ -148,7 +148,7 @@ describe Ethereum::Uint256Oracle do
     context "when the oracle has a contract" do
       let(:contract) { factory_create :ethereum_contract, address: ethereum_address }
       let(:oracle) do
-        factory_create(:ethereum_uint256_oracle).tap do |oracle|
+        factory_create(:ethereum_int256_oracle).tap do |oracle|
           oracle.update_attributes(ethereum_contract: contract)
         end
       end
@@ -165,7 +165,7 @@ describe Ethereum::Uint256Oracle do
     end
 
     context "when the oracle has a contract" do
-      let(:oracle) { factory_create :external_uint256_oracle }
+      let(:oracle) { factory_create :external_int256_oracle }
 
       it "pulls information from the ethereum contract and template" do
         expect(oracle.initialization_details).to eq({
