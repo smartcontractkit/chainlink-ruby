@@ -33,7 +33,6 @@ describe CoordinatorClient, type: :model do
                 term: term_name
               }
             },
-            headers: {}
         }).and_return(response)
       end
 
@@ -96,7 +95,6 @@ describe CoordinatorClient, type: :model do
                 value: snapshot.value,
                 xid: snapshot.xid,
               },
-              headers: {}
             }).and_return(response)
         end
 
@@ -138,7 +136,6 @@ describe CoordinatorClient, type: :model do
                 value: snapshot.value,
                 xid: snapshot.xid,
               },
-              headers: {}
             }).and_return(response)
         end
 
@@ -190,7 +187,6 @@ describe CoordinatorClient, type: :model do
             term: term.name,
             xid: assignment.xid,
           },
-          headers: {}
         }).and_return(response)
     end
 

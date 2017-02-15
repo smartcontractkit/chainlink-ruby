@@ -60,6 +60,53 @@ describe EthereumContract, type: :model do
 
       contract.confirmed address
     end
+
+    context "when the contract uses logs" do
+      before do
+        allow_any_instance_of(WeiWatchersClient).to receive(:create_subscription)
+          .and_return({'xid' => SecureRandom.uuid})
+
+        contract.template.update_attributes use_logs: true
+      end
+
+      it "creates a log subscription" do
+        expect {
+          run_generated_jobs { contract.confirmed address }
+        }.to change {
+          contract.log_subscriptions.count
+        }.by(+1)
+      end
+    end
+
+    context "when the contract does NOT use logs" do
+      before do
+        allow_any_instance_of(WeiWatchersClient).to receive(:create_subscription)
+          .and_return({'xid' => SecureRandom.uuid})
+
+        contract.template.update_attributes use_logs: false
+      end
+
+      it "does NOT create a log subscription" do
+        expect {
+          run_generated_jobs { contract.confirmed address }
+        }.not_to change {
+          contract.log_subscriptions.count
+        }
+      end
+    end
+  end
+
+  describe "#event_logged" do
+    let(:owner) { factory_build :ethereum_int256_oracle }
+    let(:contract) { factory_build :ethereum_contract, owner: owner }
+    let(:event) { factory_build :ethereum_event }
+
+    it "passes the event logged to its owner" do
+      expect(owner).to receive(:event_logged)
+        .with(event)
+
+      contract.event_logged(event)
+    end
   end
 
 end

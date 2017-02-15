@@ -17,7 +17,6 @@ describe ExternalAdapterClient, type: :model do
             end_at: assignment.end_at.to_i.to_s,
             xid: subtask.xid,
           },
-          headers: {}
         }).and_return(http_response body: {}.to_json)
 
       client.start_assignment subtask
@@ -40,7 +39,6 @@ describe ExternalAdapterClient, type: :model do
             details: {},
             xid: snapshot.xid,
           },
-          headers: {}
         }).and_return(http_response body: expected_response.to_json)
 
       response = client.assignment_snapshot snapshot
@@ -61,7 +59,6 @@ describe ExternalAdapterClient, type: :model do
             username: validator.username,
           },
           body: {},
-          headers: {}
         }).and_return(http_response body: expected_response.to_json)
 
       response = client.stop_assignment subtask

@@ -16,7 +16,7 @@ module HttpClient
       basic_auth: http_client_auth_params,
       query: options,
       headers: headers
-    })
+    }.compact)
   end
 
   def post(path, options = {})
@@ -24,7 +24,7 @@ module HttpClient
       basic_auth: http_client_auth_params,
       body: options,
       headers: headers
-    })
+    }.compact)
   end
 
   def delete(path, options = {})
@@ -32,7 +32,7 @@ module HttpClient
       basic_auth: http_client_auth_params,
       body: options,
       headers: headers
-    })
+    }.compact)
   end
 
   def patch(path, options = {})
@@ -40,7 +40,7 @@ module HttpClient
       basic_auth: http_client_auth_params,
       body: options,
       headers: headers
-    })
+    }.compact)
   end
 
   def json_get(path, options = {})
@@ -80,7 +80,7 @@ module HttpClient
   end
 
   def headers
-    {}
+    nil
   end
 
   def http_client_auth_params

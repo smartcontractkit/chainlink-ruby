@@ -6,6 +6,7 @@ default:
   solidity_abi: 'contract Oracle{function Oracle();function update(bytes32 newCurrent);function current()constant returns(bytes32 current);}'
   read_address: 9fa6a6e3
   write_address: 8b147245
+  construction_gas: 1_100_000
 
 ethereum_bytes32:
   adapter_name: ethereumBytes32
@@ -15,6 +16,7 @@ ethereum_bytes32:
   solidity_abi: 'contract Oracle{function Oracle();function update(bytes32 newCurrent);function current()constant returns(bytes32 current);}'
   read_address: 9fa6a6e3
   write_address: 8b147245
+  construction_gas: 1_100_000
 
 ethereum_uint256:
   adapter_name: ethereumUint256
@@ -24,6 +26,7 @@ ethereum_uint256:
   solidity_abi: "contract Uint256Oracle {\n\tevent Updated(uint256 current);\n\tevent UpdatedOwner(address to, address from);\n\tfunction Bytes32Oracle(uint256 newCurrent);\n\tfunction current() constant returns (uint256);\n\tfunction owner() constant returns (address);\n\tfunction setOwner(address newOwner);\n\tfunction update(uint256 newCurrent);\n\tfunction updatedAt() constant returns (uint256);\n}"
   read_address: 9fa6a6e3
   write_address: 82ab890a
+  construction_gas: 1_100_000
 
 ethereum_int256:
   adapter_name: ethereumInt256
@@ -33,3 +36,4 @@ ethereum_int256:
   solidity_abi: "contract Int256Oracle {\n\tevent Updated(int256 current);\n\tevent UpdatedOwner(address to, address from);\n\tfunction Int256Oracle(int256 newCurrent);\n\tfunction current() constant returns (int256);\n\tfunction owner() constant returns (address);\n\tfunction setOwner(address newOwner);\n\tfunction update(int256 newCurrent);\n\tfunction updatedAt() constant returns (uint256);\n}"
   read_address: 9fa6a6e3
   write_address: 6299a6ef
+  construction_gas: 1_100_000

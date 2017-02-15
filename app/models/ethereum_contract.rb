@@ -1,9 +1,10 @@
 class EthereumContract < ActiveRecord::Base
 
   belongs_to :account, class_name: 'Ethereum::Account'
+  belongs_to :genesis_transaction, class_name: 'EthereumTransaction'
   belongs_to :owner, polymorphic: true
   belongs_to :template, class_name: 'EthereumContractTemplate'
-  belongs_to :genesis_transaction, class_name: 'EthereumTransaction'
+  has_many :log_subscriptions, as: :owner, class_name: 'Ethereum::LogSubscription'
 
   validates :account, presence: true
   validates :address, format: { with: /\A0x[0-9a-f]{40}\z/, allow_nil: true }
@@ -22,6 +23,7 @@ class EthereumContract < ActiveRecord::Base
     })
 
     owner.contract_confirmed confirmed_address
+    delay.subscribe_to_contract_notifications
   end
 
   def write_address
@@ -30,6 +32,10 @@ class EthereumContract < ActiveRecord::Base
 
   def confirmed?
     address.present?
+  end
+
+  def event_logged(event)
+    owner.event_logged event
   end
 
 
@@ -47,6 +53,13 @@ class EthereumContract < ActiveRecord::Base
 
   def coordinator
     owner.coordinator
+  end
+
+  def subscribe_to_contract_notifications
+    log_subscriptions.create({
+      account: address,
+      end_at: owner.end_at
+    }) if template.use_logs?
   end
 
 end
