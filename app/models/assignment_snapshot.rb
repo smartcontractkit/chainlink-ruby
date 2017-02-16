@@ -7,6 +7,7 @@ class AssignmentSnapshot < ActiveRecord::Base
   has_many :adapter_snapshots, -> {
     includes(:subtask).order("subtasks.index")
   }
+  belongs_to :request, polymorphic: true
   belongs_to :requester, class_name: "Subtask"
 
   validates :assignment, presence: true

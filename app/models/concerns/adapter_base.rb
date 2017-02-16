@@ -53,7 +53,11 @@ module AdapterBase
 
   def snapshot_requested(request)
     subtask = assignment.subtasks.where(adapter: self).first
-    assignment.check_status requester: subtask
+
+    assignment.check_status({
+      request: request,
+      requester: subtask,
+    })
   end
 
 end

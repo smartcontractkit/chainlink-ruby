@@ -37,7 +37,10 @@ class Assignment < ActiveRecord::Base
 
   def check_status(options = {})
     if ready?
-      snapshots.create requester: options[:requester]
+      snapshots.create({
+        request: options[:request],
+        requester: options[:requester],
+      })
     end
   end
 

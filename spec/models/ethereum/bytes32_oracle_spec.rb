@@ -199,5 +199,12 @@ describe Ethereum::Bytes32Oracle do
       snapshot = oracle.assignment.snapshots.last
       expect(snapshot.requester).to eq(subtask)
     end
+
+    it "saves the request parameters" do
+      oracle.snapshot_requested event
+
+      snapshot = oracle.assignment.snapshots.last
+      expect(snapshot.request).to eq(event)
+    end
   end
 end
