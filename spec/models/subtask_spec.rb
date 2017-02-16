@@ -47,6 +47,14 @@ describe Subtask, type: :model do
         subtask.ready?
       }.from(false).to(true)
     end
+
+    it "generates a unique subtask identifier" do
+      expect {
+        subtask.save
+      }.to change {
+        subtask.xid
+      }.from(nil)
+    end
   end
 
   describe "#mark_ready" do

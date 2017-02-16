@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215000403) do
+ActiveRecord::Schema.define(version: 20170216071626) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -299,6 +299,7 @@ ActiveRecord::Schema.define(version: 20170215000403) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "ready"
+    t.string   "xid"
   end
 
   create_table "terms", force: :cascade do |t|
