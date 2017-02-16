@@ -15,7 +15,11 @@ class EthereumContractTemplate < ActiveRecord::Base
 
   def self.create_contract_template(contract_name = 'Oracle', adapter_name = nil, type = "bytes32")
     code = File.read("lib/assets/contracts/#{contract_name}.sol")
-    compiled = SolidityClient.compile({contract_name => code})
+
+    compiled = SolidityClient.compile({
+      "#{contract_name}.sol" => code,
+      "Owned.sol" => File.read("lib/assets/contracts/Owned.sol"),
+    })
     oracle = compiled['contracts'][contract_name]
 
     EthereumContractTemplate.create!({

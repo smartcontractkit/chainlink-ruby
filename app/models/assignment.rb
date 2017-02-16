@@ -35,8 +35,13 @@ class Assignment < ActiveRecord::Base
     term.status
   end
 
-  def check_status
-    snapshots.create if ready?
+  def check_status(options = {})
+    if ready?
+      snapshots.create({
+        request: options[:request],
+        requester: options[:requester],
+      })
+    end
   end
 
   def close_out!(status = COMPLETED)

@@ -26,10 +26,6 @@ class Subtask < ActiveRecord::Base
     assignment.end_at
   end
 
-  def xid
-    "#{assignment.xid}=#{index}"
-  end
-
   def mark_ready
     return if ready?
     assignment.subtask_ready(self) if update_attributes({
@@ -54,6 +50,7 @@ class Subtask < ActiveRecord::Base
       errors.add(:base, "Adapter##{index} Error: #{error_message}")
     end if start_response.errors.present?
     self.ready = adapter.ready?
+    self.xid = SecureRandom.uuid
     true
   end
 

@@ -6,6 +6,8 @@ class AdapterSnapshot < ActiveRecord::Base
   validates :subtask, presence: true, uniqueness: { scope: [:assignment_snapshot] }
   validates :assignment_snapshot, presence: true
 
+  before_create :set_up
+
 
   def details=(deets)
     self.details_json = (deets ? deets.to_json : nil)
@@ -53,6 +55,11 @@ class AdapterSnapshot < ActiveRecord::Base
 
   def snapshot_peers
     assignment_snapshot.adapter_snapshots
+  end
+
+  def set_up
+    self.requested = (subtask == assignment_snapshot.requester)
+    true
   end
 
 end

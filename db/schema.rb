@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215000403) do
+ActiveRecord::Schema.define(version: 20170216201630) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20170215000403) do
     t.datetime "updated_at"
     t.string   "progress"
     t.string   "status"
+    t.boolean  "requested",              default: false
   end
 
   create_table "api_results", force: :cascade do |t|
@@ -80,6 +81,9 @@ ActiveRecord::Schema.define(version: 20170215000403) do
     t.text     "description_url"
     t.string   "progress"
     t.integer  "adapter_index"
+    t.integer  "requester_id"
+    t.string   "request_type"
+    t.integer  "request_id"
   end
 
   create_table "assignment_types", force: :cascade do |t|
@@ -299,6 +303,7 @@ ActiveRecord::Schema.define(version: 20170215000403) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "ready"
+    t.string   "xid"
   end
 
   create_table "terms", force: :cascade do |t|

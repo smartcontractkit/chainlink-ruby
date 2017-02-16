@@ -9,6 +9,8 @@ describe AssignmentSnapshot, type: :model do
     it { is_expected.to have_valid(:progress).when(nil, 'started', 'completed', 'failed') }
     it { is_expected.not_to have_valid(:progress).when('', 'foo') }
 
+    it { is_expected.to have_valid(:requester).when(nil, factory_create(:subtask)) }
+
     it { is_expected.to have_valid(:status).when(nil, 'in progress', 'completed', 'failed') }
     it { is_expected.not_to have_valid(:status).when('', 'foo') }
 

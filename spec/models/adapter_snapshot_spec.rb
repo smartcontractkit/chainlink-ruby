@@ -25,6 +25,48 @@ describe AdapterSnapshot do
     it { is_expected.to have_valid(:value).when(nil, '', 42, SecureRandom.base64) }
   end
 
+  describe "on create" do
+    let(:assignment_snapshot) { factory_create :assignment_snapshot, requester: requester }
+    let(:subtask) { factory_create :subtask }
+    let(:snapshot) { factory_build :adapter_snapshot, assignment_snapshot: assignment_snapshot, subtask: subtask }
+
+    context "when the assignment snapshot's requester matches the subtask" do
+      let(:requester) { subtask }
+
+      it "marks the subtask snapshot as requested" do
+        expect {
+          snapshot.save
+        }.to change {
+          snapshot.requested?
+        }.from(false).to(true)
+      end
+    end
+
+    context "when the assignment snapshot's requester doesn't match the subtask" do
+      let(:requester) { factory_create :subtask }
+
+      it "marks the subtask snapshot as not requested" do
+        expect {
+          snapshot.save
+        }.not_to change {
+          snapshot.requested?
+        }.from(false)
+      end
+    end
+
+    context "when the assignment snapshot doesn't have a requester" do
+      let(:requester) { nil }
+
+      it "marks the subtask snapshot as not requested" do
+        expect {
+          snapshot.save
+        }.not_to change {
+          snapshot.requested?
+        }.from(false)
+      end
+    end
+  end
+
   describe "#xid" do
     let(:adapter_snapshot) { factory_create :adapter_snapshot }
     let(:assignment_snapshot) { adapter_snapshot.assignment_snapshot }
