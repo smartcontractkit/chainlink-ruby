@@ -35,7 +35,7 @@ class EthereumContract < ActiveRecord::Base
   end
 
   def event_logged(event)
-    owner.event_logged event
+    owner.snapshot_requested event
   end
 
 

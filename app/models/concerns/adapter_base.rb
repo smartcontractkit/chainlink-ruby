@@ -51,7 +51,7 @@ module AdapterBase
     assignment.end_at
   end
 
-  def event_logged(event)
+  def snapshot_requested(request)
     subtask = assignment.subtasks.where(adapter: self).first
     assignment.check_status requester: subtask
   end

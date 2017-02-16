@@ -96,13 +96,13 @@ describe EthereumContract, type: :model do
     end
   end
 
-  describe "#event_logged" do
+  describe "#snapshot_requested" do
     let(:owner) { factory_build :ethereum_int256_oracle }
     let(:contract) { factory_build :ethereum_contract, owner: owner }
     let(:event) { factory_build :ethereum_event }
 
     it "passes the event logged to its owner" do
-      expect(owner).to receive(:event_logged)
+      expect(owner).to receive(:snapshot_requested)
         .with(event)
 
       contract.event_logged(event)

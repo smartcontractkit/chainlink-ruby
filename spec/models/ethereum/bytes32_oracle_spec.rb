@@ -178,7 +178,7 @@ describe Ethereum::Bytes32Oracle do
     end
   end
 
-  describe "#event_logged" do
+  describe "#request_logged" do
     let!(:subtask) { factory_create :subtask, adapter: oracle }
     let(:oracle) { factory_create :ethereum_bytes32_oracle }
     let(:event) { factory_create :ethereum_event }
@@ -187,14 +187,14 @@ describe Ethereum::Bytes32Oracle do
 
     it "creates a new assignment snapshot" do
       expect {
-        oracle.event_logged event
+        oracle.snapshot_requested event
       }.to change {
         oracle.assignment.snapshots.count
       }.by(+1)
     end
 
     it "assigns itself as the new snapshot's requester" do
-      oracle.event_logged event
+      oracle.snapshot_requested event
 
       snapshot = oracle.assignment.snapshots.last
       expect(snapshot.requester).to eq(subtask)
