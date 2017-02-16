@@ -7,6 +7,7 @@ class AssignmentSnapshot < ActiveRecord::Base
   has_many :adapter_snapshots, -> {
     includes(:subtask).order("subtasks.index")
   }
+  belongs_to :requester, polymorphic: true
 
   validates :assignment, presence: true
   validates :summary, presence: true, if: :fulfilled?
