@@ -52,7 +52,8 @@ module AdapterBase
   end
 
   def event_logged(event)
-    assignment.check_status
+    subtask = assignment.subtasks.where(adapter: self).first
+    assignment.check_status requester: subtask
   end
 
 end

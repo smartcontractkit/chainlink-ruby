@@ -192,5 +192,12 @@ describe Ethereum::Bytes32Oracle do
         oracle.assignment.snapshots.count
       }.by(+1)
     end
+
+    it "assigns itself as the new snapshot's requester" do
+      oracle.event_logged event
+
+      snapshot = oracle.assignment.snapshots.last
+      expect(snapshot.requester).to eq(subtask)
+    end
   end
 end
