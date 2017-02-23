@@ -110,6 +110,18 @@ describe Assignment, type: :model do
     end
   end
 
+  describe ".termless" do
+    let(:with_term) { factory_create(:term, expectation: factory_build(:assignment)).expectation }
+    let(:without_term) { factory_create :assignment, term: nil }
+
+    it "returns only assignments that do not have a term" do
+      termless = Assignment.termless
+
+      expect(termless).to include(without_term)
+      expect(termless).not_to include(with_term)
+    end
+  end
+
   describe "#check_status" do
     let(:assignment) { factory_create :assignment }
 

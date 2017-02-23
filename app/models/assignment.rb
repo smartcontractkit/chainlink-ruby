@@ -27,9 +27,8 @@ class Assignment < ActiveRecord::Base
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
 
-  scope :expired, -> {
-    where("status = ? AND end_at < now()", IN_PROGRESS)
-  }
+  scope :expired, -> { where("status = ? AND end_at < now()", IN_PROGRESS) }
+  scope :termless, -> { includes(:term).where(terms: {expectation_id: nil}) }
 
   def adapters
     subtasks.map(&:adapter)
