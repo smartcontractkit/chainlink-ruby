@@ -90,7 +90,7 @@ class Assignment < ActiveRecord::Base
 
   def set_up
     self.end_at ||= term.try(:end_at)
-    self.start_at ||= Time.now
+    self.start_at ||= [Time.now, end_at].compact.min
     self.status ||= IN_PROGRESS
     self.xid ||= SecureRandom.uuid
   end
@@ -100,7 +100,7 @@ class Assignment < ActiveRecord::Base
       errors.add(:end_at, "must be specified")
     end
 
-    if start_at.to_i >= end_at.to_i
+    if start_at.to_i > end_at.to_i
       errors.add(:start_at, "must be before end at")
     end
   end
