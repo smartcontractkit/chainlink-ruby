@@ -94,6 +94,22 @@ describe Assignment, type: :model do
     end
   end
 
+  describe ".expired" do
+    let!(:in_progress_future) { factory_create :assignment, status: Assignment::IN_PROGRESS, end_at: 1.minute.from_now }
+    let!(:in_progress_passed) { factory_create :assignment, status: Assignment::IN_PROGRESS, end_at: 1.minute.ago }
+    let!(:completed_passed) { factory_create :assignment, status: Assignment::COMPLETED, end_at: 1.minute.ago }
+    let!(:failed_passed) { factory_create :assignment, status: Assignment::FAILED, end_at: 1.minute.ago }
+
+    it "returns in progress assignments past their end at time" do
+      expired = Assignment.expired
+
+      expect(expired).to include(in_progress_passed)
+      expect(expired).not_to include(in_progress_future)
+      expect(expired).not_to include(completed_passed)
+      expect(expired).not_to include(failed_passed)
+    end
+  end
+
   describe "#check_status" do
     let(:assignment) { factory_create :assignment }
 
