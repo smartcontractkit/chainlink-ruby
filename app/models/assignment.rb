@@ -27,6 +27,9 @@ class Assignment < ActiveRecord::Base
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
 
+  scope :expired, -> { where("status = ? AND end_at < now()", IN_PROGRESS) }
+  scope :termless, -> { includes(:term).where(terms: {expectation_id: nil}) }
+
   def adapters
     subtasks.map(&:adapter)
   end
@@ -85,12 +88,16 @@ class Assignment < ActiveRecord::Base
     subtasks.map(&:initialization_details)
   end
 
+  def expired?
+    status == IN_PROGRESS && end_at < Time.now
+  end
+
 
   private
 
   def set_up
     self.end_at ||= term.try(:end_at)
-    self.start_at ||= Time.now
+    self.start_at ||= [Time.now, end_at].compact.min
     self.status ||= IN_PROGRESS
     self.xid ||= SecureRandom.uuid
   end
@@ -100,7 +107,7 @@ class Assignment < ActiveRecord::Base
       errors.add(:end_at, "must be specified")
     end
 
-    if start_at.to_i >= end_at.to_i
+    if start_at.to_i > end_at.to_i
       errors.add(:start_at, "must be before end at")
     end
   end
