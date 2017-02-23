@@ -17,6 +17,7 @@ module Clockwork
   every(1.minute, 'Ethereum::ConfirmationWatcher.perform')
   every(1.minute, 'Ethereum::ContractConfirmer.perform')
   every(1.minute, 'TermJanitor.clean_up')
+  every(1.minute, 'Assignment::Janitor.schedule_clean_up')
 
   every(1.hour, 'Ethereum::BalanceWatcher.perform')
 

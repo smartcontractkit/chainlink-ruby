@@ -88,6 +88,10 @@ class Assignment < ActiveRecord::Base
     subtasks.map(&:initialization_details)
   end
 
+  def expired?
+    status == IN_PROGRESS && end_at < Time.now
+  end
+
 
   private
 
