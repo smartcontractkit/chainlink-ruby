@@ -44,11 +44,11 @@ module AdapterBase
   end
 
   def start_at
-    assignment.start_at
+    assignment.start_at if assignment.present?
   end
 
   def end_at
-    assignment.end_at
+    assignment.end_at if assignment.present?
   end
 
   def snapshot_requested(request)
