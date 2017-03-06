@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216201630) do
+ActiveRecord::Schema.define(version: 20170306211643) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -221,6 +221,12 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.string   "account"
     t.string   "xid"
     t.datetime "end_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ethereum_log_watchers", force: :cascade do |t|
+    t.string   "address"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
