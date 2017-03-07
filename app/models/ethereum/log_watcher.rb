@@ -21,6 +21,19 @@ class Ethereum::LogWatcher < ActiveRecord::Base
     })
   end
 
+  def get_status(snapshot, previous_snapshot)
+    assignment_snapshot = snapshot.assignment_snapshot
+
+    if assignment_snapshot.requester == subtask
+      event = assignment_snapshot.request
+      AssignmentSnapshot::EthereumLogWatcherDecorator.new(event)
+    elsif previous_snapshot.present?
+      previous_snapshot
+    else
+      AssignmentSnapshot::EthereumLogWatcherDecorator.new(nil)
+    end
+  end
+
 
   private
 
