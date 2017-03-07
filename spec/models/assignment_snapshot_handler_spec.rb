@@ -167,7 +167,7 @@ describe AssignmentSnapshotHandler do
       it "passes the response on to the next adapter" do
         expect_any_instance_of(AdapterSnapshot).to receive(:start) do |instance, params|
           expect(instance).to eq(adapter_snapshot2)
-          expect(params).to eq(response)
+          expect(params).to eq(adapter_snapshot)
         end
 
         handler.adapter_response(adapter_snapshot)

@@ -19,8 +19,8 @@ module Ethereum
     before_validation :set_up_from_body, on: :create
 
 
-    def get_status(assignment_snapshot, params = {})
-      base_value = params && params.with_indifferent_access['value']
+    def get_status(assignment_snapshot, previous_snapshot = nil)
+      base_value = previous_snapshot.try(:value)
       value = (base_value.to_f * result_multiplier).round.abs
       write = updater.perform format_hex_value(value), value
       write.snapshot_decorator

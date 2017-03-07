@@ -92,21 +92,20 @@ describe Ethereum::Uint256Oracle do
     let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { 12431235452456 }
     let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
-    let(:params) { {value: value} }
+    let(:previous_snapshot) { factory_create :adapter_snapshot, value: value }
 
     it "passes the current value and its equivalent hex to the updater" do
       expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
         .with(hex_truncated_value, value)
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
-      adapter.get_status(snapshot, params)
+      adapter.get_status(snapshot, previous_snapshot)
     end
 
     context "when the contract has a result multiplier" do
       let(:value) { 124312354524.56 }
       let(:value_multiplied) { 12431235452456 }
       let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
-      let(:params) { {value: value} }
       let!(:adapter) { factory_create :ethereum_uint256_oracle, result_multiplier: 100 }
 
       it "passes the current value and its equivalent hex to the updater" do
@@ -114,7 +113,7 @@ describe Ethereum::Uint256Oracle do
           .with(hex_truncated_value, value_multiplied)
           .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
-        adapter.get_status(snapshot, params)
+        adapter.get_status(snapshot, previous_snapshot)
       end
     end
   end

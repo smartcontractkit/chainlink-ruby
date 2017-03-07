@@ -37,6 +37,10 @@ class AssignmentSnapshot
       record.present?
     end
 
+    def config
+      record.subtask.parameters
+    end
+
 
     private
 

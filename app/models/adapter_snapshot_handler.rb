@@ -5,8 +5,8 @@ class AdapterSnapshotHandler
     @adapter = snapshot.adapter
   end
 
-  def perform(params)
-    get_adapter_result(params)
+  def perform(previous_snapshot)
+    get_adapter_result(previous_snapshot)
 
     if response.present? && response.errors.blank?
       parse_adapter_response response
@@ -25,8 +25,8 @@ class AdapterSnapshotHandler
 
   attr_reader :adapter, :response, :snapshot
 
-  def get_adapter_result(params)
-    @response ||= adapter.get_status(snapshot, params)
+  def get_adapter_result(previous_snapshot)
+    @response ||= adapter.get_status(snapshot, previous_snapshot)
   end
 
   def parse_adapter_response(response)

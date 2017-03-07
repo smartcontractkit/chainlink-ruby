@@ -99,6 +99,7 @@ describe EthereumOracle, type: :model do
     let(:hex_truncated_value) { "736f6d6520737472696e672074686174206973206c6f6e676572207468616e20" }
     let(:assignment) { adapter.assignment }
     let(:txid) { ethereum_txid }
+    let(:previous_snapshot) { factory_create :adapter_snapshot }
 
     before do
       expect(JsonTraverser).to receive(:parse)
@@ -110,7 +111,7 @@ describe EthereumOracle, type: :model do
         .with(hex_truncated_value, truncated_value)
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
-      adapter.get_status(double, {params: "don't matter here"})
+      adapter.get_status(double, previous_snapshot)
     end
   end
 end

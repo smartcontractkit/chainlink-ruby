@@ -25,6 +25,7 @@ describe ExternalAdapterClient, type: :model do
 
   describe "#assignment_snapshot" do
     let(:snapshot) { factory_create :adapter_snapshot }
+    let(:previous_snapshot) { factory_create :adapter_snapshot, details: {foo: 'bar'} }
     let(:subtask) { snapshot.subtask }
     let(:expected_response) { hashie({a: 1}) }
 
@@ -36,14 +37,33 @@ describe ExternalAdapterClient, type: :model do
             username: validator.username,
           },
           body: {
-            details: {},
+            details: previous_snapshot.details,
             xid: snapshot.xid,
           },
         }).and_return(http_response body: expected_response.to_json)
 
-      response = client.assignment_snapshot snapshot
+      response = client.assignment_snapshot snapshot, previous_snapshot
 
       expect(response).to eq(expected_response)
+    end
+
+    context "when no previous adapter snapshot is passed in" do
+      it "sends a post message to the validator client" do
+        expect(ExternalAdapterClient).to receive(:post)
+          .with("#{validator.url}/assignments/#{subtask.xid}/snapshots", {
+            basic_auth: {
+              password: validator.password,
+              username: validator.username,
+            },
+            body: {
+              xid: snapshot.xid,
+            },
+          }).and_return(http_response body: expected_response.to_json)
+
+        response = client.assignment_snapshot snapshot
+
+        expect(response).to eq(expected_response)
+      end
     end
   end
 

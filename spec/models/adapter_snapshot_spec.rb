@@ -78,28 +78,24 @@ describe AdapterSnapshot do
   end
 
   describe "#start" do
-    let(:adapter_snapshot) { factory_create :adapter_snapshot }
+    let!(:adapter_snapshot) { factory_create :adapter_snapshot }
     let(:subtask) { adapter_snapshot.subtask }
 
     context "when parameters are passed in" do
-      let(:params) { { SecureRandom.hex => SecureRandom.hex } }
+      let!(:previous_snapshot) { factory_create :adapter_snapshot }
 
       it "merges them with the adapter's parameters" do
         expect_any_instance_of(AdapterSnapshotHandler).to receive(:perform)
-          .with(params.merge({
-            config: subtask.parameters
-          }))
+          .with(previous_snapshot)
 
-        adapter_snapshot.start(params)
+        adapter_snapshot.start previous_snapshot
       end
     end
 
     context "when no parameters are passed in" do
       it "merges them with the adapter's parameters" do
         expect_any_instance_of(AdapterSnapshotHandler).to receive(:perform)
-          .with({
-            config: subtask.parameters
-          })
+          .with(nil)
 
         adapter_snapshot.start
       end
