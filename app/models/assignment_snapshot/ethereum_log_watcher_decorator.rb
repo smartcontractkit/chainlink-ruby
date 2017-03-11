@@ -23,12 +23,13 @@ class AssignmentSnapshot
 
     def details
       {
+        address: record.address,
         blockHash: record.block_hash,
         blockNumber: record.block_number,
         data: record.data,
         logIndex: record.log_index,
-        txIndex: record.transaction_index,
-        txid: record.transaction_hash,
+        transactionHash: record.transaction_hash,
+        transactionIndex: record.transaction_index,
         value: record.data,
       } if record_present?
     end
