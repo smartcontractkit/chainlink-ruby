@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306211643) do
+ActiveRecord::Schema.define(version: 20170315215641) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -289,6 +289,13 @@ ActiveRecord::Schema.define(version: 20170306211643) do
     t.text     "headers_json"
     t.string   "basic_auth_password"
     t.string   "basic_auth_username"
+  end
+
+  create_table "json_receivers", force: :cascade do |t|
+    t.string   "xid"
+    t.string   "path_json"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "key_pairs", force: :cascade do |t|
