@@ -17,4 +17,23 @@ describe JsonReceiver do
     end
   end
 
+  describe "#snapshot_requested" do
+    let(:subtask) { factory_build :subtask, adapter: nil }
+    let(:receiver) { factory_create :json_receiver, subtask: subtask }
+    let(:assignment) { receiver.assignment }
+    let(:request) { factory_create :json_receiver_request }
+
+    it "creates a new event" do
+      expect {
+        receiver.snapshot_requested request
+      }.to change {
+        assignment.snapshots.count
+      }.by(+1)
+
+      snapshot = assignment.snapshots.last
+      expect(snapshot.request).to eq(request)
+      expect(snapshot.requester).to eq(subtask)
+    end
+  end
+
 end

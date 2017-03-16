@@ -5,6 +5,7 @@ class JsonReceiver < ActiveRecord::Base
 
   has_one :subtask, as: :adapter
   has_one :assignment, through: :subtask
+  has_many :requests, inverse_of: :json_receiver
 
   validates :path, presence: true
   validate :parsable_path
