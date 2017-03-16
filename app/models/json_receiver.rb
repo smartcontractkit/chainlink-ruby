@@ -22,6 +22,18 @@ class JsonReceiver < ActiveRecord::Base
     JSON.parse(path_json) if path_json.present?
   end
 
+  def get_status(snapshot, previous_snapshot)
+    assignment_snapshot = snapshot.assignment_snapshot
+
+    if assignment_snapshot.requester == subtask
+      request = assignment_snapshot.request
+      AssignmentSnapshot::JsonReceiverDecorator.new(request)
+    elsif previous_snapshot.present?
+      previous_snapshot
+    else
+      AssignmentSnapshot::NilDecorator.new
+    end
+  end
 
   private
 
