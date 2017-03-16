@@ -19,4 +19,21 @@ describe JsonReceiverRequest do
     end
   end
 
+  describe "#value" do
+    let(:path) { ['following', '1', 'receivers', 'path'] }
+    let(:receiver) { factory_create :json_receiver, path: path }
+    let(:request) do
+      factory_create(:json_receiver_request, {
+        data: {
+          following: [nil, {receivers: {path: 'SUCCESS!!'}}]
+        },
+        json_receiver: receiver
+      })
+    end
+
+    it "returns the value of the receiver's path" do
+      expect(request.value).to eq('SUCCESS!!')
+    end
+  end
+
 end

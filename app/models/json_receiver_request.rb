@@ -16,11 +16,19 @@ class JsonReceiverRequest < ActiveRecord::Base
     JSON.parse(data_json) if data_json.present?
   end
 
+  def value
+    JsonTraverser.parse(data_json, path)
+  end
+
 
   private
 
   def request_snapshot
     json_receiver.delay.snapshot_requested self
+  end
+
+  def path
+    json_receiver.path
   end
 
 end
