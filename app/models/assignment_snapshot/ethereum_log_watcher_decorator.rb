@@ -2,23 +2,19 @@ class AssignmentSnapshot
   class EthereumLogWatcherDecorator < Decorator
 
     def summary
-      "Event logged." if record_present?
+      "Event logged."
     end
 
     def description
-      if record_present?
-        "Event: #{record.transaction_hash}##{record.log_index}"
-      end
+      "Event: #{record.transaction_hash}##{record.log_index}"
     end
 
     def description_url
-      if record_present?
-        Ethereum::Client.tx_url(record.transaction_hash)
-      end
+      Ethereum::Client.tx_url(record.transaction_hash)
     end
 
     def value
-      record.data if record_present?
+      record.data
     end
 
     def details
@@ -31,7 +27,7 @@ class AssignmentSnapshot
         transactionHash: record.transaction_hash,
         transactionIndex: record.transaction_index,
         value: record.data,
-      } if record_present?
+      }
     end
 
     def errors
@@ -39,18 +35,7 @@ class AssignmentSnapshot
     end
 
     def config
-      record.subtask.parameters if record_present?
-    end
-
-    def present?
-      true
-    end
-
-
-    private
-
-    def record_present?
-      record.present?
+      record.subtask.parameters
     end
 
   end

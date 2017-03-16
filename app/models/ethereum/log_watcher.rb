@@ -30,7 +30,7 @@ class Ethereum::LogWatcher < ActiveRecord::Base
     elsif previous_snapshot.present?
       previous_snapshot
     else
-      AssignmentSnapshot::EthereumLogWatcherDecorator.new(nil)
+      AssignmentSnapshot::NilDecorator.new
     end
   end
 
