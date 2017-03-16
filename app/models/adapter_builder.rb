@@ -13,6 +13,8 @@ class AdapterBuilder
       EthereumOracle.new(body: params)
     elsif [JsonAdapter::SCHEMA_NAME].include? type
       JsonAdapter.new(body: params)
+    elsif [JsonReceiver::SCHEMA_NAME].include? type
+      JsonReceiver.new(body: params)
     elsif [Ethereum::Bytes32Oracle::SCHEMA_NAME].include? type
       Ethereum::Bytes32Oracle.new(body: params)
     elsif [Ethereum::Uint256Oracle::SCHEMA_NAME].include? type
