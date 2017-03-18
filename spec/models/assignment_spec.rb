@@ -292,6 +292,18 @@ describe Assignment, type: :model do
 
         assignment.subtask_ready(subtask)
       end
+
+      context "and the assignment has been marked not to create an initial snapshot" do
+        let(:assignment) { factory_create :assignment, skip_initial_snapshot: true }
+
+        it "does not create a new snapshot" do
+          expect {
+            assignment.subtask_ready(subtask)
+          }.not_to change {
+            assignment.reload.snapshots.count
+          }
+        end
+      end
     end
 
     context "when not all of the substasks are ready" do

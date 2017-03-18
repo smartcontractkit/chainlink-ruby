@@ -54,6 +54,7 @@ module SpecHelpers
 
     {
       subtasks: subtasks,
+      skipInitialSnapshot: options[:skipInitialSnapshot],
       description: description,
       fees: fees,
       schedule: schedule,
