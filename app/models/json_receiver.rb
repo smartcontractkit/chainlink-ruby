@@ -5,7 +5,8 @@ class JsonReceiver < ActiveRecord::Base
 
   has_one :subtask, as: :adapter
   has_one :assignment, through: :subtask
-  has_many :requests, inverse_of: :json_receiver
+  has_many :requests, inverse_of: :json_receiver,
+    class_name: 'JsonReceiverRequest'
 
   validates :path, presence: true
   validate :parsable_path
@@ -39,7 +40,7 @@ class JsonReceiver < ActiveRecord::Base
 
   def set_up_from_body
     if body.present?
-      self.path ||= body.path
+      self.path ||= body['path'] || body['fields']
     end
     self.xid ||= SecureRandom.urlsafe_base64(24)
   end
