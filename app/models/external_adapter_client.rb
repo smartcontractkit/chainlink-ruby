@@ -6,11 +6,12 @@ class ExternalAdapterClient
     @validator = validator
   end
 
-  def start_assignment(assignment)
+  def start_assignment(subtask)
     hashie_post(validator_url('/assignments'), {
-      data: assignment.parameters,
-      endAt: assignment.end_at.to_i.to_s,
-      xid: assignment.xid,
+      data: subtask.parameters,
+      endAt: subtask.end_at.to_i.to_s,
+      taskType: subtask.task_type,
+      xid: subtask.xid,
     })
   end
 
