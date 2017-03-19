@@ -7,7 +7,7 @@ class ExternalAdapterClient
   end
 
   def start_assignment(subtask)
-    hashie_post(validator_url('/assignments'), {
+    hashie_post(validator_url('/subtasks'), {
       data: subtask.parameters,
       endAt: subtask.end_at.to_i.to_s,
       taskType: subtask.task_type,
@@ -17,14 +17,14 @@ class ExternalAdapterClient
 
   def assignment_snapshot(snapshot, previous_snapshot = nil)
     subtask = snapshot.subtask
-    hashie_post(validator_url("/assignments/#{subtask.xid}/snapshots"), {
+    hashie_post(validator_url("/subtasks/#{subtask.xid}/snapshots"), {
       details: previous_snapshot.try(:details),
       xid: snapshot.xid,
     }.compact)
   end
 
   def stop_assignment(subtask)
-    hashie_delete(validator_url("/assignments/#{subtask.xid}"))
+    hashie_delete(validator_url("/subtasks/#{subtask.xid}"))
   end
 
 

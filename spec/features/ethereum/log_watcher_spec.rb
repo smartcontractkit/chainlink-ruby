@@ -68,7 +68,7 @@ describe "watching already deployed addresses", type: :request do
 
     expect(ExternalAdapterClient).to receive(:post) do |url, params|
       adapter_url = assignment_type.external_adapter.url
-      expect(url).to eq("#{adapter_url}/assignments/#{subtask2.xid}/snapshots")
+      expect(url).to eq("#{adapter_url}/subtasks/#{subtask2.xid}/snapshots")
 
       expect(params[:body][:details]['transactionHash']).to eq(event_txid)
       http_response

@@ -7,7 +7,7 @@ describe ExternalAdapterClient, type: :model do
   describe "#create_assignment" do
     it "sends a post message to the validator client" do
       expect(ExternalAdapterClient).to receive(:post)
-        .with("#{validator.url}/assignments", {
+        .with("#{validator.url}/subtasks", {
           basic_auth: {
             password: validator.password,
             username: validator.username,
@@ -32,7 +32,7 @@ describe ExternalAdapterClient, type: :model do
 
     it "sends a post message to the validator client" do
       expect(ExternalAdapterClient).to receive(:post)
-        .with("#{validator.url}/assignments/#{subtask.xid}/snapshots", {
+        .with("#{validator.url}/subtasks/#{subtask.xid}/snapshots", {
           basic_auth: {
             password: validator.password,
             username: validator.username,
@@ -51,7 +51,7 @@ describe ExternalAdapterClient, type: :model do
     context "when no previous adapter snapshot is passed in" do
       it "sends a post message to the validator client" do
         expect(ExternalAdapterClient).to receive(:post)
-          .with("#{validator.url}/assignments/#{subtask.xid}/snapshots", {
+          .with("#{validator.url}/subtasks/#{subtask.xid}/snapshots", {
             basic_auth: {
               password: validator.password,
               username: validator.username,
@@ -74,7 +74,7 @@ describe ExternalAdapterClient, type: :model do
 
     it "sends a post message to the validator client" do
       expect(ExternalAdapterClient).to receive(:delete)
-        .with("#{validator.url}/assignments/#{subtask.xid}", {
+        .with("#{validator.url}/subtasks/#{subtask.xid}", {
           basic_auth: {
             password: validator.password,
             username: validator.username,
