@@ -13,8 +13,6 @@ class AdapterBuilder
       EthereumOracle.new(body: params)
     elsif [JsonAdapter::SCHEMA_NAME].include? type
       JsonAdapter.new(body: params)
-    elsif [JsonReceiver::SCHEMA_NAME].include? type
-      JsonReceiver.new(body: params)
     elsif [Ethereum::Bytes32Oracle::SCHEMA_NAME].include? type
       Ethereum::Bytes32Oracle.new(body: params)
     elsif [Ethereum::Uint256Oracle::SCHEMA_NAME].include? type
@@ -23,6 +21,8 @@ class AdapterBuilder
       Ethereum::Int256Oracle.new(body: params)
     elsif [Ethereum::LogWatcher::SCHEMA_NAME].include? type
       Ethereum::LogWatcher.new(body: params)
+    elsif [JsonReceiver::SCHEMA_NAME].include? type
+      JsonReceiver.new(body: params)
     else
       raise "No adapter type found for \"#{type}\""
     end

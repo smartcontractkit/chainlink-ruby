@@ -107,6 +107,7 @@ class AssignmentRequest < ActiveRecord::Base
         adapter: AdapterBuilder.perform(type, adapter_params),
         index: index,
         parameters: adapter_params,
+        task_type: type,
       })
     end
   end
