@@ -14,7 +14,7 @@ describe ExternalAdapterClient, type: :model do
           },
           body: {
             data: subtask.parameters,
-            end_at: assignment.end_at.to_i.to_s,
+            endAt: assignment.end_at.to_i.to_s,
             xid: subtask.xid,
           },
         }).and_return(http_response body: {}.to_json)

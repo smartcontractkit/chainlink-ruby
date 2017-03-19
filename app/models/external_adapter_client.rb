@@ -9,7 +9,7 @@ class ExternalAdapterClient
   def start_assignment(assignment)
     hashie_post(validator_url('/assignments'), {
       data: assignment.parameters,
-      end_at: assignment.end_at.to_i.to_s,
+      endAt: assignment.end_at.to_i.to_s,
       xid: assignment.xid,
     })
   end
