@@ -19,4 +19,19 @@ describe Subtask::SnapshotRequest do
     end
   end
 
+  describe "assignment snapshot API" do
+    let(:data) { snapshot_hash }
+    let(:request) { factory_create :subtask_snapshot_request, data: data }
+    let(:subtask) { request.subtask }
+
+    it "conforms to the assignment snapshot API" do
+      expect(request.value).to eq(data[:value])
+      expect(request.summary).to eq(data[:summary])
+      expect(request.description).to eq(data[:description])
+      expect(request.description_url).to eq(data[:description_url])
+      expect(request.details).to eq(data[:details])
+      expect(request.config).to eq(subtask.parameters)
+    end
+  end
+
 end

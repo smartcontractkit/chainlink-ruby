@@ -16,6 +16,34 @@ class Subtask::SnapshotRequest < ActiveRecord::Base
     JSON.parse(data_json) if data_json.present?
   end
 
+  def value
+    data['value']
+  end
+
+  def summary
+    data['summary']
+  end
+
+  def description
+    data['description']
+  end
+
+  def description_url
+    data['description_url']
+  end
+
+  def details
+    data['details']
+  end
+
+  def config
+    subtask.parameters
+  end
+
+  def fulfilled
+    true
+  end
+
 
   private
 

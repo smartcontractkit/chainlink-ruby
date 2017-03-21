@@ -88,7 +88,7 @@ module SpecHelpers
 
   def snapshot_hash(options = {})
     {
-      assignmentXID: options.fetch(:assignmentXID),
+      assignmentXID: options.fetch(:assignmentXID, SecureRandom.uuid),
       fulfilled: options.fetch(:fulfilled, true),
       details: options.fetch(:details, {SecureRandom.hex => SecureRandom.hex}),
       status: options.fetch(:status, Assignment::IN_PROGRESS),
