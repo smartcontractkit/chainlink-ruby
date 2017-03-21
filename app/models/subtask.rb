@@ -41,6 +41,13 @@ class Subtask < ActiveRecord::Base
     adapter.stop self
   end
 
+  def snapshot_requested(request)
+    assignment.check_status({
+      request: request,
+      requester: self,
+    })
+  end
+
 
   private
 

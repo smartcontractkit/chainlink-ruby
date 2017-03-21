@@ -107,4 +107,22 @@ describe Subtask, type: :model do
     end
   end
 
+  describe "#snapshot_requested" do
+    let(:subtask) { factory_create :subtask }
+    let(:assignment) { subtask.assignment }
+    let(:request) { factory_create :subtask_snapshot_request }
+
+    it "creates a new assignment snapshot and sets itself as the requester" do
+      expect {
+        subtask.snapshot_requested request
+      }.to change {
+        assignment.snapshots.count
+      }.by(+1)
+
+      snapshot = AssignmentSnapshot.last
+      expect(snapshot.requester).to eq(subtask)
+      expect(snapshot.request).to eq(request)
+    end
+  end
+
 end
