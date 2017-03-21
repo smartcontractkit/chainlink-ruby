@@ -19,6 +19,8 @@ class AdapterBuilder
       Ethereum::Uint256Oracle.new(body: params)
     elsif [Ethereum::Int256Oracle::SCHEMA_NAME].include? type
       Ethereum::Int256Oracle.new(body: params)
+    elsif [Ethereum::FormattedOracle::SCHEMA_NAME].include? type
+      Ethereum::FormattedOracle.new(body: params)
     elsif [Ethereum::LogWatcher::SCHEMA_NAME].include? type
       Ethereum::LogWatcher.new(body: params)
     elsif [JsonReceiver::SCHEMA_NAME].include? type
