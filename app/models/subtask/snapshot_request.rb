@@ -4,6 +4,8 @@ class Subtask::SnapshotRequest < ActiveRecord::Base
 
   validates :subtask, presence: true
 
+  after_create :request_snapshot
+
 
   def data=(params)
     self.data_json = (params ? params.to_json : nil)
@@ -12,6 +14,13 @@ class Subtask::SnapshotRequest < ActiveRecord::Base
 
   def data
     JSON.parse(data_json) if data_json.present?
+  end
+
+
+  private
+
+  def request_snapshot
+    subtask.delay.snapshot_requested self
   end
 
 end

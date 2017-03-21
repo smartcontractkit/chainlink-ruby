@@ -7,4 +7,16 @@ describe Subtask::SnapshotRequest do
     it { is_expected.not_to have_valid(:subtask).when(nil) }
   end
 
+  describe "on create" do
+    let(:request) { factory_build :subtask_snapshot_request }
+    let(:subtask) { request.subtask }
+
+    it "requests a snapshot from its adapter" do
+      expect(subtask).to receive_message_chain(:delay, :snapshot_requested)
+        .with(request)
+
+      request.save
+    end
+  end
+
 end
