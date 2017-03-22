@@ -3,6 +3,7 @@ class Subtask < ActiveRecord::Base
   belongs_to :adapter, polymorphic: true
   belongs_to :assignment, inverse_of: :subtasks
   has_many :adapter_snapshots
+  has_many :snapshot_requests, inverse_of: :subtask
 
   validates :adapter, presence: true
   validates :assignment, presence: true

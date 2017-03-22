@@ -1,6 +1,6 @@
 class Subtask::SnapshotRequest < ActiveRecord::Base
 
-  belongs_to :subtask
+  belongs_to :subtask, inverse_of: :snapshot_requests
 
   validates :subtask, presence: true
 
@@ -34,6 +34,10 @@ class Subtask::SnapshotRequest < ActiveRecord::Base
 
   def details
     data['details']
+  end
+
+  def status
+    data['status']
   end
 
   def config
