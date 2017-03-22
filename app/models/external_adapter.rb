@@ -23,8 +23,14 @@ class ExternalAdapter < ActiveRecord::Base
     client.start_assignment subtask
   end
 
-  def get_status(status_record, previous_snapshot = nil)
-    client.assignment_snapshot status_record, previous_snapshot
+  def get_status(snapshot, previous_snapshot = nil)
+    assignment_snapshot = snapshot.assignment_snapshot
+
+    if snapshot.subtask == assignment_snapshot.requester
+      assignment_snapshot.request
+    else
+      client.assignment_snapshot snapshot, previous_snapshot
+    end
   end
 
   def stop(subtask)

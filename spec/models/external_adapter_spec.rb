@@ -36,4 +36,39 @@ describe ExternalAdapter, type: :model do
     end
   end
 
+  describe "#get_status" do
+    let!(:adapter) { factory_create :external_adapter }
+    let!(:subtask) { factory_create :subtask, adapter: adapter }
+    let!(:adapter_snapshot) { factory_create :adapter_snapshot, assignment_snapshot: assignment_snapshot, subtask: subtask }
+    let!(:assignment_snapshot) { factory_create :assignment_snapshot, requester: requester, request: request }
+
+    context "when the subtask's requester is the subtask itself" do
+      let!(:request) { factory_create :subtask_snapshot_request }
+      let(:requester) { subtask }
+
+      it "does NOT make an external call" do
+        expect(ExternalAdapterClient).not_to receive(:post)
+
+        adapter.get_status adapter_snapshot
+      end
+
+      it "returns the subtask's request" do
+        result = adapter.get_status adapter_snapshot
+
+        expect(result).to eq(request)
+      end
+    end
+
+    context "when the subtask's requester is NOT the subtask itself" do
+      let(:request) { nil }
+      let(:requester) { nil }
+
+      it "does make an external call" do
+        expect(ExternalAdapterClient).to receive(:post)
+
+        adapter.get_status adapter_snapshot
+      end
+    end
+  end
+
 end
