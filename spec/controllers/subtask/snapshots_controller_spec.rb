@@ -1,3 +1,5 @@
+require 'subtask/snapshots_controller'
+
 describe Subtask::SnapshotsController, type: :controller do
 
   describe "#create" do
