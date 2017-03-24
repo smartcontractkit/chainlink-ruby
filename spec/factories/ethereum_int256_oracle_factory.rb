@@ -7,7 +7,7 @@ FactoryGirl.define do
       hashie({
         address: (address.present? ? address : ethereum_address),
         updateAddress: (update_address.present? ? update_address : SecureRandom.hex),
-      })
+      }.compact)
     end
   end
 

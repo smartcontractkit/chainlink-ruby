@@ -77,12 +77,49 @@ describe Ethereum::Uint256Oracle do
       end
     end
 
+    context "when the owner is specified in the body" do
+      let(:oracle) { factory_build :ethereum_uint256_oracle, body: hashie(owner: owner) }
+
+      context "and the owner account is present" do
+        let(:owner_account) { factory_create(:ethereum_account) }
+        let(:owner) { owner_account.address }
+
+        it "sets the account to the body's owner" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(owner_account)
+        end
+      end
+
+      context "and the owner account is present" do
+        let(:owner) { ethereum_address }
+
+        it "sets the account to the default" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(Ethereum::Account.default)
+        end
+      end
+    end
+
     it "sets the result multiplier to 1 by default" do
       expect {
         oracle.save
       }.to change {
         oracle.result_multiplier
       }.from(nil).to(1)
+    end
+
+    it "sets the owner to the default" do
+      expect {
+        oracle.save
+      }.to change {
+        oracle.account
+      }.from(nil).to(Ethereum::Account.default)
     end
   end
 

@@ -29,12 +29,41 @@ describe Ethereum::FormattedOracle do
       }.from(nil)
     end
 
-    it "does save an ethereum account" do
+    it "uses the default ethereum account" do
       expect {
         oracle.save
       }.to change {
         oracle.ethereum_account
       }.from(nil).to(Ethereum::Account.default)
+    end
+
+    context "when the owner is specified in the body" do
+      let(:oracle) { factory_build :ethereum_formatted_oracle, body: hashie(owner: owner) }
+
+      context "and the owner account is present" do
+        let(:owner_account) { factory_create(:ethereum_account) }
+        let(:owner) { owner_account.address }
+
+        it "sets the account to the body's owner" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(owner_account)
+        end
+      end
+
+      context "and the owner account is present" do
+        let(:owner) { ethereum_address }
+
+        it "sets the account to the default" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(Ethereum::Account.default)
+        end
+      end
     end
   end
 

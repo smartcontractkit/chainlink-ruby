@@ -1,7 +1,7 @@
 describe Ethereum::Bytes32Oracle do
 
   describe "validations" do
-    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", "0x#{SecureRandom.hex(20).upcase}", nil) }
+    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
     it { is_expected.not_to have_valid(:address).when('', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
 
     it { is_expected.to have_valid(:update_address).when(SecureRandom.hex(20), SecureRandom.hex(1), "0x#{SecureRandom.hex}", '0x', '', nil) }
@@ -11,6 +11,7 @@ describe Ethereum::Bytes32Oracle do
   describe "on create" do
     let(:assignment) { factory_create :assignment }
     let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
+    let(:oracle) { factory_build :ethereum_bytes32_oracle, assignment: assignment }
 
     context "when the address exists in the body" do
       let(:oracle) { factory_build :external_bytes32_oracle }
@@ -74,6 +75,43 @@ describe Ethereum::Bytes32Oracle do
 
         oracle.save
       end
+    end
+
+    context "when the owner is specified in the body" do
+      let(:oracle) { factory_build :ethereum_bytes32_oracle, body: hashie(owner: owner) }
+
+      context "and the owner account is present" do
+        let(:owner_account) { factory_create(:ethereum_account) }
+        let(:owner) { owner_account.address }
+
+        it "sets the account to the body's owner" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(owner_account)
+        end
+      end
+
+      context "and the owner account is present" do
+        let(:owner) { ethereum_address }
+
+        it "sets the account to the default" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(Ethereum::Account.default)
+        end
+      end
+    end
+
+    it "sets the owner to the default" do
+      expect {
+        oracle.save
+      }.to change {
+        oracle.account
+      }.from(nil).to(Ethereum::Account.default)
     end
   end
 
