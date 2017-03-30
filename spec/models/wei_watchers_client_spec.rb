@@ -13,6 +13,7 @@ describe WeiWatchersClient do
             account: account,
             endAt: end_at.to_i.to_s,
           },
+          basic_auth: wei_watchers_credentials,
         })
         .and_return(wei_watchers_response)
 

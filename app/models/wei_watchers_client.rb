@@ -11,4 +11,14 @@ class WeiWatchersClient
     }.compact)
   end
 
+
+  private
+
+  def http_client_auth_params
+    {
+      password: ENV['WEI_WATCHERS_PASSWORD'],
+      username: ENV['WEI_WATCHERS_USERNAME'],
+    }
+  end
+
 end

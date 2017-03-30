@@ -44,9 +44,12 @@ describe "watching already deployed addresses", type: :request do
 
     expect(WeiWatchersClient).to receive(:post) do |path, params|
       expect(path).to eq('/subscriptions')
-      expect(params).to eq(body: {
-        account: watched_address,
-        endAt: deadline,
+      expect(params).to eq({
+        basic_auth: wei_watchers_credentials,
+        body: {
+          account: watched_address,
+          endAt: deadline,
+        }
       })
 
       http_response(body: {

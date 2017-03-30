@@ -27,4 +27,11 @@ module SpecHelpers
     }
   end
 
+  def wei_watchers_credentials
+    {
+      password: ENV['WEI_WATCHERS_PASSWORD'],
+      username: ENV['WEI_WATCHERS_USERNAME'],
+    }
+  end
+
 end
