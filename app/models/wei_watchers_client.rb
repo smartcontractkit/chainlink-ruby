@@ -1,10 +1,10 @@
 class WeiWatchersClient
 
   include HttpClient
-  base_uri ENV['WEI_WATCHERS_URL']
+  base_uri "#{ENV['WEI_WATCHERS_URL']}/api/"
 
   def create_subscription(options = {})
-    hashie_post('/subscriptions', {
+    hashie_post('/event_subscriptions', {
       account: options[:account],
       endAt: (options[:endAt] || options[:end_at]).to_i.to_s,
       topics: options[:topics],

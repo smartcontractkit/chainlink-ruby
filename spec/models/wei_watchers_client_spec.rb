@@ -8,7 +8,7 @@ describe WeiWatchersClient do
 
     it "sends a post request to the WeiWatchers URL" do
       expect(WeiWatchersClient).to receive(:post)
-        .with('/subscriptions', {
+        .with('/event_subscriptions', {
           body: {
             account: account,
             endAt: end_at.to_i.to_s,

@@ -43,7 +43,7 @@ describe "watching already deployed addresses", type: :request do
     subtask2 = assignment.subtasks.second
 
     expect(WeiWatchersClient).to receive(:post) do |path, params|
-      expect(path).to eq('/subscriptions')
+      expect(path).to eq('/event_subscriptions')
       expect(params).to eq({
         basic_auth: wei_watchers_credentials,
         body: {
