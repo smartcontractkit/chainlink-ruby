@@ -54,11 +54,11 @@ class Subtask < ActiveRecord::Base
 
   def set_up
     return if assignment.blank? || adapter.blank?
+    self.xid ||= SecureRandom.uuid
     start_response.errors.each do |error_message|
       errors.add(:base, "Adapter##{index} Error: #{error_message}")
     end if start_response.errors.present?
     self.ready = adapter.ready?
-    self.xid = SecureRandom.uuid
     true
   end
 
