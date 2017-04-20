@@ -9,15 +9,13 @@ describe Assignment::Janitor do
   end
 
   describe ".clean_up" do
+    before { Assignment.destroy_all }
     let(:id) { rand 1_000_000 }
+    let!(:assignment) { factory_create :assignment, end_at: 1.minute.ago }
 
     it "schedules a clean up for each expired assignment" do
-      expect(Assignment).to receive_message_chain(:expired, :termless, :pluck)
-        .with(:id)
-        .and_return([id])
-
       expect(Assignment::Janitor).to receive_message_chain(:delay, :perform)
-        .with(id)
+        .with(assignment.id)
 
       Assignment::Janitor.clean_up
     end

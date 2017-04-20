@@ -10,7 +10,7 @@ class Assignment::Janitor
     end
   end
 
-  def perform(assignment_id)
+  def self.perform(assignment_id)
     assignment = Assignment.find(assignment_id)
 
     new(assignment).perform
