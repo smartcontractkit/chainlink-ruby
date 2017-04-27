@@ -33,4 +33,10 @@ class ExternalAdapterController < ApplicationController
     ensure_credentials && authenticate_adapter_or_coordinator
   end
 
+  def ensure_adapter
+    if adapter.blank?
+      response_404 'Not found.'
+    end
+  end
+
 end

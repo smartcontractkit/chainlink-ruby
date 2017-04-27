@@ -73,7 +73,7 @@ class AssignmentSnapshotHandler
     snapshot.update_attributes({
       adapter_index: next_adapter_snapshot.index,
     })
-    next_adapter_snapshot.start adapter_snapshot.details
+    next_adapter_snapshot.start adapter_snapshot
   end
 
   def update_assignment_status(new_status)

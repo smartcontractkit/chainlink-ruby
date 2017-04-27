@@ -22,12 +22,12 @@ class Assignment < ActiveRecord::Base
   validate :finished_status_remains
 
   before_validation :set_up, on: :create
-  after_create :set_initial_value, if: :ready?
+  after_create :set_initial_value
 
   validates_associated :schedule
   accepts_nested_attributes_for :schedule
 
-  scope :expired, -> { where("status = ? AND end_at < now()", IN_PROGRESS) }
+  scope :expired, -> { where("assignments.status = ? AND assignments.end_at < now()", IN_PROGRESS) }
   scope :termless, -> { includes(:term).where(terms: {expectation_id: nil}) }
 
   def adapters
@@ -79,7 +79,7 @@ class Assignment < ActiveRecord::Base
 
   def subtask_ready(subtask)
     if ready? && subtasks.include?(subtask)
-      check_status
+      check_status unless skip_initial_snapshot?
       coordinator.assignment_initialized id
     end
   end
@@ -141,7 +141,9 @@ class Assignment < ActiveRecord::Base
   end
 
   def set_initial_value
-    delay.check_status
+    if ready? && !skip_initial_snapshot?
+      delay.check_status
+    end
   end
 
 end

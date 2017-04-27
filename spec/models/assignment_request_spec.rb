@@ -64,15 +64,20 @@ describe AssignmentRequest, type: :model do
 
     context "when the assignment is version 1.0 or greater" do
       let(:body_json) { assignment_1_0_0_json }
+      let(:assignment) { request.assignment }
 
-      before { request.save }
+      before { request.tap(&:save).reload }
 
       it "creates a list of assignments" do
-        expect(request.reload.assignment.adapters.size).to eq 2
+        expect(assignment.adapters.size).to eq 2
       end
 
       it "does not create any scheduled updates" do
-        expect(request.reload.assignment.scheduled_updates.count).to eq(0)
+        expect(assignment.scheduled_updates.count).to eq(0)
+      end
+
+      it "saves the subtask type" do
+        expect(assignment.subtasks.first.task_type).to eq('basic')
       end
     end
 

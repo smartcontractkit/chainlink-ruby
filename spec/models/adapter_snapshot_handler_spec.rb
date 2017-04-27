@@ -6,7 +6,7 @@ describe AdapterSnapshotHandler do
     let(:assignment_snapshot) { factory_create :assignment_snapshot }
     let(:assignment) { snapshot.subtask.assignment }
     let(:adapter) { snapshot.subtask.adapter }
-    let(:params) { Hash.new }
+    let(:previous_snapshot) { factory_create :adapter_snapshot }
     let(:adapter_response) do
       {
         fulfilled: false,
@@ -16,14 +16,14 @@ describe AdapterSnapshotHandler do
 
     before do
       allow_any_instance_of(ExternalAdapter).to receive(:get_status)
-        .with(snapshot, params)
+        .with(snapshot, previous_snapshot)
         .and_return(hashie adapter_response)
     end
 
     context "when the adapter responds without information" do
       it "marks itself as unfulfilled" do
         expect {
-          handler.perform params
+          handler.perform previous_snapshot
         }.not_to change {
           snapshot.fulfilled
         }.from(false)
@@ -31,7 +31,7 @@ describe AdapterSnapshotHandler do
 
       it "records the information" do
         expect {
-          handler.perform params
+          handler.perform previous_snapshot
         }.not_to change {
           snapshot.value
         }
@@ -40,7 +40,7 @@ describe AdapterSnapshotHandler do
       it "does NOT pass the response back to the assignment snapshot" do
         expect(assignment_snapshot).not_to receive(:adapter_response)
 
-        handler.perform params
+        handler.perform previous_snapshot
       end
     end
 
@@ -60,7 +60,7 @@ describe AdapterSnapshotHandler do
 
       it "marks itself as fulfilled" do
         expect {
-          handler.perform params
+          handler.perform previous_snapshot
         }.to change {
           snapshot.fulfilled
         }.from(false).to(true)
@@ -68,7 +68,7 @@ describe AdapterSnapshotHandler do
 
       it "records the information" do
         expect {
-          handler.perform params
+          handler.perform previous_snapshot
         }.to change {
           snapshot.value
         }.from(nil).to(value).and change {
@@ -83,7 +83,7 @@ describe AdapterSnapshotHandler do
           expect(instance).to eq(assignment_snapshot)
         end
 
-        handler.perform params
+        handler.perform previous_snapshot
       end
     end
 
@@ -94,13 +94,13 @@ describe AdapterSnapshotHandler do
         expect(Notification).to receive_message_chain(:delay, :snapshot_failure)
           .with(assignment, ["No response received."])
 
-        handler.perform params
+        handler.perform previous_snapshot
       end
 
       it "does NOT pass the response up to the assignment snapshot" do
         expect(assignment_snapshot).not_to receive(:adapter_response)
 
-        handler.perform params
+        handler.perform previous_snapshot
       end
     end
 
@@ -112,7 +112,7 @@ describe AdapterSnapshotHandler do
         expect(Notification).to receive_message_chain(:delay, :snapshot_failure)
           .with(assignment, errors)
 
-        handler.perform params
+        handler.perform previous_snapshot
       end
 
       it "passes the response up to the assignment snapshot" do
@@ -120,7 +120,7 @@ describe AdapterSnapshotHandler do
           expect(instance).to eq(assignment_snapshot)
         end
 
-        handler.perform params
+        handler.perform previous_snapshot
       end
     end
   end

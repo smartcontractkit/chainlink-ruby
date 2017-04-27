@@ -42,10 +42,13 @@ describe "integration with WeiWatchers", type: :request do
     oracle = assignment.adapters.last
 
     expect(WeiWatchersClient).to receive(:post) do |path, params|
-      expect(path).to eq('/subscriptions')
-      expect(params).to eq(body: {
-        account: oracle.reload.contract_address,
-        endAt: deadline,
+      expect(path).to eq('/event_subscriptions')
+      expect(params).to eq({
+        basic_auth: wei_watchers_credentials,
+        body: {
+          account: oracle.reload.contract_address,
+          endAt: deadline,
+        },
       })
 
       http_response(body: {

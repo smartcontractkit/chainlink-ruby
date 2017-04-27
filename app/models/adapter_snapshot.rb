@@ -42,8 +42,8 @@ class AdapterSnapshot < ActiveRecord::Base
     self == snapshot_peers.last
   end
 
-  def start(params = {})
-    handler.perform params.merge config: subtask.parameters
+  def start(previous_snapshot = nil)
+    handler.perform previous_snapshot
   end
 
 

@@ -54,6 +54,7 @@ module SpecHelpers
 
     {
       subtasks: subtasks,
+      skipInitialSnapshot: options[:skipInitialSnapshot],
       description: description,
       fees: fees,
       schedule: schedule,
@@ -83,6 +84,17 @@ module SpecHelpers
       minute: options.fetch(:minute, '0'),
       startAt: options[:startAt],
     }).compact
+  end
+
+  def snapshot_hash(options = {})
+    {
+      assignmentXID: options.fetch(:assignmentXID, SecureRandom.uuid),
+      fulfilled: options.fetch(:fulfilled, true),
+      details: options.fetch(:details, {SecureRandom.hex => SecureRandom.hex}),
+      status: options.fetch(:status, Assignment::IN_PROGRESS),
+      summary: options[:summary],
+      value: options.fetch(:value, SecureRandom.hex),
+    }
   end
 
 end

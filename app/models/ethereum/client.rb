@@ -143,6 +143,26 @@ class Ethereum::Client
     epost('eth_getCode', [address, tag]).result
   end
 
+  def get_filter_logs(filter_id)
+    response = epost('eth_getFilterLogs', filter_id)
+    raise response.error.to_json if response.error.present?
+    Array.wrap(response.result).compact
+  end
+
+  def get_filter_changes(filter_id)
+    response = epost('eth_getFilterChanges', filter_id)
+    raise response.error.to_json if response.error.present?
+    Array.wrap(response.result).compact
+  end
+
+  def uninstall_filter(filter_id)
+    Array.wrap(epost('eth_uninstall', filter_id).result).flatten
+  end
+
+  def get_logs(options)
+    epost('eth_getLogs', options)
+  end
+
 
   private
 

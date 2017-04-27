@@ -3,6 +3,7 @@ class Subtask < ActiveRecord::Base
   belongs_to :adapter, polymorphic: true
   belongs_to :assignment, inverse_of: :subtasks
   has_many :adapter_snapshots
+  has_many :snapshot_requests, inverse_of: :subtask
 
   validates :adapter, presence: true
   validates :assignment, presence: true
@@ -41,16 +42,23 @@ class Subtask < ActiveRecord::Base
     adapter.stop self
   end
 
+  def snapshot_requested(request)
+    assignment.check_status({
+      request: request,
+      requester: self,
+    })
+  end
+
 
   private
 
   def set_up
     return if assignment.blank? || adapter.blank?
+    self.xid ||= SecureRandom.uuid
     start_response.errors.each do |error_message|
       errors.add(:base, "Adapter##{index} Error: #{error_message}")
     end if start_response.errors.present?
     self.ready = adapter.ready?
-    self.xid = SecureRandom.uuid
     true
   end
 

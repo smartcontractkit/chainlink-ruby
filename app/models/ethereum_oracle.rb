@@ -42,7 +42,7 @@ class EthereumOracle < ActiveRecord::Base
     term || assignment.term
   end
 
-  def get_status(_assignment_snapshot, _details = {})
+  def get_status(_assignment_snapshot, _previous_snapshot = nil)
     write = updater.perform format_hex_value(current_value), current_value
     write.snapshot_decorator
   end

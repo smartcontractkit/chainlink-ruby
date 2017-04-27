@@ -4,6 +4,7 @@ FactoryGirl.define do
 
   factory :subtask do
     association :adapter, factory: :external_adapter
+    task_type { AssignmentType.first.name }
     assignment
     index { generate(:subtask_index) }
   end

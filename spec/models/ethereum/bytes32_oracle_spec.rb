@@ -1,7 +1,7 @@
 describe Ethereum::Bytes32Oracle do
 
   describe "validations" do
-    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", "0x#{SecureRandom.hex(20).upcase}", nil) }
+    it { is_expected.to have_valid(:address).when("0x#{SecureRandom.hex(20)}", nil) }
     it { is_expected.not_to have_valid(:address).when('', '0x', SecureRandom.hex(20), "0x#{SecureRandom.hex(19)}") }
 
     it { is_expected.to have_valid(:update_address).when(SecureRandom.hex(20), SecureRandom.hex(1), "0x#{SecureRandom.hex}", '0x', '', nil) }
@@ -11,6 +11,7 @@ describe Ethereum::Bytes32Oracle do
   describe "on create" do
     let(:assignment) { factory_create :assignment }
     let(:subtask) { factory_build :subtask, adapter: oracle, assignment: assignment }
+    let(:oracle) { factory_build :ethereum_bytes32_oracle, assignment: assignment }
 
     context "when the address exists in the body" do
       let(:oracle) { factory_build :external_bytes32_oracle }
@@ -75,20 +76,57 @@ describe Ethereum::Bytes32Oracle do
         oracle.save
       end
     end
+
+    context "when the owner is specified in the body" do
+      let(:oracle) { factory_build :ethereum_bytes32_oracle, body: hashie(owner: owner) }
+
+      context "and the owner account is present" do
+        let(:owner_account) { factory_create(:ethereum_account) }
+        let(:owner) { owner_account.address }
+
+        it "sets the account to the body's owner" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(owner_account)
+        end
+      end
+
+      context "and the owner account is present" do
+        let(:owner) { ethereum_address }
+
+        it "sets the account to the default" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(Ethereum::Account.default)
+        end
+      end
+    end
+
+    it "sets the owner to the default" do
+      expect {
+        oracle.save
+      }.to change {
+        oracle.account
+      }.from(nil).to(Ethereum::Account.default)
+    end
   end
 
   describe "#get_status" do
     let!(:adapter) { factory_create :ethereum_bytes32_oracle }
+    let(:previous_snapshot) { factory_create :adapter_snapshot, value: value }
     let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { "some string that is longer than 32 characters, because we test that it is cut down to 32" }
     let(:truncated_value) { "some string that is longer than " }
     let(:hex_truncated_value) { "736f6d6520737472696e672074686174206973206c6f6e676572207468616e20" }
-    let(:params) { {value: value} }
     let(:assignment) { adapter.assignment }
     let(:txid) { ethereum_txid }
 
     it "formats the response of the oracle" do
-      status = adapter.get_status(snapshot, params)
+      status = adapter.get_status(snapshot, previous_snapshot)
 
       expect(status.errors).to be_empty
       expect(status.fulfilled).to be true
@@ -104,7 +142,7 @@ describe Ethereum::Bytes32Oracle do
 
     it "creates a new ethereum oracle write record" do
       expect {
-        adapter.get_status(snapshot, params)
+        adapter.get_status(snapshot, previous_snapshot)
       }.to change {
         EthereumOracleWrite.count
       }.by(+1)
@@ -117,7 +155,7 @@ describe Ethereum::Bytes32Oracle do
         .with(hex_truncated_value, truncated_value)
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
-      adapter.get_status(snapshot, params)
+      adapter.get_status(snapshot, previous_snapshot)
     end
   end
 

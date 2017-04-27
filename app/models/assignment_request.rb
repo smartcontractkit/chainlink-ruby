@@ -42,6 +42,7 @@ class AssignmentRequest < ActiveRecord::Base
       end_at: parse_time(end_at),
       schedule_attributes: (schedule_params if schedule_params[:endAt]),
       scheduled_updates: (scheduled_updates if scheduled_updates.any?),
+      skip_initial_snapshot: skip_initial_snapshot,
       start_at: parse_time(schedule_params[:startAt]),
     }.compact)
   end
@@ -106,6 +107,7 @@ class AssignmentRequest < ActiveRecord::Base
         adapter: AdapterBuilder.perform(type, adapter_params),
         index: index,
         parameters: adapter_params,
+        task_type: type,
       })
     end
   end
@@ -121,6 +123,10 @@ class AssignmentRequest < ActiveRecord::Base
     @scheduled_updates ||= Array.wrap(schedule_params[:runAt]).compact.map do |time|
       Assignment::ScheduledUpdate.new run_at: parse_time(time)
     end
+  end
+
+  def skip_initial_snapshot
+    assignment_params[:skipInitialSnapshot]
   end
 
 end

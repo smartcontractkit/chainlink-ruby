@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216201630) do
+ActiveRecord::Schema.define(version: 20170321205302) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.datetime "end_at"
     t.string   "status"
     t.integer  "coordinator_id"
+    t.boolean  "skip_initial_snapshot", default: false
   end
 
   create_table "contracts", force: :cascade do |t|
@@ -206,6 +207,14 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.integer "transaction_index"
   end
 
+  create_table "ethereum_formatted_oracles", force: :cascade do |t|
+    t.string   "address"
+    t.string   "update_address"
+    t.integer  "ethereum_account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ethereum_int256_oracles", force: :cascade do |t|
     t.string   "address"
     t.string   "update_address"
@@ -221,6 +230,12 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.string   "account"
     t.string   "xid"
     t.datetime "end_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ethereum_log_watchers", force: :cascade do |t|
+    t.string   "address"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -285,6 +300,20 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.string   "basic_auth_username"
   end
 
+  create_table "json_receiver_requests", force: :cascade do |t|
+    t.integer  "json_receiver_id"
+    t.text     "data_json"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  create_table "json_receivers", force: :cascade do |t|
+    t.string   "xid"
+    t.string   "path_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "key_pairs", force: :cascade do |t|
     t.string   "owner_type"
     t.integer  "owner_id"
@@ -292,6 +321,13 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "private_key"
+  end
+
+  create_table "subtask_snapshot_requests", force: :cascade do |t|
+    t.integer  "subtask_id"
+    t.text     "data_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "subtasks", force: :cascade do |t|
@@ -304,6 +340,7 @@ ActiveRecord::Schema.define(version: 20170216201630) do
     t.datetime "updated_at"
     t.boolean  "ready"
     t.string   "xid"
+    t.string   "task_type"
   end
 
   create_table "terms", force: :cascade do |t|

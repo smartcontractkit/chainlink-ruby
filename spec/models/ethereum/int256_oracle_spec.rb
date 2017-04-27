@@ -77,6 +77,35 @@ describe Ethereum::Int256Oracle do
       end
     end
 
+    context "when the owner is specified in the body" do
+      let(:oracle) { factory_build :ethereum_int256_oracle, body: hashie(owner: owner) }
+
+      context "and the owner account is present" do
+        let(:owner_account) { factory_create(:ethereum_account) }
+        let(:owner) { owner_account.address }
+
+        it "sets the account to the body's owner" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(owner_account)
+        end
+      end
+
+      context "and the owner account is present" do
+        let(:owner) { ethereum_address }
+
+        it "sets the account to the default" do
+          expect {
+            oracle.save
+          }.to change {
+            oracle.account
+          }.from(nil).to(Ethereum::Account.default)
+        end
+      end
+    end
+
     it "sets the result multiplier to 1 by default" do
       expect {
         oracle.save
@@ -84,29 +113,35 @@ describe Ethereum::Int256Oracle do
         oracle.result_multiplier
       }.from(nil).to(1)
     end
-  end
 
+    it "sets the owner to the default" do
+      expect {
+        oracle.save
+      }.to change {
+        oracle.account
+      }.from(nil).to(Ethereum::Account.default)
+    end
+  end
 
   describe "#get_status" do
     let!(:adapter) { factory_create :ethereum_int256_oracle }
     let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { 12431235452456 }
     let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
-    let(:params) { {value: value} }
+    let(:previous_snapshot) { factory_create :adapter_snapshot, value: value }
 
     it "passes the current value and its equivalent hex to the updater" do
       expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
         .with(hex_truncated_value, value)
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
-      adapter.get_status(snapshot, params)
+      adapter.get_status(snapshot, previous_snapshot)
     end
 
     context "when the contract has a result multiplier" do
       let(:value) { 124312354524.56 }
       let(:value_multiplied) { 12431235452456 }
       let(:hex_truncated_value) { "00000000000000000000000000000000000000000000000000000b4e5f5f8e28" }
-      let(:params) { {value: value} }
       let!(:adapter) { factory_create :ethereum_int256_oracle, result_multiplier: 100 }
 
       it "passes the current value and its equivalent hex to the updater" do
@@ -114,7 +149,7 @@ describe Ethereum::Int256Oracle do
           .with(hex_truncated_value, value_multiplied)
           .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
-        adapter.get_status(snapshot, params)
+        adapter.get_status(snapshot, previous_snapshot)
       end
     end
   end
