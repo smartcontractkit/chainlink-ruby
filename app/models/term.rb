@@ -13,6 +13,7 @@ class Term < ActiveRecord::Base
 
   validates :contract, presence: true
   validates :end_at, presence: true
+  validates :expectation, presence: true
   validates :name, presence: true, uniqueness: { scope: :contract_id }
   validates :start_at, presence: true
   validates :status, inclusion: { in: [COMPLETED, FAILED, IN_PROGRESS] }

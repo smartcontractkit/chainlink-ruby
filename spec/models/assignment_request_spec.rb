@@ -17,7 +17,7 @@ describe AssignmentRequest, type: :model do
 
   describe "on creation" do
     let(:coordinator) { factory_create :coordinator }
-    let(:body_json) { assignment_0_1_0_json }
+    let(:body_json) { assignment_1_0_0_json }
     let(:request) { factory_build :assignment_request, coordinator: coordinator, body_json: body_json }
 
     it "signs the body hash" do
@@ -57,7 +57,7 @@ describe AssignmentRequest, type: :model do
 
       before { request.save }
 
-      it "creates a list of assignments" do
+      it "creates a list of adapters" do
         expect(request.reload.assignment.adapters.size).to eq(1)
       end
     end
@@ -68,7 +68,7 @@ describe AssignmentRequest, type: :model do
 
       before { request.tap(&:save).reload }
 
-      it "creates a list of assignments" do
+      it "creates a list of adapters" do
         expect(assignment.adapters.size).to eq 2
       end
 
@@ -93,7 +93,7 @@ describe AssignmentRequest, type: :model do
         expect(updates.map(&:run_at).map(&:to_i)).to match_array(update_times)
       end
 
-      it "creates a list of assignments" do
+      it "sets the end time" do
         expect(request.assignment.end_at.to_i).to eq(update_times.max)
       end
     end

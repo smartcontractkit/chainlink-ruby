@@ -19,7 +19,8 @@ describe Term, type: :model do
       let(:older_term) do
         Term.create({
           start_at: 1.day.ago, end_at: 1.day.from_now,
-          contract: contracts(:basic), name: '1', tracking: "seo"
+          contract: contracts(:basic), name: '1', tracking: "seo",
+          expectation: factory_build(:assignment)
         })
       end
 
