@@ -1,43 +1,63 @@
 class Assignment::RequestHandler
 
+  attr_reader :assignment, :errors
+
   def self.perform(request)
-    new(request).perform
+    new(request).tap(&:perform)
   end
 
   def initialize(request)
     @request = request
     @coordinator = request.coordinator
     @body = request.body
+
+    @assignment = request.build_assignment
+    @errors = []
   end
 
   def perform
-    @assignment ||= request.build_assignment({
-      subtasks: subtasks,
-      coordinator: coordinator,
-      end_at: parse_time(end_at),
-      schedule_attributes: (schedule_params if schedule_params[:endAt]),
-      scheduled_updates: (scheduled_updates if scheduled_updates.any?),
-      skip_initial_snapshot: skip_initial_snapshot,
-      start_at: parse_time(schedule_params[:startAt]),
-    }.compact)
+    @subtasks = []
+    @valid = true
+    validate_subtasks
+
+    if valid?
+      assignment.assign_attributes({
+        subtasks: subtasks,
+        coordinator: coordinator,
+        end_at: parse_time(end_at),
+        schedule_attributes: (schedule_params if schedule_params[:endAt]),
+        scheduled_updates: (scheduled_updates if scheduled_updates.any?),
+        skip_initial_snapshot: skip_initial_snapshot,
+        start_at: parse_time(schedule_params[:startAt]),
+      }.compact)
+    end
+  end
+
+  def valid?
+    valid
+  end
+
+  def errors
+    assignment.errors
   end
 
 
   private
 
-  attr_reader :assignment, :body, :coordinator, :request
+  attr_reader :body, :coordinator, :request, :subtasks, :valid
 
-  def subtasks
-    @subtasks ||= request.subtask_params.map.with_index do |params, index|
+  def validate_subtasks
+    subtask_params.each.with_index do |params, index|
       next unless params && type = params[:adapterType]
-      subtask_params = params[:adapterParams] || adapter_params
+      subtask = build_subtask type, params, index
 
-      Subtask.new({
-        adapter: AdapterBuilder.perform(type, subtask_params),
-        index: index,
-        parameters: subtask_params,
-        task_type: type,
-      })
+      if @valid = subtask.valid?
+        subtasks << subtask
+      else
+        add_subtask_errors subtask
+        subtasks.each(&:close_out!)
+        break
+      end
     end
   end
 
@@ -72,6 +92,27 @@ class Assignment::RequestHandler
 
   def skip_initial_snapshot
     request.assignment_params[:skipInitialSnapshot]
+  end
+
+  def subtask_params
+    request.subtask_params || [adapter_params]
+  end
+
+  def build_subtask(type, params, index)
+    subtask_params = params[:adapterParams]
+
+    assignment.subtasks.build({
+      adapter: AdapterBuilder.perform(type, subtask_params),
+      index: index,
+      parameters: subtask_params,
+      task_type: type,
+    })
+  end
+
+  def add_subtask_errors(subtask)
+    subtask.errors.full_messages.each do |error|
+      assignment.errors[:base] << error
+    end
   end
 
 end

@@ -3,7 +3,8 @@ describe Assignment::RequestHandler do
     let(:coordinator) { factory_create :coordinator }
     let(:body_json) { assignment_1_0_0_json }
     let(:request) { factory_build :assignment_request, coordinator: coordinator, body_json: body_json }
-    let(:assignment) { Assignment::RequestHandler.perform(request) }
+    let(:handler) { Assignment::RequestHandler.perform(request) }
+    let(:assignment) { handler.assignment }
 
     it "builds an assignment schedule" do
       expect(assignment.schedule).to be_present
@@ -20,10 +21,12 @@ describe Assignment::RequestHandler do
     end
 
     context "when the assignment is version 1.0 or greater" do
+      let!(:assignment) { handler.assignment }
       let(:body_json) { assignment_1_0_0_json }
-      let(:assignment) { request.assignment }
 
-      before { request.tap(&:save).reload }
+      before do
+        request.tap(&:save).reload
+      end
 
       it "creates a list of adapters" do
         expect(assignment.adapters.size).to eq 2
@@ -52,6 +55,49 @@ describe Assignment::RequestHandler do
 
       it "sets the end time" do
         expect(assignment.end_at.to_i).to eq(update_times.max)
+      end
+    end
+
+    context "when a subtask is invalid" do
+      let(:body_json) { assignment_1_0_0_json }
+      let(:first_type) { 'basic' }
+      let(:second_type) { 'seo' }
+
+      before do
+        allow(AdapterBuilder).to receive(:perform)
+          .with(first_type, nil)
+          .and_call_original
+
+        allow(AdapterBuilder).to receive(:perform)
+          .with(second_type, nil)
+          .and_return(nil)
+      end
+
+      it "does not save the request" do
+        request.save
+
+        expect(request).not_to be_persisted
+      end
+
+      it "does return the assignment" do
+        expect(assignment).to be_present
+      end
+
+      it "rolls back the creation of the already created subtasks" do
+        expect_any_instance_of(ExternalAdapter).to receive(:stop) do |adapter, subtask|
+          expect(adapter.assignment_type.name).to eq(first_type)
+        end
+
+        request.save
+      end
+
+      it "marks the handler invalid" do
+        expect(handler).not_to be_valid
+      end
+
+      it "returns the errors" do
+        expect(assignment.errors).not_to be_empty
+        expect(handler.errors).to eq(assignment.errors)
       end
     end
   end

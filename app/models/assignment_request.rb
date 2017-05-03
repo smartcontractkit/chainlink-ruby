@@ -49,7 +49,13 @@ class AssignmentRequest < ActiveRecord::Base
 
   def set_up_assignment
     return unless body.present?
-    self.assignment ||= Assignment::RequestHandler.perform(self)
+    if handler.valid?
+      self.assignment ||= handler.assignment
+    else
+      handler.errors.each do |error|
+        errors[:base] << error
+      end
+    end
   end
 
   def sign_hash
@@ -75,6 +81,10 @@ class AssignmentRequest < ActiveRecord::Base
 
   def schema
     @schema ||= SchemaValidator.version(body['version']) if body_json.present?
+  end
+
+  def handler
+    @handler ||= Assignment::RequestHandler.perform(self)
   end
 
 end
