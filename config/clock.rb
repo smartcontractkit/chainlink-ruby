@@ -5,7 +5,7 @@ require './config/environment'
 module Clockwork
 
   configure do |config|
-    config[:max_threads] = 3
+    config[:max_threads] = 10
     config[:thread] = true
   end
 
