@@ -46,6 +46,10 @@ module Ethereum
       end
     end
 
+    def subtask_parameters
+      subtask.try(:parameters)
+    end
+
 
     private
 

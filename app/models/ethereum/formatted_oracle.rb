@@ -9,7 +9,7 @@ module Ethereum
     validates :update_address, format: { with: /\A(?:0x)?[0-9a-f]*\z/ }
 
     def get_status(assignment_snapshot, previous_snapshot = nil)
-      value = previous_snapshot.try(:value)
+      value = previous_snapshot.try(:value) || config_value
       write = updater.perform value, value
       write.snapshot_decorator
     end
@@ -27,6 +27,10 @@ module Ethereum
         self.update_address = body['updateAddress'] || body['method']
       end
       self.ethereum_account = owner
+    end
+
+    def config_value
+      subtask_parameters['value'] if subtask_parameters.present?
     end
 
   end
