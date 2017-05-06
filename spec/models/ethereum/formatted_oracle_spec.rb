@@ -69,9 +69,11 @@ describe Ethereum::FormattedOracle do
 
 
   describe "#get_status" do
-    let!(:adapter) { factory_create :ethereum_formatted_oracle }
+    let!(:subtask) { factory_create(:subtask, adapter: adapter, parameters: {value: subtask_value}) }
+    let(:adapter) { factory_create :ethereum_formatted_oracle }
     let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { '12431235452456' }
+    let(:subtask_value) { '6543214321' }
     let(:previous_snapshot) { factory_create :adapter_snapshot, value: value }
 
     it "passes the current value and its equivalent hex to the updater" do
@@ -80,6 +82,16 @@ describe Ethereum::FormattedOracle do
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
       adapter.get_status(snapshot, previous_snapshot)
+    end
+
+    context "when no previous snapshot is passed in" do
+      it "reads the value from the subtask paramters" do
+        expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
+          .with(subtask_value, subtask_value)
+          .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
+
+        adapter.get_status(snapshot)
+      end
     end
   end
 

@@ -99,6 +99,10 @@ describe Assignment::RequestHandler do
         expect(assignment.errors).not_to be_empty
         expect(handler.errors).to eq(assignment.errors)
       end
+
+      it "still sets the subtask's end time" do
+        expect(assignment.subtasks.first.end_at).to be_present
+      end
     end
   end
 end

@@ -127,7 +127,7 @@ class Ethereum::Client
   end
 
   def format_hex_array(array_of_hex)
-    format_int_to_hex(array_of_hex.size) + array_of_hex.join
+    format_uint_to_hex(array_of_hex.size) + array_of_hex.join
   end
 
   def format_uint_to_hex(integer, bits = 256)
