@@ -11,7 +11,9 @@ class Assignment::RequestHandler
     @coordinator = request.coordinator
     @body = request.body
 
-    @assignment = request.build_assignment
+    @assignment = request.build_assignment({
+      end_at: parse_time(end_at),
+    })
     @errors = []
   end
 
@@ -20,17 +22,7 @@ class Assignment::RequestHandler
     @valid = true
     validate_subtasks
 
-    if valid?
-      assignment.assign_attributes({
-        subtasks: subtasks,
-        coordinator: coordinator,
-        end_at: parse_time(end_at),
-        schedule_attributes: (schedule_params if schedule_params[:endAt]),
-        scheduled_updates: (scheduled_updates if scheduled_updates.any?),
-        skip_initial_snapshot: skip_initial_snapshot,
-        start_at: parse_time(schedule_params[:startAt]),
-      }.compact)
-    end
+    set_assignment_attributes if valid?
   end
 
   def valid?
@@ -113,6 +105,17 @@ class Assignment::RequestHandler
     subtask.errors.full_messages.each do |error|
       assignment.errors[:base] << error
     end
+  end
+
+  def set_assignment_attributes
+    assignment.assign_attributes({
+      subtasks: subtasks,
+      coordinator: coordinator,
+      schedule_attributes: (schedule_params if schedule_params[:endAt]),
+      scheduled_updates: (scheduled_updates if scheduled_updates.any?),
+      skip_initial_snapshot: skip_initial_snapshot,
+      start_at: parse_time(schedule_params[:startAt]),
+    }.compact)
   end
 
 end
