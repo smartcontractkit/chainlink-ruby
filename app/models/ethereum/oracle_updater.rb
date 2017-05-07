@@ -9,10 +9,14 @@ class Ethereum::OracleUpdater
     @update_address = oracle.contract_write_address
   end
 
-  def perform(hex, value)
-    tx = send_data(hex)
+  def perform(hex, value, amount_paid = 0)
+    tx = send_data(hex, amount_paid)
 
-    oracle.writes.create txid: tx.txid, value: value
+    oracle.writes.create({
+      amount_paid: amount_paid,
+      txid: tx.txid,
+      value: value,
+    })
   end
 
 
@@ -24,11 +28,12 @@ class Ethereum::OracleUpdater
     @hex_value = value
   end
 
-  def send_data(hex)
+  def send_data(hex, amount_paid)
     @tx ||= account.send_transaction({
       data: "#{update_address}#{hex}",
       gas_limit: 100_000,
       to: address,
+      value: amount_paid,
     })
   end
 

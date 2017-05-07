@@ -9,6 +9,7 @@ describe Ethereum::OracleUpdater, type: :model do
     let(:tx) { factory_create :ethereum_transaction }
     let(:current_value) { "Hi Mom!" }
     let(:current_hex) { "4869204d6f6d2100000000000000000000000000000000000000000000000000" }
+    let(:amount) { 0 }
 
     before do
       expect(account).to receive(:send_transaction)
@@ -16,9 +17,11 @@ describe Ethereum::OracleUpdater, type: :model do
           data: "#{code_template.write_address}#{current_hex}",
           gas_limit: 100_000,
           to: contract.address,
+          value: amount,
         })
         .and_return(tx)
     end
+
 
     it "creates an oracle update record" do
       expect {
@@ -32,6 +35,22 @@ describe Ethereum::OracleUpdater, type: :model do
       result = oracle_updater.perform current_hex, current_value
       expect(result).to be_an EthereumOracleWrite
       expect(result).to be_persisted
+
+      expect(result.value).to eq(current_value)
+      expect(result.amount_paid).to eq(0)
+    end
+
+    context "when an amount to be paid is passed in" do
+      let(:amount) { 54_321 }
+
+      it "sets the amount" do
+        result = oracle_updater.perform current_hex, current_value, amount
+        expect(result).to be_an EthereumOracleWrite
+        expect(result).to be_persisted
+
+        expect(result.value).to eq(current_value)
+        expect(result.amount_paid).to eq(amount)
+      end
     end
 
     context "when the transaction fails to broadcast" do

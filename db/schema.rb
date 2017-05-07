@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321205302) do
+ActiveRecord::Schema.define(version: 20170507230811) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -247,6 +247,7 @@ ActiveRecord::Schema.define(version: 20170321205302) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "oracle_type"
+    t.integer  "amount_paid", default: 0
   end
 
   create_table "ethereum_oracles", force: :cascade do |t|
@@ -310,8 +311,8 @@ ActiveRecord::Schema.define(version: 20170321205302) do
   create_table "json_receivers", force: :cascade do |t|
     t.string   "xid"
     t.string   "path_json"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "key_pairs", force: :cascade do |t|
