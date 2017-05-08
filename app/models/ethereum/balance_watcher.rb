@@ -2,25 +2,26 @@ class Ethereum::BalanceWatcher
 
   include HasEthereumClient
 
-  def self.perform
-    new(ENV['ETHEREUM_ACCOUNT']).perform
+  def self.perform(address = nil)
+    address ||= Ethereum::Account.default.address
+    new(address).perform
   end
 
-  def initialize(account)
-    @account = account
+  def initialize(address)
+    @address = address
   end
 
   def perform
-    balance = ethereum.account_balance account
+    balance = ethereum.account_balance address
     if balance <= minimum_balance
-      Notification.ethereum_balance(account, balance).deliver_now
+      Notification.ethereum_balance(address, balance).deliver_now
     end
   end
 
 
   private
 
-  attr_reader :account
+  attr_reader :address
 
   def minimum_balance
     (ENV['ETHEREUM_MINIMUM_BALANCE'] || Ethereum::WEI_PER_ETHER).to_i
