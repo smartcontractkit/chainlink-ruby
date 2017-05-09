@@ -10,7 +10,7 @@ module Ethereum
 
     def get_status(assignment_snapshot, previous_snapshot = nil)
       value = previous_snapshot.try(:value) || config_value
-      write = updater.perform value, value
+      write = updater.perform value, value, payment_amount
       write.snapshot_decorator
     end
 
@@ -25,12 +25,10 @@ module Ethereum
       if body.present?
         self.address = body['address'] || body['contractAddress']
         self.update_address = body['functionID'] || body['updateAddress'] || body['method']
+        self.config_value = body['data'] || body['payload']
+        self.payment_amount = (body['paymentAmount'] || body['amount']).to_i
       end
       self.ethereum_account = owner
-    end
-
-    def config_value
-      subtask_parameters['value'] if subtask_parameters.present?
     end
 
   end

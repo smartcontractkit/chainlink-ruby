@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   def identity
     render json: {
       bitcoinPublicKey: @bitcoin_pub,
+      ethereumAddress: Ethereum::Account.default.address,
       name: @name,
     }.compact
   end

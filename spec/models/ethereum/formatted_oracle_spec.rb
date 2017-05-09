@@ -69,16 +69,25 @@ describe Ethereum::FormattedOracle do
 
 
   describe "#get_status" do
-    let!(:subtask) { factory_create(:subtask, adapter: adapter, parameters: {value: subtask_value}) }
-    let(:adapter) { factory_create :ethereum_formatted_oracle }
+    let(:body) do
+      hashie({
+        address: ethereum_address,
+        data: subtask_value,
+        functionID: SecureRandom.hex(4),
+        paymentAmount: payment_amount,
+      })
+    end
+    let!(:subtask) { factory_create(:subtask, adapter: adapter, parameters: body) }
+    let(:adapter) { factory_create :ethereum_formatted_oracle, body: body }
     let(:snapshot) { factory_create :adapter_snapshot }
     let(:value) { '12431235452456' }
     let(:subtask_value) { '6543214321' }
     let(:previous_snapshot) { factory_create :adapter_snapshot, value: value }
+    let(:payment_amount) { 876_543 }
 
     it "passes the current value and its equivalent hex to the updater" do
       expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
-        .with(value, value)
+        .with(value, value, payment_amount)
         .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
       adapter.get_status(snapshot, previous_snapshot)
@@ -87,7 +96,7 @@ describe Ethereum::FormattedOracle do
     context "when no previous snapshot is passed in" do
       it "reads the value from the subtask paramters" do
         expect_any_instance_of(Ethereum::OracleUpdater).to receive(:perform)
-          .with(subtask_value, subtask_value)
+          .with(subtask_value, subtask_value, payment_amount)
           .and_return(instance_double EthereumOracleWrite, snapshot_decorator: nil)
 
         adapter.get_status(snapshot)

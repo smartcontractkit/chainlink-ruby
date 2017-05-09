@@ -53,6 +53,10 @@ module SpecHelpers
     @ethereum ||= Ethereum::Client.new
   end
 
+  def solidity
+    @solidity ||= ethereum.solidity
+  end
+
   def wait_for_ethereum_confirmation(txid)
     raise "No TXID to wait for!" if txid.blank?
     average_block_time = 17
