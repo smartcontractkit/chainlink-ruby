@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170509181551) do
+ActiveRecord::Schema.define(version: 20170510174829) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -249,7 +249,7 @@ ActiveRecord::Schema.define(version: 20170509181551) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "oracle_type"
-    t.integer  "amount_paid", default: 0
+    t.decimal  "amount_paid", precision: 36
   end
 
   create_table "ethereum_oracles", force: :cascade do |t|
@@ -269,9 +269,9 @@ ActiveRecord::Schema.define(version: 20170509181551) do
     t.integer  "nonce"
     t.string   "to"
     t.text     "data"
-    t.decimal  "value",                   precision: 36
     t.integer  "gas_price",     limit: 8
     t.integer  "gas_limit"
+    t.decimal  "value",                   precision: 36
   end
 
   create_table "ethereum_uint256_oracles", force: :cascade do |t|
