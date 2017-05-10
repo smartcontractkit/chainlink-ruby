@@ -31,10 +31,14 @@ class Ethereum::OracleUpdater
   def send_data(hex, amount_paid)
     @tx ||= account.send_transaction({
       data: "#{update_address}#{hex}",
-      gas_limit: 100_000,
+      gas_limit: gas_limit,
       to: address,
       value: amount_paid,
     })
+  end
+
+  def gas_limit
+    (ENV['ETHEREUM_DEFAULT_GAS_LIMIT'] || 100_000).to_i
   end
 
 end
