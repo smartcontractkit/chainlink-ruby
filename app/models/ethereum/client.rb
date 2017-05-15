@@ -23,7 +23,9 @@ class Ethereum::Client
   end
 
   def gas_price
-    hex_to_uint epost('eth_gasPrice').result
+    current = hex_to_uint(epost('eth_gasPrice').result)
+    minimum = ENV['ETHEREUM_GAS_PRICE_MINIMUM'].to_i
+    [current, minimum].max
   end
 
   def current_block_height(options = {})
