@@ -52,6 +52,8 @@ GEM
     blockcypher-ruby (0.2.2)
       bitcoin-ruby (~> 0.0.5)
       ffi
+    bootsnap (0.2.14)
+      msgpack (~> 1.0)
     builder (3.2.3)
     clockwork (1.0.0)
       activesupport
@@ -118,6 +120,7 @@ GEM
     minitest (5.10.1)
     money-tree (0.9.0)
       ffi
+    msgpack (1.1.0)
     multi_xml (0.5.5)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
@@ -212,6 +215,7 @@ DEPENDENCIES
   airbrake
   bitcoin-ruby
   blockcypher-ruby
+  bootsnap
   clockwork
   delayed_job_active_record
   dotenv
