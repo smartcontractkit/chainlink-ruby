@@ -102,6 +102,16 @@ describe Ethereum::FormattedOracle do
         adapter.get_status(snapshot)
       end
     end
+
+    context "when the previous snapshot's data is not hex" do
+      let(:subtask_value) { 'steve rules' }
+
+      it "raises an error" do
+        expect {
+          adapter.get_status(snapshot)
+        }.to raise_error(Ethereum::InvalidHexValue)
+      end
+    end
   end
 
   describe "#ready?" do
