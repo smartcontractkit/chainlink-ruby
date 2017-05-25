@@ -43,7 +43,7 @@ module Ethereum
 
   class InvalidHexValue < StandardError
     def initialize(value)
-      super "\"#{value}\" provided by the previous snapshot was not a valid hex value."
+      super "\"#{value}\" provided by the previous snapshot is not a valid hex value."
     end
   end
 end

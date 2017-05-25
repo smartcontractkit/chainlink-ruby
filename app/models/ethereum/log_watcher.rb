@@ -10,6 +10,7 @@ class Ethereum::LogWatcher < ActiveRecord::Base
   has_many :log_subscriptions, as: :owner
 
   validates :address, format: /\A0x[0-9a-f]{40}\z/i
+  validate :wei_watchers_enabled
 
   before_validation :set_up_from_body, on: :create
   after_create :delay_subscribe_to_notifications
@@ -52,6 +53,12 @@ class Ethereum::LogWatcher < ActiveRecord::Base
       account: address,
       end_at: end_at
     })
+  end
+
+  def wei_watchers_enabled
+    unless WeiWatchersClient.enabled?
+      errors.add :base, "WeiWatchers is not enabled"
+    end
   end
 
 end

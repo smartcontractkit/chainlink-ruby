@@ -3,6 +3,10 @@ class WeiWatchersClient
   include HttpClient
   base_uri "#{ENV['WEI_WATCHERS_URL']}/api/"
 
+  def self.enabled?
+    ENV['WEI_WATCHERS_URL'].present?
+  end
+
   def create_subscription(options = {})
     hashie_post('/event_subscriptions', {
       account: options[:account],

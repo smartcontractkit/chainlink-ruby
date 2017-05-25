@@ -3,6 +3,26 @@ describe Ethereum::LogWatcher do
   describe "validations" do
     it { is_expected.to have_valid(:address).when(ethereum_address) }
     it { is_expected.not_to have_valid(:address).when(nil, '') }
+
+    context "when WeiWatchers is enabled" do
+      before { allow(WeiWatchersClient).to receive(:enabled?).and_return(true) }
+
+      it "marks the log watcher as invalid" do
+        subject.valid?
+
+        expect(subject.errors.full_messages).not_to include "WeiWatchers is not enabled"
+      end
+    end
+
+    context "when WeiWatchers is not enabled" do
+      before { allow(WeiWatchersClient).to receive(:enabled?).and_return(false) }
+
+      it "marks the log watcher as invalid" do
+        subject.valid?
+
+        expect(subject.errors.full_messages).to include "WeiWatchers is not enabled"
+      end
+    end
   end
 
   describe "on create" do
