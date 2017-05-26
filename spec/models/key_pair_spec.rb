@@ -69,7 +69,7 @@ describe KeyPair, type: :model do
     end
 
     context "when a private key does not exist" do
-      let(:key_pair) { KeyPair.new private_key: nil }
+      let(:key_pair) { KeyPair.new }
 
       it "does change the private key" do
         expect {

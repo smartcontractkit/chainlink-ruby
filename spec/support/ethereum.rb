@@ -98,4 +98,8 @@ module SpecHelpers
     ethereum.hex_to_int get_oracle_value(oracle)
   end
 
+  def eth_encrypt(key, password = ENV['PRIVATE_KEY_PASSWORD'])
+    Eth::Key.encrypt key, password
+  end
+
 end

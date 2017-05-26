@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170510174829) do
+ActiveRecord::Schema.define(version: 20170526005126) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -323,7 +323,7 @@ ActiveRecord::Schema.define(version: 20170510174829) do
     t.string   "public_key"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "private_key"
+    t.text     "encrypted_private_key"
   end
 
   create_table "subtask_snapshot_requests", force: :cascade do |t|
