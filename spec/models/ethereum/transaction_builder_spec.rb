@@ -37,7 +37,7 @@ describe Ethereum::TransactionBuilder, type: :model do
       transaction = builder.perform options
       tx = Eth::Tx.decode transaction.raw_hex
 
-      expect(tx.from).to eq(account.public_key)
+      expect(tx.from).to eq(account.address)
     end
   end
 
