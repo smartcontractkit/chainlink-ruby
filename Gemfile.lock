@@ -52,7 +52,7 @@ GEM
     blockcypher-ruby (0.2.2)
       bitcoin-ruby (~> 0.0.5)
       ffi
-    bootsnap (0.2.14)
+    bootsnap (0.2.15)
       msgpack (~> 1.0)
     builder (3.2.3)
     clockwork (1.0.0)
