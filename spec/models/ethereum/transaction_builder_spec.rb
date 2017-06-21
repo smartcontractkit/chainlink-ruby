@@ -24,10 +24,11 @@ describe Ethereum::TransactionBuilder, type: :model do
       next_nonce = account.next_nonce
 
       transaction = builder.perform options
+      tip = ENV['ETHEREUM_GAS_PRICE_INCREASE'].to_i
 
       expect(transaction.data).to eq('')
       expect(transaction.gas_limit).to eq(21_000)
-      expect(transaction.gas_price).to eq(gas_price)
+      expect(transaction.gas_price).to eq(gas_price + tip)
       expect(transaction.nonce).to eq(next_nonce)
       expect(transaction.to).to eq(nil)
       expect(transaction.value).to eq(0)
