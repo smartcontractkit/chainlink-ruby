@@ -57,13 +57,7 @@ class KeyPair < ActiveRecord::Base
   end
 
   def generate_keys
-    key = if private_key.present?
-      ec_key = Bitcoin.open_key(private_key)
-      compressed_pub = ec_key.public_key.to_hex.rjust(66, '0')
-      Bitcoin::Key.new(ec_key.private_key.to_hex, compressed_pub)
-    else
-      Bitcoin::Key.generate
-    end
+    key = generate_private_key
 
     self.private_key = key.priv
     if use_uncompressed_pub
@@ -72,4 +66,37 @@ class KeyPair < ActiveRecord::Base
       self.public_key = key.pub_compressed
     end
   end
+
+  def private_key
+    if has_private_key?
+      Eth::Key.decrypt(encrypted_private_key, password).private_hex
+    end
+  end
+
+  def private_key=(decrypted)
+    encrypted = Eth::Key.encrypt(decrypted, password)
+    self.encrypted_private_key = encrypted
+  end
+
+
+  private
+
+  def password
+    ENV['PRIVATE_KEY_PASSWORD'].to_s
+  end
+
+  def has_private_key?
+    encrypted_private_key.present?
+  end
+
+  def generate_private_key
+    if has_private_key?
+      ec_key = Bitcoin.open_key(private_key)
+      compressed_pub = ec_key.public_key.to_hex.rjust(66, '0')
+      Bitcoin::Key.new(ec_key.private_key.to_hex, compressed_pub)
+    else
+      Bitcoin::Key.generate
+    end
+  end
+
 end

@@ -52,6 +52,8 @@ GEM
     blockcypher-ruby (0.2.2)
       bitcoin-ruby (~> 0.0.5)
       ffi
+    bootsnap (0.2.15)
+      msgpack (~> 1.0)
     builder (3.2.3)
     clockwork (1.0.0)
       activesupport
@@ -70,14 +72,11 @@ GEM
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
     erubis (2.7.0)
-    eth (0.3.4)
-      ethereum-base (~> 0.1.4)
+    eth (0.4.4)
+      digest-sha3 (~> 1.1)
       ffi (~> 1.0)
       money-tree (~> 0.9)
       rlp (~> 0.7.3)
-    ethereum-base (0.1.4)
-      digest-sha3 (~> 1.1)
-      rlp (~> 0.6)
     execjs (2.7.0)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
@@ -86,7 +85,7 @@ GEM
       railties (>= 3.0.0)
     faker (1.5.0)
       i18n (~> 0.5)
-    ffi (1.9.14)
+    ffi (1.9.18)
     foreman (0.75.0)
       dotenv (~> 0.11.1)
       thor (~> 0.19.1)
@@ -118,6 +117,7 @@ GEM
     minitest (5.10.1)
     money-tree (0.9.0)
       ffi
+    msgpack (1.1.0)
     multi_xml (0.5.5)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
@@ -212,6 +212,7 @@ DEPENDENCIES
   airbrake
   bitcoin-ruby
   blockcypher-ruby
+  bootsnap
   clockwork
   delayed_job_active_record
   dotenv

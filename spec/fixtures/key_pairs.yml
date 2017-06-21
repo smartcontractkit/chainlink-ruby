@@ -2,67 +2,67 @@
 default:
   id: 1
   public_key: 0334fc0f40a1cd480c3a1b7d4fe8ba171f9f87b77f1b4fec60b676711aede3f79d
-  private_key: 85af574f5c044d6e450e7ee10f465cdf225a2d76caa9d16be8e71731a14b9723
   created_at: 2016-06-16 20:51:01.469186000 Z
   updated_at: 2016-06-16 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("85af574f5c044d6e450e7ee10f465cdf225a2d76caa9d16be8e71731a14b9723") %>'
 
 holding_key_pair:
   id: 111
   public_key: 03cef197809d2647aa1ef70c7737ee259c96eadd67bfbc8755d9eb6097a547d05d
-  private_key: 'dbcc9d27c7f6dc569b721fc67f5085eb7e2d500d804199a736fdeea1469d87dc'
   owner_type: BtcAddress
   owner_id: '171'
   created_at: 2015-04-13 20:51:01.469186000 Z
   updated_at: 2015-04-13 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("dbcc9d27c7f6dc569b721fc67f5085eb7e2d500d804199a736fdeea1469d87dc") %>'
 
 multisig1:
   id: 112
   public_key: 037ea9c6a6fcb5828ef1fd13221afecd130193425f32a0dc13f3624f6745f1cdd3
-  private_key: 'c6b56218d28b36b9c043e1ef6009c7a1d3c896b24cf41c8f5dc784df44dcc5ba'
   owner_type: BtcAddress
   owner_id: '171'
   created_at: 2015-04-13 20:51:01.469186000 Z
   updated_at: 2015-04-13 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("c6b56218d28b36b9c043e1ef6009c7a1d3c896b24cf41c8f5dc784df44dcc5ba") %>'
 
 multisig2:
   id: 113
   public_key: 03a746180de76edf4fdf23f31304caf5e986485223de3e72e8d5d9394a7435fbeb
-  private_key: '2cf5792a946ac8700b09ce0d7e62eda328ddb7c336a47f3f5382920c2c10214f'
   owner_type: BtcAddress
   owner_id: '171'
   created_at: 2015-04-13 20:51:01.469186000 Z
   updated_at: 2015-04-13 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("2cf5792a946ac8700b09ce0d7e62eda328ddb7c336a47f3f5382920c2c10214f") %>'
 
 multisig3:
   id: 114
   public_key: 0272bafa5897b132730bf097e6f4175a772acca29aa5677cc871f2527c9687d280
-  private_key: '56f121bda6e97513c7c411ec3d882a95c6c4ad57e172f56d72948d06c2a78e75'
   owner_type: BtcAddress
   owner_id: '171'
   created_at: 2015-04-13 20:51:01.469186000 Z
   updated_at: 2015-04-13 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("56f121bda6e97513c7c411ec3d882a95c6c4ad57e172f56d72948d06c2a78e75") %>'
 
 multisig4:
   id: 115
   public_key: 02664d2c6b69c264c7513a458cd2fa58ab3fb50828d0f6c583f1a7996b7d13a9bc
-  private_key: 'afcec710e5bfd3662866a9aad38fcdf751e57de9dbe2ce30deeeeeef5d246176'
   owner_type: BtcAddress
   owner_id: '171'
   created_at: 2015-04-13 20:51:01.469186000 Z
   updated_at: 2015-04-13 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("afcec710e5bfd3662866a9aad38fcdf751e57de9dbe2ce30deeeeeef5d246176") %>'
 
 ethereum_default:
   id: 200
   public_key: 04d3533614037f9779673de8e77bc4f585d285ad0be399dcb8054eba4f3499ad9e606b5a8ec6f08c22fbde5e3d93ec9fd73b01033a987fd7bec25c64ed288e9fe0
-  private_key: '721b3cb22661758e0a4b9d587cbe5ce672257cde7567bc7cd6640279e686391a'
   owner_type: Ethereum::Account
   owner_id: '17'
   created_at: 2016-06-16 20:51:01.469186000 Z
   updated_at: 2016-06-16 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("721b3cb22661758e0a4b9d587cbe5ce672257cde7567bc7cd6640279e686391a") %>'
 
 unowned:
   id: 201
   public_key: 02dfe2792ef7b34a01d036c6dc413fdd6b0deacead68c4607c55afb9e561517a94
-  private_key: 95a30dc1d12ca3c577aa36faa261aab90b430100eb752294c7fcd78151775ce5
   created_at: 2016-06-16 20:51:01.469186000 Z
   updated_at: 2016-06-16 20:51:01.472037000 Z
+  encrypted_private_key: '<%= eth_encrypt("95a30dc1d12ca3c577aa36faa261aab90b430100eb752294c7fcd78151775ce5") %>'

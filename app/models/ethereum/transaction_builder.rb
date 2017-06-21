@@ -1,4 +1,5 @@
 class Ethereum::TransactionBuilder
+  GAS_PRICE_TIP = ENV['ETHEREUM_GAS_PRICE_INCREASE'].to_i
 
   include BinaryAndHex
   include HasEthereumClient
@@ -21,7 +22,7 @@ class Ethereum::TransactionBuilder
   def set_default(options)
     @options ||= {
       data: '',
-      gas_price: options.fetch(:gas_price, ethereum.gas_price),
+      gas_price: adjusted_price(options[:gas_price]),
       gas_limit: 21_000,
       nonce: account.next_nonce,
       value: 0,
@@ -39,6 +40,11 @@ class Ethereum::TransactionBuilder
     @tx ||= Eth::Tx.new options.merge({
       data: hex_to_bin(options[:data]),
     })
+  end
+
+  def adjusted_price(price)
+    price ||= ethereum.gas_price
+    price + GAS_PRICE_TIP
   end
 
 end

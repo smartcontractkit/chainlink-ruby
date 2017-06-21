@@ -20,6 +20,7 @@ gem 'sysrandom', require: "sysrandom/securerandom"
 gem 'uglifier'
 
 group :development, :test do
+  gem 'bootsnap'
   gem 'dotenv', require: 'dotenv'
   gem 'factory_girl_rails'
   gem 'faker'

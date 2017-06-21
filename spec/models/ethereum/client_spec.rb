@@ -67,7 +67,7 @@ describe Ethereum::Client, type: :model do
 
   describe "#format_string_hex" do
     let(:output) { ethereum.format_string_hex string }
-    let(:string) { Faker::Lorem.paragraph.first(size) }
+    let(:string) { SecureRandom.urlsafe_base64(1000).first(size) }
     let(:byte_format) { output[0..63].to_i(16) }
     let(:length) { output[64..127].to_i(16) }
     let(:hex_message) { output[128..-1] }
