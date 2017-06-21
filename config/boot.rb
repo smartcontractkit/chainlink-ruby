@@ -1,9 +1,10 @@
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 
 require 'bundler/setup' # Set up gems listed in the Gemfile.
-require 'bootsnap'
 
 if ['development', 'test'].include? ENV['RAILS_ENV']
+  require 'bootsnap'
+
   Bootsnap.setup({
     cache_dir: 'tmp/cache', # Path to your cache
     development_mode: ENV['MY_ENV'] == 'development',
