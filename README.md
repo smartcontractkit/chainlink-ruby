@@ -2,7 +2,7 @@
 
 ## API
 
-See the [API documentation](https://smartoracles.github.io/api-docs) for more details about the API.
+See the [API documentation](https://smartoracle.smartcontract.com) for more details about the API.
 
 ## Development
 
