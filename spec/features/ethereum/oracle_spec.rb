@@ -50,7 +50,7 @@ describe "Ethereum oracle contract integration" do
       address_binding = OpenStruct.new(oracle_address: contract.address).instance_eval { binding }
       solidity = template.result(address_binding)
       compiler_response = ethereum.solidity.compile("Uptime.sol" => solidity)
-      compiled = compiler_response['contracts']['Uptime']
+      compiled = compiler_response['contracts']['Uptime.sol:Uptime']
       uptime_txid = account.send_transaction({
         data: compiled['bytecode'],
         gas_limit: (compiled['gasEstimates']['creation'].last * 10),
