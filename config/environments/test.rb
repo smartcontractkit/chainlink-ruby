@@ -1,4 +1,4 @@
-Dotenv.load('.env.test')
+Dotenv.load!('spec/support/dotenv.test')
 Dotenv.load
 
 Rails.application.configure do

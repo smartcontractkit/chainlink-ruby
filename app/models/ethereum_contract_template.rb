@@ -20,7 +20,7 @@ class EthereumContractTemplate < ActiveRecord::Base
       "#{contract_name}.sol" => code,
       "Owned.sol" => File.read("lib/assets/contracts/Owned.sol"),
     })
-    oracle = compiled['contracts'][contract_name]
+    oracle = compiled['contracts']["#{contract_name}.sol:#{contract_name}"]
 
     EthereumContractTemplate.create!({
       adapter_name: (adapter_name || contract_name),
