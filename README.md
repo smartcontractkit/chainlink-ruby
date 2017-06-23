@@ -1,4 +1,4 @@
-# Smart Oracle
+# Smart Oracle [![Code Climate](https://codeclimate.com/github/oraclekit/smart_oracle/badges/gpa.svg)](https://codeclimate.com/github/oraclekit/smart_oracle)
 
 ## API
 
@@ -43,7 +43,7 @@ The Adapters that ship with the Smart Oracle core are:
 - __httpGetJSON__: Retrieves JSON and returns the specific field selected in the configuration.
 - __jsonReceiver__: Generates a URL for the oracle to receive JSON push notifications. Parses the pushed JSON and returns the specific field selected in the configuration.
 
-If you are interested in other types of Adapters feel free to [reach out](mailto:support@smartcontract.com?subject=New Adapter Type).
+If you are interested in other types of Adapters feel free to [reach out](mailto:support@smartcontract.com).
 
 ### Adapter Schemas
 
@@ -71,10 +71,22 @@ rake db:create db:migrate
 foreman start
 ```
 
-### Testing
-To run the full test suite [geth](https://github.com/ethereum/go-ethereum) must be installed. For the duration of the test run, geth will spin up and listen on port 7434.
+## Testing
 
-To run the full test suite run:
+To run the full test suite, including integration tests, you need an instance of DevNet running on your machine. This requires first installing [Parity](https://github.com/paritytech/parity). Once Parity is installed, run the following commands:
+
+```
+git clone https://github.com/oraclekit/devnet.git
+cd devnet
+./start
+```
+
+Then to run the full test suite run:
 ```
 rake
+```
+
+Or test a specific test:
+```
+rspec spec/models/assignment_spec.rb:57
 ```
