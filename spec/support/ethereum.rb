@@ -15,7 +15,7 @@ module SpecHelpers
   end
 
   def ethereum_address
-    "0x#{SecureRandom.hex(20)}"
+    Eth::Key.new.address
   end
 
   def ethereum_gas_price
