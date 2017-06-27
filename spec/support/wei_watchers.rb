@@ -23,8 +23,8 @@ module SpecHelpers
       transactionHash: options.fetch(:transactionHash, ethereum_txid),
       transactionIndex: options.fetch(:transactionIndex, rand(1_000)),
       transactionLogIndex: options.fetch(:transactionLogIndex, rand(1_000)),
-      type: options.(:type, "mined"),
-    }
+      type: options.fetch(:type, "mined"),
+    }.to_json
   end
 
   def wei_watchers_credentials

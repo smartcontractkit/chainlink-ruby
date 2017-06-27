@@ -56,7 +56,7 @@ module Ethereum
     def set_up_from_body
       if body.present?
         self.address = body['address']
-        self.update_address = body['updateAddress'] || body['method']
+        self.update_address = body['updateAddress'] || body['method'] || body['functionID']
       end
 
       if address.nil?
