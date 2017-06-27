@@ -34,14 +34,14 @@ The Smart Oracle core ships with a few adapters built in, but additional Externa
 
 The Adapters that ship with the Smart Oracle core are:
 
-- [__bitcoinComparisonJSON__](https://smartoracle.smartcontract.com/#bitcoincomparisonjson): Returns a signed Bitcoin transaction. Signs either a completion transaction or a failure transaction based on a value comparison of the input.
-- [__ethereumBytes32__](https://smartoracle.smartcontract.com/#ethereumbytes32): Formats the input as Ethereum `bytes32` value and writes it into the specified contract. Returns the unformatted value that was provided as input.
-- [__ethereumFormatted__](https://smartoracle.smartcontract.com/#ethereumformatted): Writes a preformatted Ethereum hexadecimal value into the blockchain as configured. Returns the preformatted value that was provided as input.
-- [__ethereumInt256__](https://smartoracle.smartcontract.com/#ethereumint256): Formats the input as Ethereum `int256` value and writes it into the specified contract. Returns the unformatted value that was provided as input.
-- [__ethereumLogWatcher__](https://smartoracle.smartcontract.com/#ethereumlogwatcher): Returns the `data` field of an Ethereum event log, if one is provided. Otherwise, returns the value that was provided as the input. (Requires [WeiWatchers](https://github.com/oraclekit/wei_watchers) integration.)
-- [__ethereumUint256__](https://smartoracle.smartcontract.com/#ethereumuint256): Formats the input as Ethereum `uint256` value and writes it into the specified contract. Returns the unformatted value that was provided as input.
-- [__httpGetJSON__](https://smartoracle.smartcontract.com/#httpgetjson): Retrieves JSON and returns the specific field selected in the configuration.
-- [__jsonReceiver__](https://smartoracle.smartcontract.com/#jsonreceiver): Generates a URL for the oracle to receive JSON push notifications. Parses the pushed JSON and returns the specific field selected in the configuration.
+- [__bitcoinComparisonJSON__](https://chainlink-docs.smartcontract.com/#bitcoincomparisonjson) Returns a signed Bitcoin transaction. Signs either a completion transaction or a failure transaction based on a value comparison of the input.
+- [__ethereumBytes32__](https://chainlink-docs.smartcontract.com/#ethereumbytes32) Formats the input as Ethereum `bytes32` value and writes it into the specified contract. Returns the unformatted value that was provided as input.
+- [__ethereumInt256__](https://chainlink-docs.smartcontract.com/#ethereumint256) Formats the input as Ethereum `int256` value and writes it into the specified contract. Returns the unformatted value that was provided as input.
+- [__ethereumUint256__](https://chainlink-docs.smartcontract.com/#ethereumuint256) Formats the input as Ethereum `uint256` value and writes it into the specified contract. Returns the unformatted value that was provided as input.
+- [__ethereumFormatted__](https://chainlink-docs.smartcontract.com/#ethereumformatted) Writes a preformatted Ethereum hexadecimal value into the blockchain as configured. Returns the preformatted value that was provided as input.
+- [__ethereumLogWatcher__](https://chainlink-docs.smartcontract.com/#ethereumlogwatcher) Returns the `data` field of an Ethereum event log, if one is provided. Otherwise, returns the value that was provided as the input. (Requires [WeiWatchers](https://github.com/oraclekit/wei_watchers) integration.)
+- [__httpGetJSON__](https://chainlink-docs.smartcontract.com/#httpgetjson) Retrieves JSON and returns the specific field selected in the configuration.
+- [__jsonReceiver__](https://chainlink-docs.smartcontract.com/#jsonreceiver) Generates a URL for the oracle to receive JSON push notifications. Parses the pushed JSON and returns the specific field selected in the configuration.
 
 If you are interested in other types of Adapters feel free to [reach out](mailto:support@smartcontract.com).
 
