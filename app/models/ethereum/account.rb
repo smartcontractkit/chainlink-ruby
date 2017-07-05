@@ -46,6 +46,10 @@ module Ethereum
       key_pair.uncompressed_public_key
     end
 
+    def current_balance
+      ethereum.account_balance address
+    end
+
 
     private
 
