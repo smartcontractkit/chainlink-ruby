@@ -52,7 +52,8 @@ class Term < ActiveRecord::Base
   def update_status(new_status, update_expectation = true)
     return status if new_status == status
 
-    if unfinished? && update_attributes(status: new_status)
+    if unfinished?
+      update_attributes!(status: new_status)
       contract.delay.check_status
       coordinator.update_term id
       expectation.delay.close_out! new_status if update_expectation
