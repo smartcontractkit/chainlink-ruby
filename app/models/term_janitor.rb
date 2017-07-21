@@ -24,11 +24,7 @@ class TermJanitor
   attr_reader :term
 
   def default_final_status
-    if term.oracle?
-      Term::COMPLETED
-    else
-      Term::FAILED
-    end
+    Term::COMPLETED
   end
 
 end

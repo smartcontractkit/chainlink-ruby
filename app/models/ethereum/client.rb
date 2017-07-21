@@ -110,6 +110,16 @@ class Ethereum::Client
     sub_hex_prefix(hex).to_i(16)
   end
 
+  def hex_to_address(hex)
+    return if hex.blank?
+    "0x#{sub_hex_prefix(hex)[-40..-1]}"
+  end
+
+  def hex_to_boolean(hex)
+    return if hex.blank?
+    hex_to_uint(hex) == 1
+  end
+
   def hex_to_int(hex, size = 256)
     return if hex.blank?
     value = sub_hex_prefix(hex).to_i(16)

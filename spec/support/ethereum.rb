@@ -102,4 +102,16 @@ module SpecHelpers
     Eth::Key.encrypt key, password
   end
 
+  def eth_to_wei(amount)
+    (amount * Ethereum::WEI_PER_ETHER).to_i
+  end
+
+  def keccak256(data)
+    Eth::Utils.bin_to_hex(Eth::Utils.keccak256 data)
+  end
+
+  def ether_balance(account)
+    ethereum.account_balance account
+  end
+
 end

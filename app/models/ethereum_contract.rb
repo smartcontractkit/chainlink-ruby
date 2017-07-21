@@ -7,7 +7,7 @@ class EthereumContract < ActiveRecord::Base
   has_many :log_subscriptions, as: :owner, class_name: 'Ethereum::LogSubscription'
 
   validates :account, presence: true
-  validates :address, format: { with: /\A0x[0-9a-f]{40}\z/, allow_nil: true }
+  validates :address, format: { with: /\A0x[0-9a-f]{40}\z/i, allow_nil: true }
   validates :genesis_transaction, presence: true
   validates :template, presence: true
 
