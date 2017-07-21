@@ -44,11 +44,6 @@ class Term < ActiveRecord::Base
     !(completed? || failed?)
   end
 
-  def oracle?
-    expectation_type == EthereumOracle.name ||
-      (assignment? && expectation.adapter_types.include?(EthereumOracle.name))
-  end
-
   def update_status(new_status, update_expectation = true)
     return status if new_status == status
 

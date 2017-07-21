@@ -15,62 +15,34 @@ describe TermJanitor, type: :model do
   end
 
   describe ".perform" do
+    let(:assignment) { factory_create :ethereum_assignment }
+    let(:term) { factory_create :term, expectation: assignment, status: status }
+
     before do
       allow(Term).to receive(:find)
         .with(term.id)
         .and_return(term)
     end
 
-    context "when the term is not an Ethereum oracle" do
-      let(:term) { factory_create :term, status: status }
+    context "when the term is in progress" do
+      let(:status) { Term::IN_PROGRESS }
 
-      context "and the term is in progress" do
-        let(:status) { Term::IN_PROGRESS }
+      it "updates the term's status to completed" do
+        expect(term).to receive(:update_status)
+          .with(Term::COMPLETED)
 
-        it "updates the term's status to failed" do
-          expect(term).to receive(:update_status)
-            .with(Term::FAILED)
-
-          TermJanitor.perform(term.id)
-        end
-      end
-
-      context "and the term is no longer in progress" do
-        let(:status) { Term::COMPLETED }
-
-        it "updates the term's status to failed" do
-          expect(term).not_to receive(:update_status)
-
-          TermJanitor.perform(term.id)
-        end
+        TermJanitor.perform(term.id)
       end
     end
 
-    context "when the term is an Ethereum oracle" do
-      let(:assignment) { factory_create :ethereum_assignment }
-      let(:term) { factory_create :term, expectation: assignment, status: status }
+    context "when the term is no longer in progress" do
+      let(:status) { Term::COMPLETED }
 
-      context "and the term is in progress" do
-        let(:status) { Term::IN_PROGRESS }
+      it "updates the term's status to failed" do
+        expect(term).not_to receive(:update_status)
 
-        it "updates the term's status to completed" do
-          expect(term).to receive(:update_status)
-            .with(Term::COMPLETED)
-
-          TermJanitor.perform(term.id)
-        end
-      end
-
-      context "and the term is no longer in progress" do
-        let(:status) { Term::COMPLETED }
-
-        it "updates the term's status to failed" do
-          expect(term).not_to receive(:update_status)
-
-          TermJanitor.perform(term.id)
-        end
+        TermJanitor.perform(term.id)
       end
     end
   end
-
 end
