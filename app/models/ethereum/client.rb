@@ -89,20 +89,23 @@ class Ethereum::Client
   end
 
   def format_string_hex(input, base_offset = 32)
-    string = input.dup.to_s.force_encoding 'ASCII'
-    byte_size = string.bytes.size
-
     content_offset = base_offset.to_s(16).rjust(64, '0')
-    size_32bytes = byte_size.to_s(16).rjust(64, '0')
-    slots_required = (byte_size / 32) + 1
-    padded_hex = utf8_to_hex(string).ljust(slots_required * 64, '0')
-
-    content_offset + size_32bytes + padded_hex
+    content_offset + format_bytes_hex(input)
   end
 
   def format_bytes32_hex(input)
     string = input.dup.to_s.force_encoding 'ASCII'
     utf8_to_hex(string[0...32]).ljust(64, '0')
+  end
+
+  def format_bytes_hex(input)
+    string = input.dup.to_s.force_encoding 'ASCII'
+    byte_size = string.bytes.size
+    size_32bytes = byte_size.to_s(16).rjust(64, '0')
+    slots_required = (byte_size / 32) + ((byte_size % 32) > 0 ? 1 : 0)
+    padded_hex = utf8_to_hex(string).ljust(slots_required * 64, '0')
+
+    size_32bytes + padded_hex
   end
 
   def hex_to_uint(hex)

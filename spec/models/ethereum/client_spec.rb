@@ -84,7 +84,7 @@ describe Ethereum::Client, type: :model do
       let(:size) { 32 }
       it { expect(byte_format).to equal(32) }
       it { expect(length).to eq(size) }
-      it { expect(hex_message.size).to equal(128) }
+      it { expect(hex_message.size).to equal(64) }
       it { expect(ethereum.hex_to_utf8 hex_message).to eq(string) }
     end
 
