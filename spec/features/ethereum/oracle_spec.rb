@@ -47,7 +47,8 @@ describe "Ethereum oracle contract integration" do
       wait_for_ethereum_confirmation oracle.writes.last.txid
 
       template = ERB.new(File.read('spec/fixtures/ethereum/solidity/uptime.sol.erb'))
-      address_binding = OpenStruct.new(oracle_address: contract.address).instance_eval { binding }
+      contract_address = Eth::Utils.format_address contract.address
+      address_binding = OpenStruct.new(oracle_address: contract_address).instance_eval { binding }
       solidity = template.result(address_binding)
       compiler_response = ethereum.solidity.compile("Uptime.sol" => solidity)
       compiled = compiler_response['contracts']['Uptime.sol:Uptime']
