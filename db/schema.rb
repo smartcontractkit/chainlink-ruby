@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526005126) do
+ActiveRecord::Schema.define(version: 20170929051444) do
 
   create_table "adapter_snapshots", force: :cascade do |t|
     t.integer  "assignment_snapshot_id"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 20170526005126) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "nonce",      default: 0
+    t.boolean  "current",    default: true
   end
 
   create_table "ethereum_bytes32_oracles", force: :cascade do |t|
