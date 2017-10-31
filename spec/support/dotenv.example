@@ -4,3 +4,4 @@ EMAIL_PASSWORD=password
 ETHEREUM_URL=http://localhost:8545
 ETHEREUM_EXPLORER_URL=https://testnet.etherscan.io
 NOTIFICATION_EMAIL=receiver@exmaple.com
+PRIVATE_KEY_PASSWORD="P@ssw0rd"

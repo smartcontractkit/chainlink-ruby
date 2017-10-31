@@ -14,14 +14,14 @@ module Clockwork
   end
 
   every(1.minute, 'AssignmentScheduler.perform')
-  every(1.minute, 'Ethereum::ConfirmationWatcher.perform')
-  every(1.minute, 'Ethereum::ContractConfirmer.perform')
-  every(1.minute, 'TermJanitor.clean_up')
-  every(1.minute, 'Assignment::Janitor.schedule_clean_up')
+  every(1.minute, 'Ethereum::ConfirmationWatcher.delay.perform')
+  every(1.minute, 'Ethereum::ContractConfirmer.delay.perform')
+  every(1.minute, 'TermJanitor.delay.clean_up')
+  every(1.minute, 'Assignment::Janitor.delay.schedule_clean_up')
 
-  every(1.hour, 'Ethereum::BalanceWatcher.perform')
+  every(1.hour, 'Ethereum::BalanceWatcher.delay.perform')
 
   if time = ENV['HEALTH_CHECK_TIME']
-    every(1.day, 'HealthCheck.perform', at: time)
+    every(1.day, 'HealthCheck.delay.perform', at: time)
   end
 end

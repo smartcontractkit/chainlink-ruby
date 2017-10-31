@@ -11,7 +11,7 @@ class AssignmentScheduler
     ids = AssignmentSchedule.in_progress.at(time.min, time.hour).pluck(:assignment_id)
     ids += AssignmentSchedule.in_progress.at(time.min, '*').pluck(:assignment_id)
 
-    ids.uniq.each {|id| AssignmentScheduler.delay.check_status(id) }
+    ids.uniq.each {|id| AssignmentScheduler.delay(priority: -1000).check_status(id) }
   end
 
   def self.queue_scheduled_snapshots(timestamp)

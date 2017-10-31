@@ -5,7 +5,7 @@ threads threads_count, threads_count
 preload_app!
 
 rackup      DefaultRackup
-port        ENV['SMART_ORACLE_PORT'] || ENV['NAYRU_PORT'] || ENV['PORT'] || 6688
+port        ENV['CHAINLINK_PORT'] || ENV['PORT'] || 6688
 environment ENV['RACK_ENV'] || 'development'
 
 on_worker_boot do

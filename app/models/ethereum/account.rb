@@ -13,6 +13,7 @@ module Ethereum
     before_validation :generate_key_pair, on: :create, unless: :address
 
     scope :local, -> { joins(:key_pair).where.not('key_pairs.id' => nil) }
+    scope :current, -> { where(current: true) }
 
     def self.default
       find_by(address: ENV['ETHEREUM_ACCOUNT']) ||

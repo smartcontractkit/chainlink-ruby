@@ -3,8 +3,9 @@ class Ethereum::BalanceWatcher
   include HasEthereumClient
 
   def self.perform(address = nil)
-    address ||= Ethereum::Account.default.address
-    new(address).perform
+    Ethereum::Account.current.pluck(:address).each do |address|
+      new(address).perform
+    end
   end
 
   def initialize(address)

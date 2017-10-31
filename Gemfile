@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
+ruby '2.3.5'
 
 gem 'active_model_serializers'
 gem 'bitcoin-ruby', require: 'bitcoin'
@@ -20,7 +20,6 @@ gem 'sysrandom', require: "sysrandom/securerandom"
 gem 'uglifier'
 
 group :development, :test do
-  gem 'bootsnap'
   gem 'dotenv', require: 'dotenv'
   gem 'factory_girl_rails'
   gem 'faker'
