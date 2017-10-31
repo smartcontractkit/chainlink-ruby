@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ssl_configured?
-    Rails.env.production? || Rails.env.staging?
+    ENV['FORCE_SSL'].to_s.downcase == 'true'
   end
 
 end
