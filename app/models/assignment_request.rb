@@ -5,8 +5,8 @@ class AssignmentRequest < ActiveRecord::Base
   belongs_to :assignment, inverse_of: :request
 
   validates :assignment, presence: true
-  validates :body_json, presence: true
   validates :body_hash, presence: true
+  validates :body_json, presence: true
   validates :signature, presence: true
   validate :matches_assignment_schema
 
@@ -60,7 +60,7 @@ class AssignmentRequest < ActiveRecord::Base
 
   def sign_hash
     return unless body.present?
-
+    self.body_hash ||= Digest::SHA256.hexdigest(body_json)
     hash = hex_to_bin(body_hash)
     self.signature = bin_to_hex(ethereum_account.sign_hash hash)
   end
