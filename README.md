@@ -1,5 +1,7 @@
 # ChainLink [![Code Climate](https://codeclimate.com/github/oraclekit/chainlink/badges/gpa.svg)](https://codeclimate.com/github/oraclekit/chainlink)
 
+[![Join the chat at https://gitter.im/smartcontractkit-chainlink/Lobby](https://badges.gitter.im/smartcontractkit-chainlink/Lobby.svg)](https://gitter.im/smartcontractkit-chainlink/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## API
 
 See the [API documentation](https://chainlink-docs.smartcontract.com) for more details about the API.
