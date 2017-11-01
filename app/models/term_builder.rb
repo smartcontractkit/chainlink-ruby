@@ -68,7 +68,12 @@ class TermBuilder
   end
 
   def expectation
-    assignment_request.assignment
+    assignment = assignment_request.assignment
+    if assignment.persisted?
+      assignment.reload
+    else
+      assignment
+    end
   end
 
   def determine_schedule
