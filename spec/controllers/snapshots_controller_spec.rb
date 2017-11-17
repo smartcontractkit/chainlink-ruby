@@ -162,4 +162,71 @@ describe SnapshotsController, type: :controller do
     end
   end
 
+  describe "#show" do
+    let(:snapshot) { factory_create :assignment_snapshot }
+    let(:assignment) { snapshot.assignment }
+    let(:snapshot_params) do
+      {
+        id: snapshot.xid
+      }
+    end
+
+    context "when authenticated as a coordinator" do
+      before { coordinator_log_in assignment.coordinator }
+
+      it "responds with all of the snapshot's information" do
+        get :show, snapshot_params
+
+        expect(response).to be_success
+        expect(response_json[:xid]).to eq snapshot.xid
+      end
+
+      context "when the snapshot cannot be found" do
+        let(:snapshot_params) do
+          {
+            id: (snapshot.xid + "!")
+          }
+        end
+
+        it "responds with an error message" do
+          get :show, snapshot_params
+
+          expect(response).not_to be_success
+          expect(response_json[:errors]).to include "No snapshot found."
+        end
+      end
+    end
+
+    context "when authenticated as a coordinator" do
+      before { coordinator_log_in factory_create(:coordinator) }
+
+      it "responds with an error message" do
+        get :show, snapshot_params
+
+        expect(response).not_to be_success
+        expect(response_json[:errors]).to include "No snapshot found."
+      end
+    end
+
+    context "when authenticated as an adapter" do
+      before { external_adapter_log_in assignment.adapters.first }
+
+      it "responds with all of the snapshot's information" do
+        get :show, snapshot_params
+
+        expect(response).not_to be_success
+      end
+    end
+
+    context "when unauthenticated" do
+      before { log_out_basic_auth }
+
+      it "responds with all of the snapshot's information" do
+        get :show, snapshot_params
+
+        expect(response).not_to be_success
+      end
+    end
+  end
+
 end
