@@ -2,8 +2,9 @@ class SnapshotsController < ExternalAdapterController
 
   ASSIGNMENT_NAME = "%%!ASSIGNMENT_NAME!%%"
 
-  skip_before_action :set_adapter, only: [:create]
+  skip_before_action :set_adapter, only: [:create, :show]
   before_filter :set_adapter_or_coordinator, only: [:create]
+  before_filter :authenticate_coordinator, only: [:show]
   before_filter :ensure_snapshot, only: [:update]
 
   def create
@@ -21,6 +22,16 @@ class SnapshotsController < ExternalAdapterController
       success_response snapshot
     else
       error_response snapshot.errors.full_messages
+    end
+  end
+
+  def show
+    snapshot = coordinator.snapshots.find_by xid: params[:id]
+
+    if snapshot.present?
+      success_response snapshot
+    else
+      error_response "No snapshot found."
     end
   end
 

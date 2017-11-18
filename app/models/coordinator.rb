@@ -3,6 +3,7 @@ class Coordinator < ActiveRecord::Base
 
   has_many :assignments
   has_many :contracts
+  has_many :snapshots, through: :assignments
 
   validates :key, presence: true
   validates :secret, presence: true
