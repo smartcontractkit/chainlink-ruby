@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   resources :json_receivers, only: [] do
     resources :requests, only: [:create], controller: 'json_receiver/requests'
   end
-  resources :snapshots, only: [:create, :update]
+  resources :snapshots, only: [:create, :show, :update]
   resources :subtasks, only: [] do
     resources :snapshots, only: [:create], controller: 'subtask/snapshots'
   end

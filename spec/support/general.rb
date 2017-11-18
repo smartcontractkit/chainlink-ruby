@@ -50,6 +50,10 @@ module SpecHelpers
     env
   end
 
+  def log_out_basic_auth
+    request.env['HTTP_AUTHORIZATION'] = ''
+  end
+
   def new_bitcoin_address
     Faker::Bitcoin.testnet_address
   end
