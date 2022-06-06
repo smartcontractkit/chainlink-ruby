@@ -107,7 +107,7 @@ jobs:
           check_name: 'Smoke Test Results'
       - name: Publish Artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.0
         with:
           name: eth-test-logs
           path: ./integration-tests/logs
